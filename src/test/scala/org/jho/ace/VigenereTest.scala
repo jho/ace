@@ -9,21 +9,24 @@ import Assert._
 
 class VigenereTest {
 
-    @Before
-    def setUp: Unit = {
-    }
+  @Before
+  def setUp: Unit = {
+  }
 
-    @After
-    def tearDown: Unit = {
-    }
+  @After
+  def tearDown: Unit = {
+  }
 
-    @Test
-    def encrypt = {
-      //val v = new Vigenere("blarg")
-      //val result = v.encrypt("this is the plaintext")
-      println('A'.asDigit)
-      println('Z'.asDigit)
-      //assertNotNull(result)
-    }
-
+  @Test
+  def encryptDecrypt = {
+    val v = new Vigenere("LEMON")
+    val m = "ATTACKATDAWN"
+    val c = "LXFOPVEFRNHR"
+    var result = v.encrypt(m)
+    println(result)
+    assertEquals(c, result)
+    result = v.decrypt(c)
+    println(result)
+    assertEquals(m, result)
+  }
 }
