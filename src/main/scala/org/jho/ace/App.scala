@@ -1,4 +1,4 @@
-package org.jho.autodecrypt
+package org.jho.ace
 
 /**
  * Hello world!

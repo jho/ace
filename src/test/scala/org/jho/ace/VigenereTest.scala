@@ -2,21 +2,12 @@
  * Copyright 2011 Joshua Hollander.
  */
 
-package org.jho.autodecrypt
+package org.jho.ace
 
 import org.junit._
 import Assert._
 
 class VigenereTest {
-
-  @Before
-  def setUp: Unit = {
-  }
-
-  @After
-  def tearDown: Unit = {
-  }
-
   @Test
   def encryptDecrypt = {
     val v = new Vigenere("LEMON")
