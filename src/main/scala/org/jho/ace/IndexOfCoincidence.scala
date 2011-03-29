@@ -23,10 +23,6 @@ class IndexOfCoincidence(text:Seq[Char]) {
     return periods
   }
 
-  def findPeriod:Double = {
-
-  }
-
   private def compute(chars:Seq[Char]):Double = {
     var counts = chars.filter(_ != ' ').groupBy(_.toUpper).mapValues(_.size)
     var sum = counts.foldLeft(0.0) {
