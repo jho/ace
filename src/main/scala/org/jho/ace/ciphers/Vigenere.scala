@@ -2,7 +2,7 @@
  * Copyright 2011 Joshua Hollander.
  */
 
-package org.jho.ace
+package org.jho.ace.ciphers
 
 import org.jho.ace.util.Util._
 
