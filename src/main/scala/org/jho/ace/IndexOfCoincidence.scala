@@ -16,28 +16,18 @@ class IndexOfCoincidence(var text:Seq[Char]) {
 
   def testPeriod:Map[Int, Double] = {
     var columns = text.zipWithIndex
-    //collect the IoC for each "column" of text based on key sizes up to 1/4 the length of the text
-    (1 to text.size/4).map { i =>
-      (i, compute(columns.withFilter(_._2 % i == 0).map(_._1)))
-      }.toMap
+    (1 to text.size/2).map { i =>
+        var sum = columns.groupBy(_._2 % i).foldLeft(0.0) { (sum,e) =>
+          sum + compute(e._2.map(_._1))
+        }
+        (i, sum/i) 
+    }.toMap
   }
 
   def findKeyLength:Int = {
-    var periods = testPeriod
-    //collect everything into classes of key lengths (5,10,15, etc)
-    var classes = periods.map{ case(k,v) =>
-        (k, periods.withFilter { e =>
-            println(e); e._1 > k && e._1 % k == 0
-          } map(_._2))
-    }
-    //get the average for each class
-    var avgs = classes.mapValues{ v => (v.foldLeft(0.0)(_+_)/v.size) }
-    //sort the lists and attemp to decrypt
-    var sorted = periods.toList.sortWith { (a,b) =>
-      abs(1.73-a._2) < abs(1.73-b._2)
-    }
-    println(sorted)
-    return 1;
+    testPeriod.toList.sortWith { (a,b) =>
+      abs(1.73-a._2) < abs(1.73-b._2) && a._1 < a._2
+    }.head._1 //TODO: check to see that the next elements in the list are congruent to the first (5,10,15, etc)
   }
 
   private def compute(chars:Seq[Char]):Double = {
@@ -51,7 +41,7 @@ class IndexOfCoincidence(var text:Seq[Char]) {
         }
     }
     if ( sum > 0.0)
-      return sum/((chars.size*(chars.size-1))/26.0)
+      return (sum/(chars.size*(chars.size-1)))/(1/26.0)
     else
       return 0.0
   }
