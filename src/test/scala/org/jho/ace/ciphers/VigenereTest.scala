@@ -19,5 +19,11 @@ class VigenereTest {
     result = v.decrypt(c)
     println(result)
     assertEquals(m, result)
+
+
+    var popco = new Vigenere("POPCO")
+    result = popco.encrypt("Routinekillscreativethough")
+    println(result)
+    println(popco.decrypt(result))
   }
 }

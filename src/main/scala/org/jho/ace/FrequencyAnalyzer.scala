@@ -1,15 +1,5 @@
 /*
- * File: FrequencyAnalyzer.java
- *
- * Author: Joshua Hollander (jhollander@localmatters.com)
- * Created: Mar 30, 2011 2:32:42 PM
- *
- * Copyright 2010 Local Matters, Inc.
- *
- * Last checkin:
- *  $Author:$
- *  $Revision:$
- *  $Date:$
+ * Copyright 2011 Joshua Hollander.
  */
 package org.jho.ace
 

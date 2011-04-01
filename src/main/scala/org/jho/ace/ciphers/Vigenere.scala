@@ -8,7 +8,7 @@ import org.jho.ace.util.Util._
 
 class Vigenere(val key:String) {
   def encrypt(message:String):String = {
-    message.view.zipWithIndex.foldLeft("") {
+    message.view.filter(_.isLetter).map(_.toUpper).zipWithIndex.foldLeft("") {
       case(cipherText,(value,index)) => {
           cipherText + int2Char((char2Int(value) + char2Int(key(index % key.length))) mod 26)
         }
@@ -16,7 +16,7 @@ class Vigenere(val key:String) {
   }
 
   def decrypt(cipherText:String):String = {
-    cipherText.view.zipWithIndex.foldLeft("") {
+    cipherText.view.filter(_.isLetter).map(_.toUpper).zipWithIndex.foldLeft("") {
       case(message,(value,index)) => {
           message + int2Char((char2Int(value) - char2Int(key(index % key.length))) mod 26)
         }
