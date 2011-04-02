@@ -25,9 +25,11 @@ class IndexOfCoincidence(var text:Seq[Char]) {
   }
 
   def findKeyLength:Int = {
-    testPeriod.toList.sortWith { (a,b) =>
-      abs(1.73-a._2) < abs(1.73-b._2) && a._1 < a._2
-    }.head._1 //TODO: check to see that the next elements in the list are congruent to the first (5,10,15, etc)
+    var sorted = testPeriod.toList.sortWith { (a,b) =>
+      abs(1.73-a._2) < abs(1.73-b._2) && a._1 < b._1
+    }
+    println(sorted)
+    sorted.head._1 //TODO: check to see that the next elements in the list are congruent to the first (5,10,15, etc)
   }
 
   private def compute(chars:Seq[Char]):Double = {

@@ -12,7 +12,9 @@ class IndexOfCoincidenceTest {
   @Test
   def testComputeIoC = {
     var result = "This is a really long string that should have an index of coincidence similar to that of general written English".computeIoC
-    assertTrue(1.640953716690042 == result)
+    println(result)
+    assertTrue(result >= 1.64)
+    assertTrue(result <= 1.65)
   }
 
   @Test
@@ -27,6 +29,7 @@ class IndexOfCoincidenceTest {
   @Test
   def findKeyLength = {
     var result = "QPWKALVRXCQZIKGRBPFAEOMFLJMSDZVDHXCXJYEBIMTRQWNMEAIZRVKCVKVLXNEICFZPZCZZHKMLVZVZIZRRQWDKECHOSNYXXLSPMYKVQXJTDCIOMEEXDQVSRXLRLKZHOV".findKeyLength
+    println(result)
     assertEquals(5, result)
   }
 }
