@@ -43,17 +43,25 @@ class DefaultCryptanalyzer(var cipherText:String) {
 
   def decrypt:String = {
     var keyLength = cipherText.findKeyLength
-    cipherText.view.zipWithIndex.groupBy(_._2 % keyLength).foreach { e =>
+    var key = cipherText.view.zipWithIndex.groupBy(_._2 % keyLength).foldLeft("") { (key, e) =>
+      println("----")
+      println("col="+e._1)
       var column = e._2.map(_._1).mkString
       println(column)
-      for( i <- 'A' until 'Z' )  {
-        /*var corr = column.map(c => int2Char((char2Int(c) + char2Int(i)) mod 26)).foldLeft { (corr, c) =>
-          corr +
-        }*/
-        println("-")
-      }
-      return null;
+      var keyChar = ('A' until 'Z').map { i =>
+        var decryption = column.map(c => int2Char((char2Int(c) - char2Int(i)) mod 26))
+        println(decryption)
+        var freq = decryption.frequencies
+        var corr = decryption.foldLeft(0.0) { (corr, c) =>
+          corr + (freq(c) * char2Freq(c))
+        }
+        println(i+"->"+corr)
+        (i, corr)
+      }.sortWith(_._2 > _._2).head._1
+      println("keyChar="+keyChar)
+      key + keyChar
     }
+    println("key="+key)
     null;
   }
 }
