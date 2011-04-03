@@ -8,6 +8,7 @@ import org.jho.ace.IndexOfCoincidence._
 import org.jho.ace.FrequencyAnalyzer._
 import org.jho.ace.ciphers.Vigenere
 import org.jho.ace.util.Util._
+import org.jho.ace.util.Dictionary
 
 class DefaultCryptanalyzer(var cipherText:String) {
   var char2Freq =  Map(
@@ -44,25 +45,24 @@ class DefaultCryptanalyzer(var cipherText:String) {
 
   def decrypt:String = {
     var keyLength = cipherText.findKeyLength
-    var key = cipherText.view.zipWithIndex.groupBy(_._2 % keyLength).foldLeft("") { (key, e) =>
-      println("----")
-      println("col="+e._1)
+    var colFreqs = cipherText.view.zipWithIndex.groupBy(_._2 % keyLength).map { e =>
       var column = e._2.map(_._1).mkString
-      println(column)
-      var colKey = ('A' until 'Z').map { i =>
-        var decryption = column.map(c => int2Char((char2Int(c) - char2Int(i)) mod 26))
-        println(decryption)
-        var freq = decryption.frequencies
-        var corr = decryption.foldLeft(0.0) { (corr, c) =>
-          corr + (freq(c) * char2Freq(c))
-        }
-        println(i+"->"+corr)
-        (i, corr)
-      }.sortWith(_._2 > _._2).head._1
-      println("colKey="+colKey)
-      key + colKey
+      (e._1, ('A' until 'Z').map { i =>
+          var decryption = column.map(c => int2Char((char2Int(c) - char2Int(i)) mod 26))
+          var freq = decryption.frequencies
+          var corr = decryption.foldLeft(0.0) { (corr, c) =>
+            corr + (freq(c) * char2Freq(c))
+          }
+          (i, corr)
+        }.sortWith(_._2 > _._2))
     }
-    println("key="+key)
-    new Vigenere(key).decrypt(cipherText)
+    println(colFreqs)
+    var key = colFreqs.foldLeft("") { (key, e) => key + e._2.head._1 }
+    var decryption = new Vigenere(key).decrypt(cipherText)
+    var dictProb = (1/cipherText.size)*((2 to 7).foldLeft(0.0) { (sum, i) =>
+        sum + (i^2 * (decryption.sliding(i).filter(Dictionary.words.contains(_)).toSet.size))
+      })
+    //println(words)
+    null
   }
 }
