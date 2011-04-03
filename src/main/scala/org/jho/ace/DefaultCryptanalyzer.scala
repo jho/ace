@@ -6,6 +6,7 @@ package org.jho.ace
 import scala.math._
 import org.jho.ace.IndexOfCoincidence._
 import org.jho.ace.FrequencyAnalyzer._
+import org.jho.ace.ciphers.Vigenere
 import org.jho.ace.util.Util._
 
 class DefaultCryptanalyzer(var cipherText:String) {
@@ -48,7 +49,7 @@ class DefaultCryptanalyzer(var cipherText:String) {
       println("col="+e._1)
       var column = e._2.map(_._1).mkString
       println(column)
-      var keyChar = ('A' until 'Z').map { i =>
+      var colKey = ('A' until 'Z').map { i =>
         var decryption = column.map(c => int2Char((char2Int(c) - char2Int(i)) mod 26))
         println(decryption)
         var freq = decryption.frequencies
@@ -58,10 +59,10 @@ class DefaultCryptanalyzer(var cipherText:String) {
         println(i+"->"+corr)
         (i, corr)
       }.sortWith(_._2 > _._2).head._1
-      println("keyChar="+keyChar)
-      key + keyChar
+      println("colKey="+colKey)
+      key + colKey
     }
     println("key="+key)
-    null;
+    new Vigenere(key).decrypt(cipherText)
   }
 }
