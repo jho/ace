@@ -11,6 +11,7 @@ import org.jho.ace.util.Util._
 import org.jho.ace.util.Dictionary
 
 class DefaultCryptanalyzer(var cipherText:String) {
+  //package up as a "language" along with numChars and an alphabet
   var char2Freq =  Map(
     'E' -> .1202,
     'T' -> .0910,
@@ -45,6 +46,7 @@ class DefaultCryptanalyzer(var cipherText:String) {
 
   def decrypt:String = {
     var keyLength = cipherText.findKeyLength
+    //find the frequency correlations for each column (based on keyLength columns) of the cipherText
     var colFreqs = cipherText.view.zipWithIndex.groupBy(_._2 % keyLength).map { e =>
       var column = e._2.map(_._1).mkString
       (e._1, ('A' until 'Z').map { i =>
@@ -56,13 +58,23 @@ class DefaultCryptanalyzer(var cipherText:String) {
           (i, corr)
         }.sortWith(_._2 > _._2))
     }
-    println(colFreqs)
-    var key = colFreqs.foldLeft("") { (key, e) => key + e._2.head._1 }
-    var decryption = new Vigenere(key).decrypt(cipherText)
-    var dictProb = (1/cipherText.size)*((2 to 7).foldLeft(0.0) { (sum, i) =>
-        sum + (i^2 * (decryption.sliding(i).filter(Dictionary.words.contains(_)).toSet.size))
-      })
-    //println(words)
-    null
+    //decrypt using each of the most probable keys and determine a "count" of dictionary words
+    var keys = colFreqs.foldLeft(List[(String,Double)]()) { (keys, i) =>
+      keys ++ (0 until 5).map { j =>
+        var key = colFreqs.foldLeft("") { (key, e) => 
+          key + (if (e._1 == i._1) e._2(j)._1 else e._2.head._1)
+        }
+        var decryption = new Vigenere(key).decrypt(cipherText)
+        //TODO: Split this out into a function
+        var dictCount = (1.0/cipherText.size)*((2 to 7).foldLeft(0.0) { (sum, k) =>
+            sum + (k^2 * (decryption.sliding(k).filter(Dictionary.wordsUpperCase.contains(_)).toSet.size))
+          })
+        (key, dictCount)
+      }
+    }
+    //the key that generates the highest dictionary word count "wins"
+    var key = keys.sortWith(_._2 > _._2).head._1
+    //now decrypt using the key
+    new Vigenere(key).decrypt(cipherText)
   }
 }

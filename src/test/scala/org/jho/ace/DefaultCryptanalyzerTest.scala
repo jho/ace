@@ -8,11 +8,11 @@ import Assert._
 
 class DefaultCryptanalyzerTest {
 
-    @Test
-    def decrypt = {
-        var ca = new DefaultCryptanalyzer("QPWKALVRXCQZIKGRBPFAEOMFLJMSDZVDHXCXJYEBIMTRQWNMEAIZRVKCVKVLXNEICFZPZCZZHKMLVZVZIZRRQWDKECHOSNYXXLSPMYKVQXJTDCIOMEEXDQVSRXLRLKZHOV")
-        var result = ca.decrypt
-        println(result)
-    }
+  @Test
+  def decrypt = {
+    var ca = new DefaultCryptanalyzer("QPWKALVRXCQZIKGRBPFAEOMFLJMSDZVDHXCXJYEBIMTRQWNMEAIZRVKCVKVLXNEICFZPZCZZHKMLVZVZIZRRQWDKECHOSNYXXLSPMYKVQXJTDCIOMEEXDQVSRXLRLKZHOV")
+    var result = ca.decrypt
+    println(result)
+  }
 
 }

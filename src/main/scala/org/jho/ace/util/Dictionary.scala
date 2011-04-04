@@ -15,4 +15,5 @@ package org.jho.ace.util
 
 object Dictionary {
     lazy val words:Set[String] = scala.io.Source.fromInputStream(getClass.getResourceAsStream("/words")).getLines.toSet
+    lazy val wordsUpperCase:Set[String] = words.map(_.toUpperCase)
 }
