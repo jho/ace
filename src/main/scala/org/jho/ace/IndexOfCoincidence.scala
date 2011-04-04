@@ -4,7 +4,6 @@
 package org.jho.ace
 
 import org.jho.ace.util.Util._
-import scala.collection.Map
 import scala.math._
 
 class IndexOfCoincidence(var text:Seq[Char]) {
@@ -28,7 +27,6 @@ class IndexOfCoincidence(var text:Seq[Char]) {
     var sorted = testPeriod.toList.sortWith { (a,b) =>
       abs(1.73-a._2) < abs(1.73-b._2) && a._1 < b._1
     }
-    println(sorted)
     sorted.head._1 //TODO: check to see that the next elements in the list are congruent to the first (5,10,15, etc)
   }
 

@@ -6,9 +6,10 @@ package org.jho.ace
 import org.junit._
 import Assert._
 
+import org.jho.ace.util.Configuration
 import org.jho.ace.FrequencyAnalyzer._
 
-class FrequencyAnalyzerTest {
+class FrequencyAnalyzerTest extends Configuration {
     @Test
     def testFrequencies = {
         var results = "This is a test".frequencies

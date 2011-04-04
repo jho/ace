@@ -4,11 +4,12 @@
 package org.jho.ace
 
 import org.jho.ace.IndexOfCoincidence._
+import org.jho.ace.util.Configuration
 
 import org.junit._
 import Assert._
 
-class IndexOfCoincidenceTest {
+class IndexOfCoincidenceTest extends Configuration {
   @Test
   def testComputeIoC = {
     var result = "This is a really long string that should have an index of coincidence similar to that of general written English".computeIoC

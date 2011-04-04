@@ -4,10 +4,12 @@
 
 package org.jho.ace.ciphers
 
+import org.jho.ace.util.Configuration
+
 import org.junit._
 import Assert._
 
-class VigenereTest {
+class VigenereTest extends Configuration {
   @Test
   def encryptDecrypt = {
     val v = new Vigenere("LEMON")
@@ -19,11 +21,5 @@ class VigenereTest {
     result = v.decrypt(c)
     println(result)
     assertEquals(m, result)
-
-
-    var popco = new Vigenere("POPCO")
-    result = popco.encrypt("Routinekillscreativethough")
-    println(result)
-    println(popco.decrypt(result))
   }
 }

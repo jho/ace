@@ -6,7 +6,9 @@ package org.jho.ace
 import org.junit._
 import Assert._
 
-class DefaultCryptanalyzerTest {
+import org.jho.ace.util.Configuration
+
+class DefaultCryptanalyzerTest extends Configuration {
 
   @Test
   def decrypt = {
