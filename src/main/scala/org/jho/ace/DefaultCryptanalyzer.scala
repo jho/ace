@@ -33,11 +33,7 @@ class DefaultCryptanalyzer(var cipherText:String) extends Configuration {
           key + (if (e._1 == i._1) e._2(j)._1 else e._2.head._1)
         }
         var decryption = new Vigenere(key).decrypt(cipherText)
-        //TODO: Split this out into a function
-        var dictCount = (1.0/cipherText.size)*((2 to 7).foldLeft(0.0) { (sum, k) =>
-            sum + (k^2 * (decryption.sliding(k).filter(language.dictionary.wordsUpperCase.contains(_)).toSet.size))
-          })
-        (key, dictCount)
+        (key, DictionaryHeuristic(decryption))
       }
     }
     //the key that generates the highest dictionary word count "wins"
