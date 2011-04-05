@@ -14,12 +14,19 @@ object GramHeuristic extends Heuristic with Configuration {
     var sum = abs(in.frequencies.foldLeft(0.0) { (sum, e) =>
         sum + (language.frequencies(e._1) - e._2)
       })
-    sum + abs(in.bigramFrequencies.filter(e => language.bigramFrequencies.contains(e._1)).foldLeft(0.0) { (sum, e) =>
-        sum + (language.bigramFrequencies(e._1) - e._2)
-      })
-    sum + abs(in.trigramFrequencies.filter(e => language.trigramFrequencies.contains(e._1)).foldLeft(0.0) { (sum, e) =>
-        sum + (language.trigramFrequencies(e._1) - e._2)
-      })
-    sum
+    sum += gramSum(language.bigramFrequencies, in.bigramFrequencies)
+    sum + gramSum(language.trigramFrequencies, in.trigramFrequencies)
   }
+
+   def gramSum(expected:Map[String, Double], observed:Map[String, Double]):Double = {
+    var sum = abs(expected.filter(e => observed.contains(e._1)).foldLeft(0.0) { (sum, e) =>
+        sum + (expected(e._1) - e._2)
+    })
+    //grams that aren't in the string should count against it otherwise strings
+    //that have no recognizable grams will actually have an artificially "lower" cost
+    sum += abs(expected.filterNot(e => observed.contains(e._1)).foldLeft(0.0) { (sum, e) =>
+        sum + (expected(e._1) - e._2)
+    })
+    sum
+   }
 }
