@@ -11,8 +11,8 @@ import org.jho.ace.util.Configuration
 import org.jho.ace.util.Language
 
 class DefaultCryptanalyzer(var cipherText:String) extends Configuration {
-  def decrypt()(implicit language:Language):String = {
-    var keyLength = cipherText.findKeyLength
+    def decrypt()(implicit language:Language):String = {
+    var keyLength = cipherText.keyLengths.head
     //find the frequency correlations for each column (based on keyLength columns) of the cipherText
     var colFreqs = cipherText.view.zipWithIndex.groupBy(_._2 % keyLength).map { e =>
       var column = e._2.map(_._1).mkString
@@ -32,11 +32,12 @@ class DefaultCryptanalyzer(var cipherText:String) extends Configuration {
           key + (if (e._1 == i._1) e._2(j)._1 else e._2.head._1)
         }
         var decryption = new Vigenere(key).decrypt(cipherText)
-        (key, DictionaryHeuristic(decryption))
+        (key, Configuration.heuristics.foldLeft(0.0) { (acc, h) => acc + h.evaluate(decryption)})
       }
     }
+    println(keys)
     //the key that generates the highest dictionary word count "wins"
-    var key = keys.sortWith(_._2 > _._2).head._1
+    var key = keys.sortWith(_._2 < _._2).head._1
     //now decrypt using the key
     new Vigenere(key).decrypt(cipherText)
   }

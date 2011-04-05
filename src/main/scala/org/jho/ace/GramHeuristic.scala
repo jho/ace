@@ -9,13 +9,14 @@ import org.jho.ace.CipherText._
 
 import scala.math._
 
-object GramHeuristic extends Heuristic with Configuration {
-  def apply(in:String)(implicit language:Language):Double = {
-    var sum = abs(in.frequencies.foldLeft(0.0) { (sum, e) =>
+class GramHeuristic(weight:Double) extends Heuristic(weight) with Configuration {
+  def compute(in:String)(implicit language:Language):Double = {
+    var text = in.filter(_.isLetter).toUpperCase
+    var sum = abs(text.frequencies.foldLeft(0.0) { (sum, e) =>
         sum + (language.frequencies(e._1) - e._2)
       })
-    sum += gramSum(language.bigramFrequencies, in.bigramFrequencies)
-    sum + gramSum(language.trigramFrequencies, in.trigramFrequencies)
+    sum += gramSum(language.bigramFrequencies, text.bigramFrequencies)
+    sum + gramSum(language.trigramFrequencies, text.trigramFrequencies)
   }
 
    def gramSum(expected:Map[String, Double], observed:Map[String, Double]):Double = {

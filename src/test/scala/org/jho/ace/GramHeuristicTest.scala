@@ -12,11 +12,11 @@ class GramHeuristicTest extends Configuration {
 
     @Test
     def computeCost = {
-        var result = GramHeuristic("This is a test of a valid English phrase which")
+        var result = new GramHeuristic(1.0).evaluate("This is a test of a valid English phrase which")
         println(result)
-        result = GramHeuristic("garbageasdfasdfasdfasdfasfadsfasdfasdfasdfasdf")
+        result = new GramHeuristic(1.0).evaluate("garbageasdfasdfasdfasdfasfadsfasdfasdfasdfasdf")
         println(result)
-        result = GramHeuristic("garbageffffffffffffdddddddddddddddddddffffffffdddd")
+        result = new GramHeuristic(1.0).evaluate("garbageffffffffffffdddddddddddddddddddffffffffdddd")
         println(result)
     }
 

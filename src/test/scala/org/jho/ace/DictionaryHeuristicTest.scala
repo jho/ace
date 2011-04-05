@@ -12,8 +12,10 @@ class DictionaryHeuristicTest extends Configuration {
 
     @Test
     def computeCost = {
-        var result = DictionaryHeuristic("This is a test")
+        var result = new DictionaryHeuristic(1.0).evaluate("This is a test of the emergency broadcast system")
         println(result)
+        var result2 = new DictionaryHeuristic(1.0).evaluate("blarghityhaasdfdkdkdkdkasdflkwerxapzoijwer")
+        println(result2)
     }
 
 }
