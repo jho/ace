@@ -8,7 +8,7 @@ import org.jho.ace.util.Configuration
 
 import scala.math._
 
-class CipherText(var text:Seq[Char]) extends FrequencyAnalyzer with Configuration {
+class CipherText(var text:String) extends FrequencyAnalyzer with Configuration {
   text = text.filter(_.isLetter).map(_.toUpper)
 
   def testPeriod:Map[Int, Double] = {
@@ -30,6 +30,6 @@ class CipherText(var text:Seq[Char]) extends FrequencyAnalyzer with Configuratio
 }
 
 object CipherText {
-  implicit def charSeq2CipherText(seq:Seq[Char]):CipherText = new CipherText(seq)
+  implicit def charSeq2CipherText(seq:Seq[Char]):CipherText = new CipherText(seq.mkString)
   implicit def string2CipherText(text:String):CipherText = new CipherText(text)
 }

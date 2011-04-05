@@ -4,7 +4,7 @@
 package org.jho.ace
 
 trait FrequencyAnalyzer {
-  var text:Seq[Char]
+  var text:String
 
   def frequencies:Map[Char, Double] = {
     text.groupBy(identity).mapValues(_.size/(text.size*1.0))
@@ -19,6 +19,6 @@ trait FrequencyAnalyzer {
   }
 
   def ngramFrequencies(n:Int):Map[String, Double] = {
-    text.sliding(n).toList.map(_.toString).groupBy(identity).mapValues(_.size/(text.size/(n*1.0)))
+    text.sliding(n).toList.groupBy(identity).mapValues(_.size/(text.size/(n*1.0)))
   }
 }
