@@ -4,8 +4,7 @@
 package org.jho.ace
 
 import scala.math._
-import org.jho.ace.IndexOfCoincidence._
-import org.jho.ace.FrequencyAnalyzer._
+import org.jho.ace.CipherText._
 import org.jho.ace.ciphers.Vigenere
 import org.jho.ace.util.Util._
 import org.jho.ace.util.Configuration

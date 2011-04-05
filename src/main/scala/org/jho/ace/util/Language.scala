@@ -11,6 +11,8 @@ trait Language {
     lazy val numChars = alphabet.size
     var dictionary = new Dictionary(locale)
     def frequencies:Map[Char,Double]
+    def bigramFrequencies:Map[String,Double]
+    def trigramFrequencies:Map[String,Double]
     def ioc:Double
     def char2Int(c:Char):Int = alphabet.indexOf(c)
     def int2Char(i:Int):Char = alphabet(i)
