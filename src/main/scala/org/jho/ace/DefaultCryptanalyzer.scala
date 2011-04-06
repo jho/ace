@@ -11,28 +11,32 @@ import org.jho.ace.util.Configuration
 import org.jho.ace.util.Language
 
 class DefaultCryptanalyzer(var cipherText:String) extends Configuration {
-    def decrypt()(implicit language:Language):String = {
-    var keyLength = cipherText.keyLengths.head
-    //find the frequency correlations for each column (based on keyLength columns) of the cipherText
-    var colFreqs = cipherText.view.zipWithIndex.groupBy(_._2 % keyLength).map { e =>
-      var column = e._2.map(_._1).mkString
-      (e._1, language.alphabet.map { i =>
-          var decryption = column.map(c => language.int2Char((language.char2Int(c) - language.char2Int(i)) mod 26))
-          var freq = decryption.frequencies
-          var corr = decryption.foldLeft(0.0) { (corr, c) =>
-            corr + (freq(c) * language.frequencies(c))
+  def decrypt()(implicit language:Language):String = {
+    //the # keys lengths to try is arbitrary need to make this based on some rule/heuristic
+    var keys = cipherText.keyLengths.slice(0,9).foldLeft(List[(String,Double)]()) { (keys, keyLength) =>
+      //find the frequency correlations for each column (based on keyLength columns) of the cipherText
+      var colFreqs = cipherText.view.zipWithIndex.groupBy(_._2 % keyLength).map { e =>
+        var column = e._2.map(_._1).mkString
+        (e._1, language.alphabet.map { i =>
+            var decryption = column.map(c => language.int2Char((language.char2Int(c) - language.char2Int(i)) mod 26))
+            var freq = decryption.frequencies
+            var corr = decryption.foldLeft(0.0) { (corr, c) =>
+              corr + (freq(c) * language.frequencies(c))
+            }
+            (i, corr)
+          }.sortWith(_._2 > _._2))
+      }
+      //decrypt using each of the most probable keys and assign a cost based on a heuristic
+      keys ::: colFreqs.foldLeft(List[(String,Double)]()) { (acc, i) =>
+        //try different combinations of the top 5 highest frequencies in each column (to elmininate some statisitical variance)
+        //this is also arbitrary, need to base on some rule/heuristic
+        acc ++ (0 until 5).map { j =>
+          var key = colFreqs.foldLeft("") { (key, e) =>
+            key + (if (e._1 == i._1) e._2(j)._1 else e._2.head._1)
           }
-          (i, corr)
-        }.sortWith(_._2 > _._2))
-    }
-    //decrypt using each of the most probable keys and determine a "count" of dictionary words
-    var keys = colFreqs.foldLeft(List[(String,Double)]()) { (keys, i) =>
-      keys ++ (0 until 5).map { j =>
-        var key = colFreqs.foldLeft("") { (key, e) => 
-          key + (if (e._1 == i._1) e._2(j)._1 else e._2.head._1)
+          var decryption = new Vigenere(key).decrypt(cipherText)
+          (key, Configuration.heuristics.foldLeft(0.0) { (acc, h) => acc + h.evaluate(decryption)})
         }
-        var decryption = new Vigenere(key).decrypt(cipherText)
-        (key, Configuration.heuristics.foldLeft(0.0) { (acc, h) => acc + h.evaluate(decryption)})
       }
     }
     println(keys)

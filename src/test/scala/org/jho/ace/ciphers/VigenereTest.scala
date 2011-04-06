@@ -21,5 +21,7 @@ class VigenereTest extends Configuration {
     result = v.decrypt(c)
     println(result)
     assertEquals(m, result)
+
+    println(new Vigenere("POPCO").decrypt("ECLGFXGCQHWWCIKXHWQIIQDPHGCA"));
   }
 }

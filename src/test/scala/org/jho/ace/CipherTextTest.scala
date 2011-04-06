@@ -34,7 +34,6 @@ class CipherTextTest extends Configuration {
   @Test
   def findKeyLength = {
     var result = "QPWKALVRXCQZIKGRBPFAEOMFLJMSDZVDHXCXJYEBIMTRQWNMEAIZRVKCVKVLXNEICFZPZCZZHKMLVZVZIZRRQWDKECHOSNYXXLSPMYKVQXJTDCIOMEEXDQVSRXLRLKZHOV".keyLengths
-    //assertEquals(5, result)
     println(result)
     println("LXFOPVEFRNHR".keyLengths)
   }
