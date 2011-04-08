@@ -13,7 +13,7 @@ import org.jho.ace.util.Language
 class VigenereCryptanalyzer extends Cryptanalyzer with Configuration {
   def decrypt(cipherText:String)(implicit language:Language):String = {
     var keyLengths = cipherText.keyLengths
-    var keys = keyLengths.slice(0,keyLengths.size/2).foldLeft(List[(String,Double)]()) { (keys, keyLength) =>
+    var keys = keyLengths.slice(0,5).foldLeft(List[(String,Double)]()) { (keys, keyLength) =>
       //find the frequency correlations for each column (based on keyLength columns) of the cipherText
       var colFreqs = cipherText.view.zipWithIndex.groupBy(_._2 % keyLength).map { e =>
         var column = e._2.map(_._1).mkString

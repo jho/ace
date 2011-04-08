@@ -26,7 +26,6 @@ class CipherText(var text:String) extends FrequencyAnalyzer with Configuration {
       //sort by diff from langauge IoC, order key lengths that are close to the IoC by key length (so we try smallest first)
       ((a._1 < b._1) && (abs(language.ioc-a._2) + abs(language.ioc-b._2)) <= .5) || abs(language.ioc-a._2) < abs(language.ioc-b._2)
     }
-    println(sorted)
     sorted.map(_._1).toList //TODO: check to see that the next elements in the list are congruent to the first (5,10,15, etc)
   }
 }

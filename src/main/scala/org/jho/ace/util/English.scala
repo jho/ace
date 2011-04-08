@@ -5,11 +5,11 @@ package org.jho.ace.util
 
 import java.util.Locale
 
-class English extends Language {
-  def locale = Locale.US
-  lazy val alphabet = ('A' to 'Z').toList
-  def ioc = 1.73
-  def frequencies =  Map(
+class English extends {
+  var locale = Locale.US
+  var alphabet = ('A' to 'Z').toList
+  var ioc = 1.73
+  var frequencies =  Map(
     'E' -> .1202,
     'T' -> .0910,
     'A' -> .0812,
@@ -37,9 +37,8 @@ class English extends Language {
     'J' -> .0010,
     'Z' -> .0007
   )
-
   // http://www.cryptograms.org/letter-frequencies.php#Bigrams
-  def bigramFrequencies = Map(
+  var bigramFrequencies = Map(
     "TH" -> .03882543,
     "HE" -> .03681391,
     "IN" -> .02283899,
@@ -61,9 +60,8 @@ class English extends Language {
     "ES" -> .01092301,
     "NG" -> .01053385
   )
-
   // http://www.cryptograms.org/letter-frequencies.php#Trigrams
-  def trigramFrequencies = Map(
+  var trigramFrequencies = Map(
     "THE" ->  .03508232,
     "AND" ->  .01593878,
     "ING" ->  .01147042,
@@ -85,4 +83,4 @@ class English extends Language {
     "THI" ->  .00394796,
     "TIO" ->  .00378058
   )
-}
+} with Language

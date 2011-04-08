@@ -17,7 +17,7 @@ class VigenereCryptanalyzerTest extends Configuration {
     println(result)
     assertEquals("MUSTCHANGEMEETINGLOCATIONFROMBRIDGETOUNDERPASSSINCEENEMYAGENTSAREBELIEVEDTOHAVEBEENASSIGNEDTOWATCHBRIDGESTOPMEETINGTIMEUNCHANGEDXX", result)
 
-    result = v.decrypt("LXFOPVEFRNHR")
-    println(result)
+    //result = v.decrypt("LXFOPVEFRNHR")
+    //println(result)
   }
 }
