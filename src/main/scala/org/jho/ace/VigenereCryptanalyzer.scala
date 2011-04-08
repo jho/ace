@@ -39,7 +39,6 @@ class VigenereCryptanalyzer extends Cryptanalyzer with Configuration {
         }
       }
     }
-    println(keys)
     //the key that generates the highest dictionary word count "wins"
     var key = keys.sortWith(_._2 < _._2).head._1
     //now decrypt using the key
