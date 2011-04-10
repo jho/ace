@@ -39,4 +39,5 @@ trait Language {
   def char2Int(c:Char):Int = alphabet.indexOf(c)
   def int2Char(i:Int):Char = alphabet(i)
   def randomChar:Char = alphabet(rand.nextInt(alphabet.size-1))
+  def randomString(size:Int):String = (0 until size).foldLeft(""){(acc, i) => acc + randomChar}
 }
