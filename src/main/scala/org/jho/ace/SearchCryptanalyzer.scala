@@ -14,6 +14,10 @@ class SearchCryptanalyzer extends Cryptanalyzer with Configuration {
   var queue = new PriorityQueue[(String, Double)]()
 
   def decrypt(cipherText:String)(implicit language:Language):String = {
+    def cost(key:String):Double = {
+      var decryption = new Vigenere(key).decrypt(cipherText)
+      Configuration.heuristics.foldLeft(0.0) { (acc, h) => acc + h.evaluate(decryption)}
+    }
     var keyLength = cipherText.keyLengths.head
     var key = language.randomString(keyLength)
     var best = (key, cost(key, cipherText))
@@ -32,11 +36,6 @@ class SearchCryptanalyzer extends Cryptanalyzer with Configuration {
       i += 1
     }
     return null
-  }
-
-  private def cost(key:String, cipherText:String):Double = {
-    var decryption = new Vigenere(key).decrypt(cipherText)
-    Configuration.heuristics.foldLeft(0.0) { (acc, h) => acc + h.evaluate(decryption)}
   }
 
   //order keys by lowest cost
