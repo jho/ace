@@ -19,8 +19,8 @@ class SearchCryptanalyzer extends Cryptanalyzer with Configuration {
       Configuration.heuristics.foldLeft(0.0) { (acc, h) => acc + h.evaluate(decryption)}
     }
     var keyLength = cipherText.keyLengths.head
-    var key = language.randomString(keyLength)
-    var best = (key, cost(key, cipherText))
+    var key = language.dictionary.randomWord(keyLength)
+    var best = (key, cost(key))
     queue += best
     var i = 0;
     while(!queue.isEmpty && i <= 100) {
@@ -30,8 +30,8 @@ class SearchCryptanalyzer extends Cryptanalyzer with Configuration {
       if ( next._2 < best._2)
         best = next
       else
-        queue ++= next._1.neighbors.map{ n =>
-          (n, cost(key, cipherText))
+        queue ++= next._1.permutations.map{ n =>
+          (n, cost(key))
         }
       i += 1
     }
@@ -39,7 +39,7 @@ class SearchCryptanalyzer extends Cryptanalyzer with Configuration {
   }
 
   //order keys by lowest cost
-  implicit def orderedKeyCostTuple(f: (String, Double)) = new Ordered[(String, Double)] {
+  implicit def orderedKeyCostTuple(f: (String, Double)):Ordered[(String, Double)] = new Ordered[(String, Double)] {
     def compare(other: (String, Double)) = other._2.compare(f._2)
   }
 }
