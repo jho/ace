@@ -12,9 +12,9 @@ import scala.util.Random
 class Keyword(var text:String) {
   text = text.filter(_.isLetter).toUpperCase
   val rand = new Random();
-  
-  def sizeOfNeighborhood(implicit language:Language):Int = {
-      (language.alphabet.size!) / ((5!) * ((language.alphabet.size!)-5)!)
+ 
+  def sizeOfNeighborhood(implicit language:Language):BigInt = {
+      (language.alphabet.size!) / ((text.size!) * (language.alphabet.size-text.size)!)
   }
 
   def mutate(implicit language:Language):String = {

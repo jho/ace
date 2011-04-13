@@ -13,9 +13,11 @@ import org.jho.ace.util.Configuration
 class KeywordTest extends Configuration {
   @Test
   def neighborHood = {
-    var result = "a".sizeOfNeighborhood
-    println(result)
-    result = "aa".sizeOfNeighborhood
+    println(5!)
+    println(26!)
+    /*var result = "a".sizeOfNeighborhood
+    println(result)*/
+    var result = "aa".sizeOfNeighborhood
     println(result)
   }
 
