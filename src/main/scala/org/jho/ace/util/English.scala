@@ -6,10 +6,10 @@ package org.jho.ace.util
 import java.util.Locale
 
 class English extends {
-  var locale = Locale.US
-  var alphabet = ('A' to 'Z').toList
-  var ioc = 1.73
-  var frequencies =  Map(
+  val locale = Locale.US
+  val alphabet = ('A' to 'Z').toList
+  val ioc = 1.73
+  val frequencies =  Map(
     'E' -> .1202,
     'T' -> .0910,
     'A' -> .0812,
@@ -38,7 +38,7 @@ class English extends {
     'Z' -> .0007
   )
   // http://www.cryptograms.org/letter-frequencies.php#Bigrams
-  var bigramFrequencies = Map(
+  val bigramFrequencies = Map(
     "TH" -> .03882543,
     "HE" -> .03681391,
     "IN" -> .02283899,
@@ -61,7 +61,7 @@ class English extends {
     "NG" -> .01053385
   )
   // http://www.cryptograms.org/letter-frequencies.php#Trigrams
-  var trigramFrequencies = Map(
+  val trigramFrequencies = Map(
     "THE" ->  .03508232,
     "AND" ->  .01593878,
     "ING" ->  .01147042,

@@ -17,8 +17,8 @@ class SearchCryptanalyzerTest extends Configuration {
     println(result)
     //assertEquals("MUSTCHANGEMEETINGLOCATIONFROMBRIDGETOUNDERPASSSINCEENEMYAGENTSAREBELIEVEDTOHAVEBEENASSIGNEDTOWATCHBRIDGESTOPMEETINGTIMEUNCHANGEDXX", result)
 
-    //var result = ca.decrypt("LXFOPVEFRNHR")
-    //println(result)
+    result = ca.decrypt("LXFOPVEFRNHR")
+    println(result)
   }
 
 }

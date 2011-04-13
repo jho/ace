@@ -20,7 +20,7 @@ class DictionaryHeuristicTest extends Configuration {
 
     @Test
     def computeBaseline = {
-        var sum = (0 until 100).foldLeft(0.0) { (acc, w) =>
+        var sum = (1 to 100).foldLeft(0.0) { (acc, w) =>
             acc + new DictionaryHeuristic(1.0).evaluate(language.sample(100))
         }
         println(sum/100)

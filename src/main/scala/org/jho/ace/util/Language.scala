@@ -9,18 +9,18 @@ import scala.util.Random
 
 trait Language {
   //properties
-  var rand = new Random(System.currentTimeMillis);
-  var locale:Locale
-  var alphabet:List[Char]
+  val rand = new Random();
+  val locale:Locale
+  val alphabet:List[Char]
   lazy val numChars = alphabet.size
-  var dictionary = new Dictionary(locale)
+  val dictionary = new Dictionary(locale)
 
   private lazy val sampleText = {
     scala.io.Source.fromInputStream(getClass.getResourceAsStream(List("/sample", locale.getLanguage, locale.getCountry).mkString("_"))).toIndexedSeq
   }
 
   def sample(size:Int):String = {
-    var text = new StringBuilder
+    val text = new StringBuilder
     //take 100 characters (A to Z, no spaces or punctuation) from a random point in the file
     sampleText.drop(rand.nextInt(sampleText.size/2)).takeWhile{ c =>
       if ( c.isLetter ) text + c.toUpper
@@ -30,10 +30,10 @@ trait Language {
   }
 
   //statistics
-  var frequencies:Map[Char,Double]
-  var bigramFrequencies:Map[String,Double]
-  var trigramFrequencies:Map[String,Double]
-  var ioc:Double
+  val frequencies:Map[Char,Double]
+  val bigramFrequencies:Map[String,Double]
+  val trigramFrequencies:Map[String,Double]
+  val ioc:Double
 
   //utilities
   def char2Int(c:Char):Int = alphabet.indexOf(c)

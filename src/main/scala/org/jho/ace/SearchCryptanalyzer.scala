@@ -8,34 +8,52 @@ import org.jho.ace.util.Configuration
 import org.jho.ace.util.Language
 import org.jho.ace.CipherText._
 import org.jho.ace.Keyword._
-import scala.collection.mutable.PriorityQueue
+
+import scala.collection.mutable.HashSet
+import scala.math._
 
 class SearchCryptanalyzer extends Cryptanalyzer with Configuration {
-  var queue = new PriorityQueue[(String, Double)]()
+  var visited = new HashSet[String]()
 
   def decrypt(cipherText:String)(implicit language:Language):String = {
+    var baseLine = computeBaseline(cipherText)
+    println("base line: " + baseLine)
     def cost(key:String):Double = {
-      var decryption = new Vigenere(key).decrypt(cipherText)
+      val decryption = new Vigenere(key).decrypt(cipherText)
       Configuration.heuristics.foldLeft(0.0) { (acc, h) => acc + h.evaluate(decryption)}
     }
-    var keyLength = cipherText.keyLengths.head
-    var key = language.dictionary.randomWord(keyLength)
+    val keyLength = cipherText.keyLengths.head
+    var key = ("" /: (1 to keyLength)) { (s, i) => s + language.frequencies.head }
+    println("starting key: " + key)
     var best = (key, cost(key))
-    queue += best
     var i = 0;
-    while(!queue.isEmpty && i <= 100) {
-      println(queue)
-      var next = queue.dequeue
-      println(next)
-      if ( next._2 < best._2)
-        best = next
-      else
-        queue ++= next._1.permutations.map{ n =>
-          (n, cost(key))
+    while(i <= 10000 && abs(baseLine - best._2) > .5) {
+      var mutation = best._1.mutate
+      if (!visited.contains(mutation)) {
+        visited + mutation
+        var next = (mutation, cost(mutation))
+        if ( next._2 < best._2) {
+          best = next
+          println("new best:" + best)
         }
-      i += 1
+        i += 1
+      }
     }
-    return null
+    println("num iterations required: " + i)
+    println(best)
+    return new Vigenere(best._1).decrypt(cipherText)
+  }
+
+  /**
+   *  Compute a baseline cost for a series of plaintexts in the
+   *  given language that are the same length as the cipherText
+   */
+  def computeBaseline(cipherText:String):Double = {
+    var sum = (1 to 100).foldLeft(0.0) { (acc, w) =>
+      var sample = language.sample(cipherText.size)
+      acc + Configuration.heuristics.foldLeft(0.0) { (acc, h) => acc + h.evaluate(sample)}
+    }
+    sum/100
   }
 
   //order keys by lowest cost

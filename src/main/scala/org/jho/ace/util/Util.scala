@@ -8,6 +8,7 @@ object Util {
 }
 
 class MyInt(i:Int) {
+  //define a true modulus function (% just does a remainder)
   def mod(j:Int):Int = {
 
     var rem = i % j
@@ -16,4 +17,9 @@ class MyInt(i:Int) {
     }
     return rem
   }
+
+  //define a factorial function
+  def ! = ((1 to i) :\ 1) ( _ * _ )
+
+  def times(f: => Unit):Unit = for ( j <- 1 to i) { f }
 }

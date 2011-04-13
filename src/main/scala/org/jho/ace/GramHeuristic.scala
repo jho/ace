@@ -11,7 +11,7 @@ import scala.math._
 
 class GramHeuristic(weight:Double) extends Heuristic(weight) with Configuration {
   def compute(in:String)(implicit language:Language):Double = {
-    var text = in.filter(_.isLetter).toUpperCase
+    val text = in.filter(_.isLetter).toUpperCase
     var sum = abs(text.frequencies.foldLeft(0.0) { (sum, e) =>
         sum + (language.frequencies(e._1) - e._2)
       })

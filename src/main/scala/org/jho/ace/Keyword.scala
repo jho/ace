@@ -4,14 +4,28 @@
 package org.jho.ace
 
 import org.jho.ace.util.Language
+import org.jho.ace.util.Util._
+
 import scala.collection.mutable.HashSet
+import scala.util.Random
 
 class Keyword(var text:String) {
-  def neighbors(implicit language:Language):List[String] = {
-    var ti = text.zipWithIndex
-    (for ( i <- 0 until text.size ) yield {
-        ti.map { e => if ( e._2 == i ) language.randomChar else e._1 }.mkString
-      }).toList
+  text = text.filter(_.isLetter).toUpperCase
+  val rand = new Random();
+  
+  def sizeOfNeighborhood(implicit language:Language):Int = {
+      (language.alphabet.size!) / ((5!) * ((language.alphabet.size!)-5)!)
+  }
+
+  def mutate(implicit language:Language):String = {
+    //either swap out a random character in the keyword
+    //or add a char to the keyword
+    val idx = rand.nextInt(text.size) 
+    val char = language.alphabet(rand.nextInt(language.alphabet.size))
+    if ( idx < text.size)
+      text.updated(idx, char)
+    else
+      text + char
   }
 
   def permutations():Seq[String] = {
@@ -23,6 +37,8 @@ class Keyword(var text:String) {
     }
     res.toSeq
   }
+
+  def nextPermutation:String = nextPermutation(text)
 
   private def nextPermutation(n:String):String = {
     val pivot = n.zip(n.tail).lastIndexWhere{ case (first, second) => first < second }
