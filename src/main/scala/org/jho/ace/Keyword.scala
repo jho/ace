@@ -14,11 +14,17 @@ class Keyword(var text:String) {
   text = text.filter(_.isLetter).toUpperCase
   val rand = new Random();
 
-  def neighbors(implicit language:Language):List[String] = {
+  def neighbors(grow:Boolean)(implicit language:Language):List[String] = {
     var result = (for ( i <- 0 until text.size; j <- language.alphabet.withFilter(_!=text(i)) ) yield {
-          text.updated(i, j)
+        text.updated(i, j)
       }).toList
-    result ::: (for ( j <- language.alphabet ) yield { text + j }).toList
+    if ( grow )
+      result = result ::: (for ( j <- language.alphabet ) yield { text + j }).toList
+    result
+  }
+
+  def neighbors(implicit language:Language):List[String] = {
+    neighbors(false)(language)
   }
  
   def sizeOfNeighborhood(implicit language:Language):BigInt = {

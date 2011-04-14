@@ -9,34 +9,40 @@ import org.jho.ace.util.Language
 import org.jho.ace.CipherText._
 import org.jho.ace.Keyword._
 
+import scala.collection.mutable.HashMap
 import scala.collection.mutable.HashSet
+import scala.collection.mutable.PriorityQueue
 import scala.math._
 
-class SearchCryptanalyzer extends Cryptanalyzer with Configuration {
-  var visited = new HashSet[String]()
+class AStaredCryptanalyzer extends Cryptanalyzer with Configuration {
 
   def decrypt(cipherText:String)(implicit language:Language):String = {
+    var queue = new PriorityQueue[(String, Double)]()
+    var visited = new HashMap[String, Double]()
     var baseLine = computeBaseline(cipherText)
     println("base line: " + baseLine)
     def cost(key:String):Double = {
       val decryption = new Vigenere(key).decrypt(cipherText)
       Configuration.heuristics.foldLeft(0.0) { (acc, h) => acc + h.evaluate(decryption)}
     }
-    val keyLength = cipherText.keyLengths.head
-    var key = ("" /: (1 to keyLength)) { (s, i) => s + language.frequencies.head._1 }
+    var key = language.frequencies.head._1.toString
     println("starting key: " + key)
     var best = (key, cost(key))
-    var i = 0
-    var max = pow(language.alphabet.size, key.size)/2
-    while(abs(baseLine - best._2) > .2 && visited.size <= max) {
-      var mutation = best._1.mutate
-      if (!visited.contains(mutation)) {
-        visited += mutation
-        var next = (mutation, cost(mutation))
-        if ( next._2 < best._2) {
-          best = next
-          println("new best:" + best)
+    queue += best
+    visited += best._1 -> 0
+    var max = pow(language.alphabet.size, cipherText.size)/2 //search no more than half the keyspace
+    while(abs(baseLine - best._2) > .1 && !queue.isEmpty && visited.size <= max) {
+      var next = queue.dequeue
+      next._1.neighbors(true).withFilter(!visited.contains(_)).map(n => (n, cost(n))).foreach { n =>
+        //there are no loops in the "graph;, so we can just add all the neighbors t the queue
+        var dist = visited(next._1) + n._2
+        //println("checking: " + n._1 + "->" + dist)
+        if ( dist < visited(best._1) ) {
+          best = n
+          //println("new best:" + best + "->" + dist)
+          queue += n
         }
+        visited += n._1 -> dist
       }
     }
     println("num keys searched: " + visited.size)
