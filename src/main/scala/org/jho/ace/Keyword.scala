@@ -14,7 +14,7 @@ class Keyword(var text:String) {
   val rand = new Random();
  
   def sizeOfNeighborhood(implicit language:Language):BigInt = {
-      (language.alphabet.size!) / ((text.size!) * (language.alphabet.size-text.size)!)
+      (language.alphabet.size!) / ((text.size!) * ((language.alphabet.size-text.size)!))
   }
 
   def mutate(implicit language:Language):String = {

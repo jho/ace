@@ -13,12 +13,9 @@ import org.jho.ace.util.Configuration
 class KeywordTest extends Configuration {
   @Test
   def neighborHood = {
-    println(5!)
-    println(26!)
-    /*var result = "a".sizeOfNeighborhood
-    println(result)*/
-    var result = "aa".sizeOfNeighborhood
-    println(result)
+    assertEquals(26, "a".sizeOfNeighborhood)
+    assertEquals(326, "aa".sizeOfNeighborhood)
+    assertEquals(2600, "aaa".sizeOfNeighborhood)
   }
 
   @Test
@@ -28,7 +25,7 @@ class KeywordTest extends Configuration {
 
   @Test
   def mutate = {
-    100.times {
+    5.times {
       println("aaaa".mutate)
     }
   }
