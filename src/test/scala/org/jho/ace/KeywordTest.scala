@@ -15,6 +15,8 @@ class KeywordTest extends Configuration {
   def neighborHood = {
     println("aa".neighbors)
     println("aa".neighbors.size)
+    println("aaa".neighbors)
+    println("aaa".neighbors.size)
     /*
     println("aaa".neighbors)
     println("aaa".neighbors.size)
@@ -24,7 +26,7 @@ class KeywordTest extends Configuration {
 
   @Test
   def permutations = {
-    println("aa".permutations.size)
+    println("KEYWORD".permutations.size)
   }
 
   @Test
