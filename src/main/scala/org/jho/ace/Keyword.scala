@@ -8,19 +8,28 @@ import org.jho.ace.util.Util._
 
 import scala.collection.mutable.HashSet
 import scala.util.Random
+import scala.math._
 
 class Keyword(var text:String) {
   text = text.filter(_.isLetter).toUpperCase
   val rand = new Random();
+
+  def neighbors(implicit language:Language):List[String] = {
+    var result = (for ( i <- 0 until text.size; j <- language.alphabet.withFilter(_!=text(i)) ) yield {
+          text.updated(i, j)
+      }).toList
+    result ::: (for ( j <- language.alphabet ) yield { text + j }).toList
+  }
  
   def sizeOfNeighborhood(implicit language:Language):BigInt = {
-      (language.alphabet.size!) / ((text.size!) * ((language.alphabet.size-text.size)!))
+    pow(language.alphabet.size, text.size).toInt
   }
 
   def mutate(implicit language:Language):String = {
     //either swap out a random character in the keyword
     //or add a char to the keyword
-    val idx = rand.nextInt(text.size) 
+    val idx = rand.nextInt(text.size)
+    //println("idx: " + idx)
     val char = language.alphabet(rand.nextInt(language.alphabet.size))
     if ( idx < text.size)
       text.updated(idx, char)

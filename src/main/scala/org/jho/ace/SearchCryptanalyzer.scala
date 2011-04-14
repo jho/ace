@@ -27,7 +27,8 @@ class SearchCryptanalyzer extends Cryptanalyzer with Configuration {
     println("starting key: " + key)
     var best = (key, cost(key))
     var i = 0;
-    while(i <= key.sizeOfNeighborhood.toInt && abs(baseLine - best._2) > .2) {
+    var max = pow(language.alphabet.size, key.size)/2
+    while(abs(baseLine - best._2) > .2 && i <= max) {
       var mutation = best._1.mutate
       if (!visited.contains(mutation)) {
         visited + mutation
