@@ -9,6 +9,7 @@ class English extends {
   val locale = Locale.US
   val alphabet = ('A' to 'Z').toList
   val ioc = 1.73
+  val avgWordSize = 5
   val frequencies =  Map(
     'E' -> .1202,
     'T' -> .0910,

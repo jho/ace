@@ -12,7 +12,6 @@ class DictionaryHeuristic(weight:Double) extends Heuristic(weight) with Configur
     var sum = (1.0/text.size)*((2 to 10).foldLeft(0.0) { (sum, k) =>
         sum + (k^2 * (text.sliding(k).filter(language.dictionary.wordsUpperCase.contains(_)).toSet.size))
       })
-    //since this is a cost function we need to flip the value
-    -(sum)
+    (in.size/language.avgWordSize)/sum
   }
 }

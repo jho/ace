@@ -23,6 +23,8 @@ class MyInt(i:Int) {
   def ! = (BigInt(1) /: (1 to i)) ( _ * _ )
 
   def times(f: => Unit):Unit = for ( j <- 1 to i) { f }
+
+  def times[A](f: => A):Seq[A] = for ( j <- 1 to i) yield { f }
 }
 
 class MyBigInt(i:BigInt) {

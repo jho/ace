@@ -8,8 +8,5 @@ import org.jho.ace.GramHeuristic
 
 trait Configuration {
     implicit val language = new English
-}
-
-object Configuration {
-    val heuristics = List(new DictionaryHeuristic(1.0), new GramHeuristic(1.0))
+    lazy val heuristics = List(new DictionaryHeuristic(1.0), new GramHeuristic(2.0))
 }

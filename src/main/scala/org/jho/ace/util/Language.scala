@@ -34,6 +34,7 @@ trait Language {
   val bigramFrequencies:Map[String,Double]
   val trigramFrequencies:Map[String,Double]
   val ioc:Double
+  val avgWordSize:Int
 
   //utilities
   def char2Int(c:Char):Int = alphabet.indexOf(c)

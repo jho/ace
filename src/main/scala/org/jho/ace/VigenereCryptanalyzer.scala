@@ -10,7 +10,7 @@ import org.jho.ace.util.Util._
 import org.jho.ace.util.Configuration
 import org.jho.ace.util.Language
 
-class VigenereCryptanalyzer extends Cryptanalyzer with Configuration {
+class VigenereCryptanalyzer extends Cryptanalyzer {
   def decrypt(cipherText:String)(implicit language:Language):String = {
     val keyLengths = cipherText.keyLengths
     val keys = keyLengths.slice(0,5).foldLeft(List[(String,Double)]()) { (keys, keyLength) =>
@@ -35,7 +35,7 @@ class VigenereCryptanalyzer extends Cryptanalyzer with Configuration {
             key + (if (e._1 == i._1) e._2(j)._1 else e._2.head._1)
           }
           var decryption = new Vigenere(key).decrypt(cipherText)
-          (key, Configuration.heuristics.foldLeft(0.0) { (acc, h) => acc + h.evaluate(decryption)})
+          (key, heuristics.foldLeft(0.0) { (acc, h) => acc + h.evaluate(decryption)})
         }
       }
     }
