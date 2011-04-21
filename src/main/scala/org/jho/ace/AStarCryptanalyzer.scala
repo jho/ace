@@ -12,7 +12,10 @@ import scala.collection.mutable.HashMap
 import scala.collection.mutable.PriorityQueue
 import scala.math._
 
-class AStaredCryptanalyzer extends Cryptanalyzer {
+/**
+ * A Cryptanalyzer algorithm based on the A* path finding algorithm (or Best First Search with a heuristic)
+ */
+class AStarCryptanalyzer extends Cryptanalyzer {
 
   def decrypt(cipherText:String)(implicit language:Language):String = {
     var queue = new PriorityQueue[(String, Double)]()
@@ -20,7 +23,7 @@ class AStaredCryptanalyzer extends Cryptanalyzer {
     var goal = computeGoal(cipherText.size)
     println("goal: " + goal)
     def cost(decryption:String):Double = {
-      abs(goal - dist(decryption))
+      abs(goal._1 - dist(decryption))
     }
     def dist(decryption:String):Double = {
       heuristics.foldLeft(0.0) { (acc, h) => acc + h.evaluate(decryption)}
@@ -31,9 +34,9 @@ class AStaredCryptanalyzer extends Cryptanalyzer {
     queue += ((best, cost(decryption)))
     visited += best -> dist(decryption)
     var max = pow(language.alphabet.size, cipherText.size)/2 //search no more than half the keyspace
-    while(abs(goal - visited(best)) > .1 && !queue.isEmpty && visited.size <= max) {
+    while(abs(goal._1 - visited(best)) > goal._2 && !queue.isEmpty && visited.size <= max) {
       var next = queue.dequeue
-      println("checking neighbors of:" + next)
+      //println("checking neighbors of:" + next)
       next._1.neighbors(true).filterNot(visited.contains(_)).foreach { n =>
         val decryption = new Vigenere(n).decrypt(cipherText)
         //the graph is a tree and there is only a single path to each node
@@ -46,7 +49,7 @@ class AStaredCryptanalyzer extends Cryptanalyzer {
         //println("checking:" + n + "->" + d)
         visited += n -> d
         if ( d < visited(best)) {
-          println("new best:" + (n, c) + "->" + d)
+          //println("new best:" + (n, c) + "->" + d)
           best = n
         }
       }

@@ -12,7 +12,10 @@ import org.jho.ace.Keyword._
 import scala.collection.mutable.HashSet
 import scala.math._
 
-class SearchCryptanalyzer extends Cryptanalyzer {
+/**
+ * Cryptanalyzer that uses a Simulated Annealing algorithm
+ */
+class SACryptanalyzer extends Cryptanalyzer {
   var visited = new HashSet[String]()
 
   def decrypt(cipherText:String)(implicit language:Language):String = {

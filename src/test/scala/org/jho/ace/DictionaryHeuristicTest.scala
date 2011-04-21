@@ -23,9 +23,6 @@ class DictionaryHeuristicTest extends Configuration {
 
     @Test
     def computeBaseline = {
-        /*var counts = (for (i <- 1 until 100) yield {
-            new DictionaryHeuristic(1.0).evaluate(language.sample(100))
-          }).toList*/
         var counts = 1000.times{ new DictionaryHeuristic(1.0).evaluate(language.sample(100)) }.toList
         println("Max: " + counts.min)
         println("Min: " + counts.max)

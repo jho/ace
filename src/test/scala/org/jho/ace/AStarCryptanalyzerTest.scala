@@ -6,5 +6,5 @@ package org.jho.ace
 import org.junit._
 import Assert._
 
-class SearchCryptanalyzerTest extends CryptanalyzerTestBase(new SearchCryptanalyzer) {
+class AStarCryptanalyzerTest extends CryptanalyzerTestBase(new AStarCryptanalyzer) {
 }
