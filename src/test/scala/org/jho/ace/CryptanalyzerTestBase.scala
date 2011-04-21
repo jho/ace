@@ -15,6 +15,7 @@ abstract class CryptanalyzerTestBase(val algorithm:Cryptanalyzer) extends Config
     var result = algorithm.decrypt("QPWKALVRXCQZIKGRBPFAEOMFLJMSDZVDHXCXJYEBIMTRQWNMEAIZRVKCVKVLXNEICFZPZCZZHKMLVZVZIZRRQWDKECHOSNYXXLSPMYKVQXJTDCIOMEEXDQVSRXLRLKZHOV")
     println(result)
     assertEquals("MUSTCHANGEMEETINGLOCATIONFROMBRIDGETOUNDERPASSSINCEENEMYAGENTSAREBELIEVEDTOHAVEBEENASSIGNEDTOWATCHBRIDGESTOPMEETINGTIMEUNCHANGEDXX", result)
+    println("--------------")
   }
 
   @Test
@@ -26,6 +27,7 @@ abstract class CryptanalyzerTestBase(val algorithm:Cryptanalyzer) extends Config
     var result = algorithm.decrypt(encrypted)
     println(result)
     assertEquals(result, encrypted)
+    println("--------------")
   }
 
   @Test
@@ -35,6 +37,8 @@ abstract class CryptanalyzerTestBase(val algorithm:Cryptanalyzer) extends Config
      println(heuristics.foldLeft(0.0)(_ + _.evaluate(cipherText)))
      var result = algorithm.decrypt(cipherText)
      println(result)
-     assertEquals("ATTACKATDAWN", result)*/
+     assertEquals("ATTACKATDAWN", result)
+     println("--------------")
+     */
   }
 }

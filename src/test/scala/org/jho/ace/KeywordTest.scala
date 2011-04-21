@@ -18,10 +18,10 @@ class KeywordTest extends Configuration {
     println("aa".neighbors(true))
     println("aa".neighbors(true).size)
     /*
-    println("aaa".neighbors)
-    println("aaa".neighbors.size)
-    println("a".sizeOfNeighborhood)
-    println("aa".sizeOfNeighborhood)*/
+     println("aaa".neighbors)
+     println("aaa".neighbors.size)
+     println("a".sizeOfNeighborhood)
+     println("aa".sizeOfNeighborhood)*/
   }
 
   @Test
@@ -31,10 +31,11 @@ class KeywordTest extends Configuration {
 
   @Test
   def mutate = {
-    5000.times {
-      var result = "aaaa".mutate
-      if ( result.size > 4 )
-        println(result)
+    println("".mutate)
+    println("hello?")
+    100.times {
+      var result = "aa".mutate
+      println(result)
     }
     println("hello?")
   }

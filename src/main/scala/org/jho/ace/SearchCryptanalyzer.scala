@@ -27,7 +27,7 @@ class SearchCryptanalyzer extends Cryptanalyzer {
     println("starting key: " + key)
     var best = (key, cost(key))
     var i = 0
-    var max = pow(language.alphabet.size, key.size)/2
+    var max = pow(language.alphabet.size, cipherText.size)/2
     while(abs(goal._1 - best._2) > goal._2 && visited.size <= max) {
       var mutation = best._1.mutate
       if (!visited.contains(mutation)) {

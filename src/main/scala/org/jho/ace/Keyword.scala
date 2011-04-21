@@ -32,15 +32,7 @@ class Keyword(var text:String) {
   }
 
   def mutate(implicit language:Language):String = {
-    //either swap out a random character in the keyword
-    //or add a char to the keyword
-    val idx = rand.nextInt(text.size)
-    //println("idx: " + idx)
-    val char = language.alphabet(rand.nextInt(language.alphabet.size))
-    if ( idx < text.size)
-      text.updated(idx, char)
-    else
-      text + char
+    text.updated(rand.nextInt(text.size), language.alphabet(rand.nextInt(language.alphabet.size)))
   }
 
   def permutations():Seq[String] = {
