@@ -12,16 +12,16 @@ import Assert._
 class VigenereTest extends Configuration {
   @Test
   def encryptDecrypt = {
-    val v = new Vigenere("LEMON")
+    val v = new Vigenere
     val m = "ATTACKATDAWN"
     val c = "LXFOPVEFRNHR"
-    var result = v.encrypt(m)
+    var result = v.encrypt("LEMON", m)
     println(result)
     assertEquals(c, result)
-    result = v.decrypt(c)
+    result = v.decrypt("LEMON", c)
     println(result)
     assertEquals(m, result)
 
-    println(new Vigenere("POPCO").decrypt("ECLGFXGCQHWWCIKXHWQIIQDPHGCA"));
+    println(v.decrypt("POPCO", "ECLGFXGCQHWWCIKXHWQIIQDPHGCA"));
   }
 }

@@ -5,6 +5,7 @@ package org.jho.ace
 
 import org.jho.ace.CipherText._
 import org.jho.ace.Keyword._
+import org.jho.ace.ciphers.Cipher
 import org.jho.ace.ciphers.Vigenere
 import org.jho.ace.util.Language
 import org.jho.ace.util.Util._
@@ -20,11 +21,11 @@ class SACryptanalyzer extends Cryptanalyzer {
   val rand = new Random();
   var visited = new HashSet[String]()
 
-  def decrypt(cipherText:String)(implicit language:Language):String = {
+  def decrypt(cipherText:String, cipher:Cipher)(implicit language:Language):String = {
     val goal = computeGoal(cipherText.size)
     println("goal: " + goal)
     def cost(key:String):Double = {
-      val decryption = new Vigenere(key).decrypt(cipherText)
+      val decryption = cipher.decrypt(key, cipherText)
       heuristics.foldLeft(0.0) { (acc, h) => acc + h.evaluate(decryption)}
     }
     var key = ("" /: (1 to cipherText.keyLengths.head)) { (s, i) => s + language.frequencies.head._1 }
@@ -33,8 +34,8 @@ class SACryptanalyzer extends Cryptanalyzer {
     var current = (key, cost(key))
     var max = pow(language.alphabet.size, cipherText.size)/2
     var temp = 100.0
-    100.times {
-      50.times {
+    SAConfig.outerLoops.times {
+      SAConfig.innerLoops.times {
         var n = current._1.mutate
         if (!visited.contains(n)) {
           visited += n
@@ -59,6 +60,6 @@ class SACryptanalyzer extends Cryptanalyzer {
     }
     println("num keys searched: " + visited.size)
     println(best)
-    return new Vigenere(best._1).decrypt(cipherText)
+    return cipher.decrypt(best._1, cipherText)
   }
 }

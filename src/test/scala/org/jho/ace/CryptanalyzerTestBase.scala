@@ -6,6 +6,7 @@ package org.jho.ace
 import org.junit._
 import Assert._
 
+import org.jho.ace.ciphers.Cipher
 import org.jho.ace.ciphers.Vigenere
 import org.jho.ace.util.Configuration
 import org.jho.ace.util.Util._
@@ -13,37 +14,31 @@ import org.jho.ace.util.Util._
 abstract class CryptanalyzerTestBase(val algorithm:Cryptanalyzer) extends Configuration {
   @Test
   def decryptLongText = {
-    var plainText = "MUSTCHANGEMEETINGLOCATIONFROMBRIDGETOUNDERPASSSINCEENEMYAGENTSAREBELIEVEDTOHAVEBEENASSIGNEDTOWATCHBRIDGESTOPMEETINGTIMEUNCHANGEDXX"
-    var cipherText = "QPWKALVRXCQZIKGRBPFAEOMFLJMSDZVDHXCXJYEBIMTRQWNMEAIZRVKCVKVLXNEICFZPZCZZHKMLVZVZIZRRQWDKECHOSNYXXLSPMYKVQXJTDCIOMEEXDQVSRXLRLKZHOV"
-    var result = algorithm.decrypt(cipherText)
-    println(result)
-    var diff = result.diff(plainText)
-    println("diff: " + diff)
-    assertTrue("Difference is greater than 20%", (.20D < diff))
-    println("--------------")
+    testDecrypt("MUSTCHANGEMEETINGLOCATIONFROMBRIDGETOUNDERPASSSINCEENEMYAGENTSAREBELIEVEDTOHAVEBEENASSIGNEDTOWATCHBRIDGESTOPMEETINGTIMEUNCHANGEDXX",
+                "EVERY", new Vigenere)
   }
 
   @Test
   def decryptRandomSample = {
-    var sample = language.sample(100)
-    println(sample)
-    var encrypted = new Vigenere("KEY").encrypt(sample)
-    println(encrypted)
-    var result = algorithm.decrypt(encrypted)
-    println(result)
-    assertEquals(result, encrypted)
-    println("--------------")
+    var plainText = language.sample(100)
+    testDecrypt(plainText, "KEY", new Vigenere)
   }
 
   @Test
   def decryptShortText = {
-    /*
-     var cipherText = "LXFOPVEFRNHR"
-     println(heuristics.foldLeft(0.0)(_ + _.evaluate(cipherText)))
-     var result = algorithm.decrypt(cipherText)
-     println(result)
-     assertEquals("ATTACKATDAWN", result)
-     println("--------------")
-     */
+    //testDecrypt("ATTACKATDAWN", "LEMON", new Vigenere)
   }
+
+  private def testDecrypt(plainText:String, key:String, cipher:Cipher) = {
+    println("Plain Text: " + plainText)
+    var cipherText = cipher.encrypt(key, plainText)
+    println("Cipher Text: " + cipherText)
+    var result = algorithm.decrypt(cipherText, cipher)
+    println("Resulting decryption: " + result)
+    var diff = result.diff(plainText)
+    println("Diff from original plain text: " + diff)
+    assertTrue("Difference is greater than 20%", (diff < .20))
+    println("--------------")
+  }
+
 }

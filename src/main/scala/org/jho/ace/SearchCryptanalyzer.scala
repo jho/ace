@@ -3,6 +3,7 @@
  */
 package org.jho.ace
 
+import org.jho.ace.ciphers.Cipher
 import org.jho.ace.ciphers.Vigenere
 import org.jho.ace.util.Configuration
 import org.jho.ace.util.Language
@@ -15,11 +16,11 @@ import scala.math._
 class SearchCryptanalyzer extends Cryptanalyzer {
   var visited = new HashSet[String]()
 
-  def decrypt(cipherText:String)(implicit language:Language):String = {
+  def decrypt(cipherText:String, cipher:Cipher)(implicit language:Language):String = {
     var goal = computeGoal(cipherText.size)
     println("goal: " + goal)
     def cost(key:String):Double = {
-      val decryption = new Vigenere(key).decrypt(cipherText)
+      val decryption = cipher.decrypt(key, cipherText)
       heuristics.foldLeft(0.0) { (acc, h) => acc + h.evaluate(decryption)}
     }
     val keyLength = cipherText.keyLengths.head
@@ -27,8 +28,7 @@ class SearchCryptanalyzer extends Cryptanalyzer {
     println("starting key: " + key)
     var best = (key, cost(key))
     var i = 0
-    var max = pow(language.alphabet.size, cipherText.size)/2
-    while(abs(goal._1 - best._2) > goal._2 && visited.size <= max) {
+    while(abs(goal._1 - best._2) > goal._2 && visited.size <= maxIterations) {
       var mutation = best._1.mutate
       if (!visited.contains(mutation)) {
         visited += mutation
@@ -41,6 +41,6 @@ class SearchCryptanalyzer extends Cryptanalyzer {
     }
     println("num keys searched: " + visited.size)
     println(best)
-    return new Vigenere(best._1).decrypt(cipherText)
+    return cipher.decrypt(best._1, cipherText)
   }
 }

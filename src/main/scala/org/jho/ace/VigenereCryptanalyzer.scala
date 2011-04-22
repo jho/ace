@@ -5,13 +5,13 @@ package org.jho.ace
 
 import scala.math._
 import org.jho.ace.CipherText._
+import org.jho.ace.ciphers.Cipher
 import org.jho.ace.ciphers.Vigenere
 import org.jho.ace.util.Util._
-import org.jho.ace.util.Configuration
 import org.jho.ace.util.Language
 
 class VigenereCryptanalyzer extends Cryptanalyzer {
-  def decrypt(cipherText:String)(implicit language:Language):String = {
+  def decrypt(cipherText:String, cipher:Cipher)(implicit language:Language):String = {
     val keyLengths = cipherText.keyLengths
     val keys = keyLengths.slice(0,5).foldLeft(List[(String,Double)]()) { (keys, keyLength) =>
       //find the frequency correlations for each column (based on keyLength columns) of the cipherText
@@ -34,7 +34,7 @@ class VigenereCryptanalyzer extends Cryptanalyzer {
           var key = colFreqs.foldLeft("") { (key, e) =>
             key + (if (e._1 == i._1) e._2(j)._1 else e._2.head._1)
           }
-          var decryption = new Vigenere(key).decrypt(cipherText)
+          var decryption = cipher.decrypt(key, cipherText)
           (key, heuristics.foldLeft(0.0) { (acc, h) => acc + h.evaluate(decryption)})
         }
       }
@@ -42,6 +42,6 @@ class VigenereCryptanalyzer extends Cryptanalyzer {
     //the key that generates the highest dictionary word count "wins"
     val key = keys.sortWith(_._2 < _._2).head._1
     //now decrypt using the key
-    new Vigenere(key).decrypt(cipherText)
+    cipher.decrypt(key, cipherText)
   }
 }
