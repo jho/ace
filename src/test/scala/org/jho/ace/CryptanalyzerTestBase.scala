@@ -26,7 +26,8 @@ abstract class CryptanalyzerTestBase(val algorithm:Cryptanalyzer) extends Config
 
   @Test
   def decryptShortText = {
-    //testDecrypt("ATTACKATDAWN", "LEMON", new Vigenere)
+    println(heuristics.foldLeft(0.0)(_ + _.evaluate("ATTACKATDAWN")))
+    testDecrypt("ATTACKATDAWN", "LEMON", new Vigenere)
   }
 
   private def testDecrypt(plainText:String, key:String, cipher:Cipher) = {
@@ -37,7 +38,7 @@ abstract class CryptanalyzerTestBase(val algorithm:Cryptanalyzer) extends Config
     println("Resulting decryption: " + result)
     var diff = result.diff(plainText)
     println("Diff from original plain text: " + diff)
-    assertTrue("Difference is greater than 20%", (diff < .20))
+    assertTrue("Difference is greater than 20%", (diff <= .20))
     println("--------------")
   }
 

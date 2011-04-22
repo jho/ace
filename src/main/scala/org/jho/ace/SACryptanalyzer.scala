@@ -22,41 +22,46 @@ class SACryptanalyzer extends Cryptanalyzer {
   var visited = new HashSet[String]()
 
   def decrypt(cipherText:String, cipher:Cipher)(implicit language:Language):String = {
-    val goal = computeGoal(cipherText.size)
+    val (goal, stdDev) = computeGoal(cipherText.size)
     println("goal: " + goal)
     def cost(key:String):Double = {
       val decryption = cipher.decrypt(key, cipherText)
       heuristics.foldLeft(0.0) { (acc, h) => acc + h.evaluate(decryption)}
     }
-    var key = ("" /: (1 to cipherText.keyLengths.head)) { (s, i) => s + language.frequencies.head._1 }
+    var key = cipher.generateInitialKey(cipherText)
     println("starting key: " + key)
     var best = (key, cost(key))
     var current = (key, cost(key))
+    visited += key
     var max = pow(language.alphabet.size, cipherText.size)/2
     var temp = 100.0
-    SAConfig.outerLoops.times {
+    var i = 0
+    while(i < SAConfig.outerLoops) {
+      var change = false
       SAConfig.innerLoops.times {
         var n = current._1.mutate(false)
         if (!visited.contains(n)) {
           visited += n
           var next = (n, cost(n))
-          val delta = next._2 - current._2
+          val delta = abs(goal - next._2) - abs(goal - current._2)
           if ( delta <= 0 ) {
-            //println("moving to state:" + current)
+            //println("moving to state:" + next)
             current = next
           } else if ( rand.nextDouble < exp(-(delta)/temp) ) {
-            //println("moving to probable state:" + current)
+            //println("moving to probable state:" + next)
             current = next
           }
-          if ( next._2 < best._2) {
+          if ( abs(goal - next._2) < abs(goal - best._2) ) {
+            change = true
             best = next
             println("new best: " + best)
           }
         }
       }
-      temp = temp * 0.95
-      println("current temp: " + temp)
-      println(abs(goal._1 - best._2)+" > "+goal._2)
+      best = current
+      temp = temp * SAConfig.coolingFactor
+      if (!change) i += 1
+      //println("current temp: " + temp)
     }
     println("num keys searched: " + visited.size)
     println(best)

@@ -9,4 +9,5 @@ import org.jho.ace.util.Configuration
 trait Cipher extends Configuration {
   def encrypt(key:String, message:String)(implicit language:Language):String
   def decrypt(key:String, cipherText:String)(implicit language:Language):String
+  def generateInitialKey(cipherText:String)(implicit language:Language):String 
 }

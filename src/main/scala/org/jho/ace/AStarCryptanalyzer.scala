@@ -21,23 +21,23 @@ class AStarCryptanalyzer extends Cryptanalyzer {
   def decrypt(cipherText:String, cipher:Cipher)(implicit language:Language):String = {
     var queue = new PriorityQueue[(String, Double)]()
     var visited = new HashMap[String, Double]()
-    var goal = computeGoal(cipherText.size)
+    var (goal, stdDev) = computeGoal(cipherText.size)
     println("goal: " + goal)
     def cost(decryption:String):Double = {
-      abs(goal._1 - dist(decryption))
+      abs(goal - dist(decryption))
     }
     def dist(decryption:String):Double = {
       heuristics.foldLeft(0.0) { (acc, h) => acc + h.evaluate(decryption)}
     }
-    var best = language.frequencies.head._1.toString
+    var best = cipher.generateInitialKey(cipherText)//language.frequencies.head._1.toString
     println("starting key: " + best)
     var decryption = cipher.decrypt(best, cipherText)
     queue += ((best, cost(decryption)))
     visited += best -> dist(decryption)
-    while(abs(goal._1 - visited(best)) > goal._2 && !queue.isEmpty && visited.size <= maxIterations) {
+    while(abs(goal - visited(best)) > stdDev && !queue.isEmpty && visited.size <= maxIterations) {
       var next = queue.dequeue
       //println("checking neighbors of:" + next)
-      next._1.neighbors(true).filterNot(visited.contains(_)).foreach { n =>
+      next._1.neighbors(true, true).filterNot(visited.contains(_)).filterNot(queue.contains(_)).foreach { n =>
         val decryption = cipher.decrypt(n, cipherText)
         //the graph is a tree and there is only a single path to each node
         //so we can just add all the neighbors t the queue
@@ -48,8 +48,8 @@ class AStarCryptanalyzer extends Cryptanalyzer {
         var d = dist(decryption)
         //println("checking:" + n + "->" + d)
         visited += n -> d
-        if ( d < visited(best)) {
-          //println("new best:" + (n, c) + "->" + d)
+        if ( abs(goal-d) < abs(goal-visited(best)) ) {
+          println("new best:" + (n, c) + "->" + d)
           best = n
         }
       }

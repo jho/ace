@@ -15,11 +15,12 @@ trait Configuration {
      * This value is based on .01% of keyspace of a 5-character keyword (or 26^5*.01)  It's a bit
      * arbitrary at the moment and is based on emperical evidence.
      */
-    var maxIterations = 10000
+    var maxIterations = 50000
 
     object SAConfig {
         var startTemp = 100.0
-        var innerLoops = 50
-        var outerLoops = 100
+        var innerLoops = 100
+        var outerLoops = 500
+        var coolingFactor = .95
     }
 }

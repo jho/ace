@@ -18,17 +18,21 @@ class DictionaryHeuristicTest extends Configuration {
         var d = new DictionaryHeuristic(1.0)
         println(d.evaluate(("" /: (1 to 100)) { (s, i) => s + language.randomChar }))
         println(d.evaluate(("" /: (1 to 100)) { (s, i) => s + language.randomChar }))
-        println(new DictionaryHeuristic(1.0).evaluate(language.sample(100)))
+        println(d.evaluate(language.sample(100)))
+
+        println(d.evaluate("ATTACKATDAWN"))
+        println(d.evaluate(language.sample(12)))
     }
 
     @Test
     def computeBaseline = {
-        var counts = 1000.times{ new DictionaryHeuristic(1.0).evaluate(language.sample(100)) }.toList
-        println("Max: " + counts.min)
-        println("Min: " + counts.max)
+        var d = new DictionaryHeuristic(1.0)
+        var counts = 1000.times{ d.evaluate(language.sample(12)) }.toList
+        println("Min: " + counts.min)
+        println("Max: " + counts.max)
         var avg = counts.sum/counts.size
         println("Avg: " + avg)
         //println("Std Deviation: " + avg)
-        println(sqrt(counts.map(e => pow(avg - e, 2)).sum/counts.size))
+        println("Std Deviation: " + sqrt(counts.map(e => pow(avg - e, 2)).sum/counts.size))
     }
 }

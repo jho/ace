@@ -14,60 +14,42 @@ class Keyword(var text:String) {
   text = text.filter(_.isLetter).toUpperCase
   val rand = new Random();
 
-  def neighbors(grow:Boolean)(implicit language:Language):List[String] = {
+  def neighbors(grow:Boolean, shrink:Boolean)(implicit language:Language):List[String] = {
     var result = (for ( i <- 0 until text.size; j <- language.alphabet.withFilter(_!=text(i)) ) yield {
         text.updated(i, j)
       }).toList
     if ( grow )
       result = result ::: (for ( j <- language.alphabet ) yield { text + j }).toList
+    if ( shrink && text.size > 1)
+      result = result ::: (for ( j <- 0 until text.size ) yield { text.take(j) + text.drop(j+1) }).toList
     result
   }
 
   //can't use default parameter when there is an implicit param specified
   def neighbors(implicit language:Language):List[String] = {
-    neighbors(false)
+    neighbors(false, false)
   }
  
-  def sizeOfNeighborhood(implicit language:Language):BigInt = {
-    pow(language.alphabet.size, text.size).toInt
-  }
-
-  def mutate(grow:Boolean)(implicit language:Language):String = {
+  def mutate(growOrShrink:Boolean)(implicit language:Language):String = {
     var char = language.alphabet(rand.nextInt(language.alphabet.size))
     var idx = 0
-    if ( grow )
+    if ( growOrShrink )
       idx = rand.nextInt(text.size+1)
     else
       idx = rand.nextInt(text.size)
     if ( idx > text.size-1)
       text + char
-    else
-      text.updated(idx, char)
+    else {
+      if ( !growOrShrink || (rand.nextInt(2) == 0 || text.size == 1) )
+        text.updated(idx, char)
+      else
+        text.take(idx) + text.drop(idx+1)
+    }
   }
 
   //can't use default parameter when there is an implicit param specified
   def mutate()(implicit language:Language):String = {
     mutate(false)
-  }
-
-  def permutations():Seq[String] = {
-    var res = new HashSet[String]
-    var p = nextPermutation(text)
-    while ( !res.contains(p) ) {
-      res += p
-      p = nextPermutation(p)
-    }
-    res.toSeq
-  }
-
-  def nextPermutation:String = nextPermutation(text)
-
-  private def nextPermutation(n:String):String = {
-    val pivot = n.zip(n.tail).lastIndexWhere{ case (first, second) => first < second }
-    if (pivot < 0) return n.reverse
-    val successor = n.lastIndexWhere{_ > n(pivot)}
-    return (n.take(pivot) :+ n(successor)) +
-    ((n.slice(pivot+1, successor):+ n(pivot)) + n.drop(successor+1)).reverse
   }
 }
 

@@ -6,7 +6,6 @@ package org.jho.ace
 import scala.math._
 import org.jho.ace.CipherText._
 import org.jho.ace.ciphers.Cipher
-import org.jho.ace.ciphers.Vigenere
 import org.jho.ace.util.Util._
 import org.jho.ace.util.Language
 
@@ -15,17 +14,7 @@ class VigenereCryptanalyzer extends Cryptanalyzer {
     val keyLengths = cipherText.keyLengths
     val keys = keyLengths.slice(0,5).foldLeft(List[(String,Double)]()) { (keys, keyLength) =>
       //find the frequency correlations for each column (based on keyLength columns) of the cipherText
-      var colFreqs = cipherText.view.zipWithIndex.groupBy(_._2 % keyLength).map { e =>
-        var column = e._2.map(_._1).mkString
-        (e._1, language.alphabet.map { i =>
-            var decryption = column.map(c => language.int2Char((language.char2Int(c) - language.char2Int(i)) mod 26))
-            var freq = decryption.frequencies
-            var corr = decryption.foldLeft(0.0) { (corr, c) =>
-              corr + (freq(c) * language.frequencies(c))
-            }
-            (i, corr)
-          }.sortWith(_._2 > _._2))
-      }
+      var colFreqs = cipherText.columnFrequencies(keyLength)
       //decrypt using each of the most probable keys and assign a cost based on a heuristic
       keys ::: colFreqs.foldLeft(List[(String,Double)]()) { (acc, i) =>
         //try different combinations of the top 5 highest frequencies in each column (to elmininate some statisitical variance)
