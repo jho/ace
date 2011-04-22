@@ -1,7 +1,7 @@
 /*
  * Copyright 2011 Joshua Hollander.
  */
-package org.jho.ace
+package org.jho.ace.heuristic
 
 import org.junit._
 import Assert._

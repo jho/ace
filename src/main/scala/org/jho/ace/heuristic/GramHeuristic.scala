@@ -1,7 +1,7 @@
 /*
  * Copyright 2011 Joshua Hollander.
  */
-package org.jho.ace
+package org.jho.ace.heuristic
 
 import org.jho.ace.util.Language
 import org.jho.ace.util.Configuration

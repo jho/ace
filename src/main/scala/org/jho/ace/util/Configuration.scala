@@ -3,8 +3,8 @@
  */
 package org.jho.ace.util
 
-import org.jho.ace.DictionaryHeuristic
-import org.jho.ace.GramHeuristic
+import org.jho.ace.heuristic.DictionaryHeuristic
+import org.jho.ace.heuristic.GramHeuristic
 
 trait Configuration {
     implicit val language = new English

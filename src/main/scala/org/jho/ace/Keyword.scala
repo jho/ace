@@ -23,16 +23,27 @@ class Keyword(var text:String) {
     result
   }
 
+  //can't use default parameter when there is an implicit param specified
   def neighbors(implicit language:Language):List[String] = {
-    neighbors(false)(language)
+    neighbors(false)
   }
  
   def sizeOfNeighborhood(implicit language:Language):BigInt = {
     pow(language.alphabet.size, text.size).toInt
   }
 
-  def mutate(implicit language:Language):String = {
-    text.updated(rand.nextInt(text.size), language.alphabet(rand.nextInt(language.alphabet.size)))
+  def mutate(grow:Boolean)(implicit language:Language):String = {
+    var op = rand.nextInt(2)
+    var char = language.alphabet(rand.nextInt(language.alphabet.size))
+    if ( grow && op == 2)
+      text + char
+    else
+      text.updated(rand.nextInt(text.size), char)
+  }
+
+  //can't use default parameter when there is an implicit param specified
+  def mutate()(implicit language:Language):String = {
+    mutate(false)
   }
 
   def permutations():Seq[String] = {
