@@ -33,12 +33,16 @@ class Keyword(var text:String) {
   }
 
   def mutate(grow:Boolean)(implicit language:Language):String = {
-    var op = rand.nextInt(2)
     var char = language.alphabet(rand.nextInt(language.alphabet.size))
-    if ( grow && op == 2)
+    var idx = 0
+    if ( grow )
+      idx = rand.nextInt(text.size+1)
+    else
+      idx = rand.nextInt(text.size)
+    if ( idx > text.size-1)
       text + char
     else
-      text.updated(rand.nextInt(text.size), char)
+      text.updated(idx, char)
   }
 
   //can't use default parameter when there is an implicit param specified

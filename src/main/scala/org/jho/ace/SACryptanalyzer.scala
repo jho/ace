@@ -36,7 +36,7 @@ class SACryptanalyzer extends Cryptanalyzer {
     var temp = 100.0
     SAConfig.outerLoops.times {
       SAConfig.innerLoops.times {
-        var n = current._1.mutate
+        var n = current._1.mutate(false)
         if (!visited.contains(n)) {
           visited += n
           var next = (n, cost(n))

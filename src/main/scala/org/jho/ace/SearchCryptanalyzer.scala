@@ -29,7 +29,7 @@ class SearchCryptanalyzer extends Cryptanalyzer {
     var best = (key, cost(key))
     var i = 0
     while(abs(goal._1 - best._2) > goal._2 && visited.size <= maxIterations) {
-      var mutation = best._1.mutate
+      var mutation = best._1.mutate(true)
       if (!visited.contains(mutation)) {
         visited += mutation
         var next = (mutation, cost(mutation))

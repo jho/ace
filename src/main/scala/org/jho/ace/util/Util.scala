@@ -62,8 +62,8 @@ class MyString(s:String) {
       dist = dist.swap
     }
 
-    var res = dist._2(s.length)
-    //turn the levenshtien distance into a percentage
-    (res/max(s.length(),s2.length()))*100;
+    var res = dist._2(s.length).toDouble
+    //turn the levenshtien distance in to a percentage
+    (res/max(s.length(),s2.length()));
   }
 }

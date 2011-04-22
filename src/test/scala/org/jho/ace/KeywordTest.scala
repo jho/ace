@@ -31,10 +31,9 @@ class KeywordTest extends Configuration {
 
   @Test
   def mutate = {
-    println("".mutate)
     println("hello?")
     100.times {
-      var result = "aa".mutate
+      var result = "aa".mutate(true)
       println(result)
     }
     println("hello?")
