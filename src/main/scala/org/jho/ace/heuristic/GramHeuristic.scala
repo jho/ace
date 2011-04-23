@@ -10,7 +10,7 @@ import org.jho.ace.CipherText._
 import scala.math._
 
 class GramHeuristic(weight:Double) extends Heuristic(weight) with Configuration {
-  def compute(in:String)(implicit language:Language):Double = {
+  def compute(in:String):Double = {
     val text = in.filter(_.isLetter).toUpperCase
     var sum = gramSum(language.bigramFrequencies, text.bigramFrequencies)
     sum + gramSum(language.trigramFrequencies, text.trigramFrequencies)

@@ -22,7 +22,7 @@ class CipherText(var text:String) extends FrequencyAnalyzer with Configuration {
     }.toMap
   }
 
-  def keyLengths()(implicit language:Language):List[Int] = {
+  def keyLengths():List[Int] = {
     val sorted = periods.toList.sortWith { (a,b) =>
       //sort by diff from langauge IoC, order key lengths that are close to the IoC by key length (so we try smallest first)
       ((a._1 < b._1) && (abs(language.ioc-a._2) + abs(language.ioc-b._2)) <= .5) || abs(language.ioc-a._2) < abs(language.ioc-b._2)

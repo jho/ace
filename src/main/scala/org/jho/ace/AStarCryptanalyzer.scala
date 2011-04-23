@@ -4,7 +4,6 @@
 package org.jho.ace
 
 import org.jho.ace.ciphers.Cipher
-import org.jho.ace.ciphers.Vigenere
 import org.jho.ace.util.Language
 import org.jho.ace.CipherText._
 import org.jho.ace.Keyword._
@@ -18,11 +17,11 @@ import scala.math._
  */
 class AStarCryptanalyzer extends Cryptanalyzer {
 
-  def decrypt(cipherText:String, cipher:Cipher)(implicit language:Language):String = {
+  def decrypt(cipherText:String, cipher:Cipher):String = {
     var queue = new PriorityQueue[(String, Double)]()
     var visited = new HashMap[String, Double]()
     var (goal, stdDev) = computeGoal(cipherText.size)
-    println("goal: " + goal)
+    println("goal: " + (goal, stdDev))
     def cost(decryption:String):Double = {
       abs(goal - dist(decryption))
     }

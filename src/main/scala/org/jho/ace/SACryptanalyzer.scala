@@ -21,7 +21,7 @@ class SACryptanalyzer extends Cryptanalyzer {
   val rand = new Random();
   var visited = new HashSet[String]()
 
-  def decrypt(cipherText:String, cipher:Cipher)(implicit language:Language):String = {
+  def decrypt(cipherText:String, cipher:Cipher):String = {
     val (goal, stdDev) = computeGoal(cipherText.size)
     println("goal: " + goal)
     def cost(key:String):Double = {

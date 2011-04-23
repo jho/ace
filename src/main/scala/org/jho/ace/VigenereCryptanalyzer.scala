@@ -10,7 +10,7 @@ import org.jho.ace.util.Util._
 import org.jho.ace.util.Language
 
 class VigenereCryptanalyzer extends Cryptanalyzer {
-  def decrypt(cipherText:String, cipher:Cipher)(implicit language:Language):String = {
+  def decrypt(cipherText:String, cipher:Cipher):String = {
     val keyLengths = cipherText.keyLengths
     val keys = keyLengths.slice(0,5).foldLeft(List[(String,Double)]()) { (keys, keyLength) =>
       //find the frequency correlations for each column (based on keyLength columns) of the cipherText

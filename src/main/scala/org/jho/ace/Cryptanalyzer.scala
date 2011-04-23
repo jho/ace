@@ -11,7 +11,7 @@ import org.jho.ace.util.Util._
 import scala.math._
 
 trait Cryptanalyzer extends Configuration {
-  def decrypt(cipherText:String, cipher:Cipher)(implicit language:Language):String
+  def decrypt(cipherText:String, cipher:Cipher):String
 
   /**
    *  Compute a baseline cost for a series of plaintexts in the

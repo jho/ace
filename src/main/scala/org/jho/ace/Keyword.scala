@@ -3,18 +3,17 @@
  */
 package org.jho.ace
 
-import org.jho.ace.util.Language
+import org.jho.ace.util.Configuration
 import org.jho.ace.util.Util._
 
-import scala.collection.mutable.HashSet
 import scala.util.Random
 import scala.math._
 
-class Keyword(var text:String) {
+class Keyword(var text:String) extends Configuration {
   text = text.filter(_.isLetter).toUpperCase
   val rand = new Random();
 
-  def neighbors(grow:Boolean, shrink:Boolean)(implicit language:Language):List[String] = {
+  def neighbors(grow:Boolean, shrink:Boolean):List[String] = {
     var result = (for ( i <- 0 until text.size; j <- language.alphabet.withFilter(_!=text(i)) ) yield {
         text.updated(i, j)
       }).toList
@@ -26,11 +25,11 @@ class Keyword(var text:String) {
   }
 
   //can't use default parameter when there is an implicit param specified
-  def neighbors(implicit language:Language):List[String] = {
+  def neighbors:List[String] = {
     neighbors(false, false)
   }
  
-  def mutate(growOrShrink:Boolean)(implicit language:Language):String = {
+  def mutate(growOrShrink:Boolean):String = {
     var char = language.alphabet(rand.nextInt(language.alphabet.size))
     var idx = 0
     if ( growOrShrink )
@@ -48,7 +47,7 @@ class Keyword(var text:String) {
   }
 
   //can't use default parameter when there is an implicit param specified
-  def mutate()(implicit language:Language):String = {
+  def mutate():String = {
     mutate(false)
   }
 }
