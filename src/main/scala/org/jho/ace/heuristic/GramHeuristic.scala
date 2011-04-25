@@ -13,7 +13,7 @@ class GramHeuristic(weight:Double) extends Heuristic(weight) with Configuration 
   def compute(in:String):Double = {
     val text = in.filter(_.isLetter).toUpperCase
     var sum = gramSum(language.bigramFrequencies, text.bigramFrequencies)
-    sum + gramSum(language.trigramFrequencies, text.trigramFrequencies)
+    sum + (2.0 * gramSum(language.trigramFrequencies, text.trigramFrequencies))
   }
 
   def gramSum(expected:Map[String, Double], observed:Map[String, Double]):Double = {

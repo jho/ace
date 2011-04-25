@@ -22,6 +22,7 @@ class VigenereTest extends Configuration {
     println(result)
     assertEquals(m, result)
 
-    println(v.encrypt("KEYWORD", "SECRETSAREMADETOBEFOUNDOUTWITHTIME"))
+    println(v.encrypt("KEY", "SECRETSAREMADETOBEFOUNDOUTWITHTIME"))
+    println(v.encrypt("KEYWORD", "THEREARENOSECRETSTHATTIMEDOESNOTREVEAL"))
   }
 }

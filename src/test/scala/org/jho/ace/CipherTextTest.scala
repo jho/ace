@@ -33,8 +33,17 @@ class CipherTextTest extends Configuration {
 
   @Test
   def findKeyLength = {
-    var result = "QPWKALVRXCQZIKGRBPFAEOMFLJMSDZVDHXCXJYEBIMTRQWNMEAIZRVKCVKVLXNEICFZPZCZZHKMLVZVZIZRRQWDKECHOSNYXXLSPMYKVQXJTDCIOMEEXDQVSRXLRLKZHOV".keyLengths
-    println(result)
-    println("LXFOPVEFRNHR".keyLengths)
+    var results = "QPWKALVRXCQZIKGRBPFAEOMFLJMSDZVDHXCXJYEBIMTRQWNMEAIZRVKCVKVLXNEICFZPZCZZHKMLVZVZIZRRQWDKECHOSNYXXLSPMYKVQXJTDCIOMEEXDQVSRXLRLKZHOV".keyLengths
+    assertEquals(5, results(0))
+    assertEquals(15, results(1))
+    assertEquals(20, results(2))
+
+    println("CIABIRCEPOQYNIRYFCPSSXHMEXUSXFDMKO".periods)
+    println("CIABIRCEPOQYNIRYFCPSSXHMEXUSXFDMKO".keyLengths)
+
+    var cipherText = "DLCNSRUORMOSTUOXQPVRWDMKARFHCRMPFVYOEJ"
+    println(cipherText.periods.toList.sortWith(_._1 < _._1))
+    println(cipherText.keyLengths)
+    println(cipherText.columnFrequencies(cipherText.keyLengths.head))
   }
 }

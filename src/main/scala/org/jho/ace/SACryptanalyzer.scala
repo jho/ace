@@ -23,13 +23,14 @@ class SACryptanalyzer extends Cryptanalyzer {
 
   def decrypt(cipherText:String, cipher:Cipher):String = {
     val (goal, stdDev) = computeGoal(cipherText.size)
-    println("goal: " + goal)
+    //println("goal: " + goal)
     def cost(key:String):Double = {
       val decryption = cipher.decrypt(key, cipherText)
       heuristics.foldLeft(0.0) { (acc, h) => acc + h.evaluate(decryption)}
     }
-    var key = cipher.generateInitialKey(cipherText)
-    println("starting key: " + key)
+    //var key = cipher.generateInitialKey(cipherText)
+    var key = language.frequencies.head._1.toString
+    //println("starting key: " + key)
     var best = (key, cost(key))
     var current = (key, cost(key))
     visited += key
@@ -39,7 +40,7 @@ class SACryptanalyzer extends Cryptanalyzer {
     while(i < SAConfig.outerLoops) {
       var change = false
       SAConfig.innerLoops.times {
-        var n = current._1.mutate(false)
+        var n = current._1.mutate(true)
         if (!visited.contains(n)) {
           visited += n
           var next = (n, cost(n))
@@ -54,7 +55,7 @@ class SACryptanalyzer extends Cryptanalyzer {
           if ( abs(goal - next._2) < abs(goal - best._2) ) {
             change = true
             best = next
-            println("new best: " + best)
+            //println("new best: " + best)
           }
         }
       }
@@ -64,7 +65,7 @@ class SACryptanalyzer extends Cryptanalyzer {
       //println("current temp: " + temp)
     }
     println("num keys searched: " + visited.size)
-    println(best)
+    println("best: " + best)
     return cipher.decrypt(best._1, cipherText)
   }
 }

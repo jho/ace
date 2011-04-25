@@ -21,15 +21,16 @@ class AStarCryptanalyzer extends Cryptanalyzer {
     var queue = new PriorityQueue[(String, Double)]()
     var visited = new HashMap[String, Double]()
     var (goal, stdDev) = computeGoal(cipherText.size)
-    println("goal: " + (goal, stdDev))
+    //println("goal: " + (goal, stdDev))
     def cost(decryption:String):Double = {
       abs(goal - dist(decryption))
     }
     def dist(decryption:String):Double = {
       heuristics.foldLeft(0.0) { (acc, h) => acc + h.evaluate(decryption)}
     }
-    var best = cipher.generateInitialKey(cipherText)//language.frequencies.head._1.toString
-    println("starting key: " + best)
+    //var best = cipher.generateInitialKey(cipherText)
+    var best = language.frequencies.head._1.toString
+    //println("starting key: " + best)
     var decryption = cipher.decrypt(best, cipherText)
     queue += ((best, cost(decryption)))
     visited += best -> dist(decryption)
@@ -48,7 +49,7 @@ class AStarCryptanalyzer extends Cryptanalyzer {
         //println("checking:" + n + "->" + d)
         visited += n -> d
         if ( abs(goal-d) < abs(goal-visited(best)) ) {
-          println("new best:" + (n, c) + "->" + d)
+          //println("new best:" + (n, c) + "->" + d)
           best = n
         }
       }

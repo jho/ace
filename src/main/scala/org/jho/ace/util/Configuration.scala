@@ -10,20 +10,17 @@ import scala.util.DynamicVariable
 
 trait Configuration {
     val language = Configuration.language
-    lazy val heuristics = List(new DictionaryHeuristic(1.0), new GramHeuristic(2.0))
+    lazy val heuristics = List(new DictionaryHeuristic(1.0), new GramHeuristic(1.0))
 
     /**
      * Maximum iterations a search algorithm should perform before producing it's best value
-     * <p>
-     * This value is based on .01% of keyspace of a 5-character keyword (or 26^5*.01)  It's a bit
-     * arbitrary at the moment and is based on emperical evidence.
      */
-    var maxIterations = 50000
+    var maxIterations = 10000
 
     object SAConfig {
         var startTemp = 100.0
         var innerLoops = 100
-        var outerLoops = 500
+        var outerLoops = 100
         var coolingFactor = .95
     }
 }
