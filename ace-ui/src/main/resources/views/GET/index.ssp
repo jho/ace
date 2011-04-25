@@ -1,0 +1,22 @@
+<form id="decryptForm" action="/">
+    <textarea name="cipherText" rows="4" cols="50">
+    <input type="submit" value="Decrypt" />
+</form>
+
+<div id="decryption">
+</div>
+
+<script type="text/javascript">
+$("#decryptForm").submit(function(event) {
+    $.ajax({
+        beforeSend: function(req) {
+            req.setRequestHeader("Accept", "application/json");
+        },
+        type:"POST",
+        url: url,
+        success: function(data){
+            $("#decryption").html(data);
+        }
+    });
+});
+</script>
