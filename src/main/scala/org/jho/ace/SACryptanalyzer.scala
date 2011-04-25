@@ -21,7 +21,7 @@ class SACryptanalyzer extends Cryptanalyzer {
   val rand = new Random();
   var visited = new HashSet[String]()
 
-  def decrypt(cipherText:String, cipher:Cipher):String = {
+  def decrypt(cipherText:String, cipher:Cipher):CryptanalysisResult = {
     val (goal, stdDev) = computeGoal(cipherText.size)
     //println("goal: " + goal)
     def cost(key:String):Double = {
@@ -59,13 +59,11 @@ class SACryptanalyzer extends Cryptanalyzer {
           }
         }
       }
-      best = current
+      current = best
       temp = temp * SAConfig.coolingFactor
       if (!change) i += 1
       //println("current temp: " + temp)
     }
-    println("num keys searched: " + visited.size)
-    println("best: " + best)
-    return cipher.decrypt(best._1, cipherText)
+    new CryptanalysisResult(best._1, cipher.decrypt(best._1, cipherText), visited.size, best._2)
   }
 }

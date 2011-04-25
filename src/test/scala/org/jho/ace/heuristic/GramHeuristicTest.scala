@@ -15,7 +15,7 @@ class GramHeuristicTest extends Configuration {
 
   @Test
   def computeCost = {
-    var g = new GramHeuristic(1.0)
+    var g = new TrigramHeuristic(1.0)
     var result = g.evaluate("This is a test of a valid English phrase which")
     println(result)
     result = g.evaluate("garbageasdfasdfasdfasdfasfadsfasdfasdfasdfasdf")
@@ -29,7 +29,7 @@ class GramHeuristicTest extends Configuration {
 
   @Test
   def computeBaseline = {
-    var g = new GramHeuristic(1.0)
+    var g = new TrigramHeuristic(1.0)
     var counts = 1000.times{ g.evaluate(language.sample(12)) }.toList
     println("Min: " + counts.min)
     println("Max: " + counts.max)

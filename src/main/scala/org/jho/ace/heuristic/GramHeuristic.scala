@@ -3,20 +3,24 @@
  */
 package org.jho.ace.heuristic
 
-import org.jho.ace.util.Language
 import org.jho.ace.util.Configuration
 import org.jho.ace.CipherText._
 
 import scala.math._
 
-class GramHeuristic(weight:Double) extends Heuristic(weight) with Configuration {
+abstract class GramHeuristic(weight:Double) extends Heuristic(weight) with Configuration {
   def compute(in:String):Double = {
-    val text = in.filter(_.isLetter).toUpperCase
-    var sum = gramSum(language.bigramFrequencies, text.bigramFrequencies)
-    sum + (2.0 * gramSum(language.trigramFrequencies, text.trigramFrequencies))
+    doCompute(in.filter(_.isLetter).toUpperCase)
   }
 
-  def gramSum(expected:Map[String, Double], observed:Map[String, Double]):Double = {
+  protected def doCompute(in:String):Double
+  /*
+   val text = in.filter(_.isLetter).toUpperCase
+   var sum = gramSum(language.bigramFrequencies, text.bigramFrequencies)
+   sum + (2.0 * gramSum(language.trigramFrequencies, text.trigramFrequencies))
+   }*/
+
+  protected def gramSum(expected:Map[String, Double], observed:Map[String, Double]):Double = {
     var sum = abs(expected.filter(e => observed.contains(e._1)).foldLeft(0.0) { (sum, e) =>
         sum + (observed(e._1) - e._2)
       })
@@ -26,5 +30,17 @@ class GramHeuristic(weight:Double) extends Heuristic(weight) with Configuration 
         sum + e._2
       })
     sum
+  }
+}
+
+class BigramHeuristic(weight:Double) extends GramHeuristic(weight) {
+  def doCompute(in:String) = {
+    gramSum(language.bigramFrequencies, in.bigramFrequencies)
+  }
+}
+
+class TrigramHeuristic(weight:Double) extends GramHeuristic(weight) {
+  def doCompute(in:String) = {
+    gramSum(language.trigramFrequencies, in.trigramFrequencies)
   }
 }

@@ -10,7 +10,7 @@ import org.jho.ace.util.Util._
 import org.jho.ace.util.Language
 
 class VigenereCryptanalyzer extends Cryptanalyzer {
-  def decrypt(cipherText:String, cipher:Cipher):String = {
+  def decrypt(cipherText:String, cipher:Cipher):CryptanalysisResult = {
     val keyLengths = cipherText.keyLengths
     val keys = keyLengths.slice(0,5).foldLeft(List[(String,Double)]()) { (keys, keyLength) =>
       //find the frequency correlations for each column (based on keyLength columns) of the cipherText
@@ -32,8 +32,7 @@ class VigenereCryptanalyzer extends Cryptanalyzer {
     }
     //the key that generates the highest dictionary word count "wins"
     val key = keys.sortWith(_._2 < _._2).head._1
-    println(key)
     //now decrypt using the key
-    cipher.decrypt(key, cipherText)
+    new CryptanalysisResult(key, cipher.decrypt(key, cipherText), keys.size)
   }
 }

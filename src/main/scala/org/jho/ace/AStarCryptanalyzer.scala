@@ -17,14 +17,11 @@ import scala.math._
  */
 class AStarCryptanalyzer extends Cryptanalyzer {
 
-  def decrypt(cipherText:String, cipher:Cipher):String = {
+  def decrypt(cipherText:String, cipher:Cipher):CryptanalysisResult = {
     var queue = new PriorityQueue[(String, Double)]()
     var visited = new HashMap[String, Double]()
     var (goal, stdDev) = computeGoal(cipherText.size)
     //println("goal: " + (goal, stdDev))
-    def cost(decryption:String):Double = {
-      abs(goal - dist(decryption))
-    }
     def dist(decryption:String):Double = {
       heuristics.foldLeft(0.0) { (acc, h) => acc + h.evaluate(decryption)}
     }
@@ -32,20 +29,18 @@ class AStarCryptanalyzer extends Cryptanalyzer {
     var best = language.frequencies.head._1.toString
     //println("starting key: " + best)
     var decryption = cipher.decrypt(best, cipherText)
-    queue += ((best, cost(decryption)))
+    queue += ((best, abs(goal - dist(decryption))))
     visited += best -> dist(decryption)
     while(abs(goal - visited(best)) > stdDev && !queue.isEmpty && visited.size <= maxIterations) {
       var next = queue.dequeue
       //println("checking neighbors of:" + next)
-      next._1.neighbors(true, true).filterNot(visited.contains(_)).filterNot(queue.contains(_)).foreach { n =>
+      next._1.neighbors(true, true).withFilter(!visited.contains(_)).foreach { n =>
         val decryption = cipher.decrypt(n, cipherText)
-        //the graph is a tree and there is only a single path to each node
-        //so we can just add all the neighbors t the queue
-        //and not check if one path is shorter than another like in standard A*
-        var c = cost(decryption)
-        queue += n -> c
+        //no need check if one path is shorter than another like in standard A*
         //we don't care about the cost of the path as much as the cost of each node
         var d = dist(decryption)
+        var c = abs(goal-d)
+        queue += n -> c
         //println("checking:" + n + "->" + d)
         visited += n -> d
         if ( abs(goal-d) < abs(goal-visited(best)) ) {
@@ -55,8 +50,6 @@ class AStarCryptanalyzer extends Cryptanalyzer {
       }
       //println(queue)
     }
-    println("num keys searched: " + visited.size)
-    println("best: " + (best, visited(best)))
-    return cipher.decrypt(best, cipherText)
+    new CryptanalysisResult(best, cipher.decrypt(best, cipherText), visited.size, visited(best))
   }
 }

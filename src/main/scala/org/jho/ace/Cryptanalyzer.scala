@@ -4,14 +4,13 @@
 package org.jho.ace
 
 import org.jho.ace.ciphers.Cipher
-import org.jho.ace.util.Language
 import org.jho.ace.util.Configuration
 import org.jho.ace.util.Util._
 
 import scala.math._
 
 trait Cryptanalyzer extends Configuration {
-  def decrypt(cipherText:String, cipher:Cipher):String
+  def decrypt(cipherText:String, cipher:Cipher):CryptanalysisResult
 
   /**
    *  Compute a baseline cost for a series of plaintexts in the
