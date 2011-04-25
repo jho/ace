@@ -3,7 +3,6 @@
  */
 package org.jho.ace.ciphers
 
-import org.jho.ace.util.Language
 import org.jho.ace.util.Configuration
 
 trait Cipher extends Configuration {

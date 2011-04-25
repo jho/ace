@@ -1,0 +1,24 @@
+<script type="text/javascript">
+
+ function widgets(url){
+    $.ajax({
+        beforeSend: function(req) {
+            req.setRequestHeader("Accept", "application/json");
+        },
+    type:"GET",
+    url: url,
+    success: function(data){
+        empty = ""
+        if(data.length > 0){
+            empty = "Widget[0].name = " + data[0].name
+
+        }
+        alert("No of Widgets=" + data.length + " " + empty);
+    }
+    });
+ }
+</script>
+<form method="POST" action="/">
+<textarea name="cipherText" rows="4" cols="50">
+<input type="submit" value="Decrypt" />
+</form>

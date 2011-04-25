@@ -1,12 +1,10 @@
 /*
  * Copyright 2011 Joshua Hollander.
  */
-
 package org.jho.ace.ciphers
 
 import org.jho.ace.util.Util._
 import org.jho.ace.CipherText._
-import org.jho.ace.util.Language
 
 class Vigenere extends Cipher {
   def encrypt(key:String, message:String):String = {
