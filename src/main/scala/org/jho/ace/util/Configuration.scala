@@ -19,9 +19,9 @@ trait Configuration {
     var maxIterations = 10000
 
     object SAConfig {
-        var startTemp = 100.0
-        var innerLoops = 100
-        var outerLoops = 100
+        var startTemp = 200.0
+        var innerLoops = 500
+        var outerLoops = 500
         var coolingFactor = .95
     }
 }
