@@ -39,7 +39,7 @@ abstract class CryptanalyzerTestBase(val algorithm:Cryptanalyzer) extends Config
       println("Cipher Text: " + cipherText)
       var startTime = System.currentTimeMillis
       var result = algorithm.decrypt(cipherText, cipher)
-      println("Time: " + System.currentTimeMillis-startTime)
+      println("Time: " + (System.currentTimeMillis-startTime))
       println(result)
       println("Resulting decryption: " + result)
       var diff = result.plainText.diff(plainText)
