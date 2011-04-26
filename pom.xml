@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.jho</groupId>
   <artifactId>ace</artifactId>
-  <version>0.1-SNAPSHOT</version>
+  <version>0.2-SNAPSHOT</version>
   <name>Automated Cryptanalysis Engine</name>
   <properties>
     <scala.version>2.8.1</scala.version>
