@@ -18,10 +18,10 @@ import scala.util.Random
  * Cryptanalyzer that uses a Simulated Annealing algorithm
  */
 class SACryptanalyzer extends Cryptanalyzer {
-  val rand = new Random();
-  var visited = new HashSet[String]()
 
   def decrypt(cipherText:String, cipher:Cipher):CryptanalysisResult = {
+    var visited = new HashSet[String]()
+    val rand = new Random();
     val (goal, stdDev) = computeGoal(cipherText.size)
     //println("goal: " + goal)
     def cost(key:String):Double = {
@@ -37,7 +37,7 @@ class SACryptanalyzer extends Cryptanalyzer {
     var max = pow(language.alphabet.size, cipherText.size)/2
     var temp = 100.0
     var i = 0
-    while(i < SAConfig.outerLoops) {
+    while(abs(goal - best._2) > stdDev && i < SAConfig.outerLoops) {
       var change = false
       SAConfig.innerLoops.times {
         var n = current._1.mutate(true)
