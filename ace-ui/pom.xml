@@ -2,13 +2,13 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jho.ace</groupId>
     <artifactId>ace-ui</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.2-SNAPSHOT</version>
     <name>ACE :: UI</name>
     <packaging>war</packaging>
     <parent>
         <groupId>org.jho.ace</groupId>
         <artifactId>ace-project</artifactId>
-        <version>0.1-SNAPSHOT</version>
+        <version>0.2-SNAPSHOT</version>
     </parent>
 
     <dependencies>

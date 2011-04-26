@@ -3,12 +3,12 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jho.ace</groupId>
     <artifactId>ace-core</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.2-SNAPSHOT</version>
     <name>ACE :: Core</name>
     <parent>
         <groupId>org.jho.ace</groupId>
         <artifactId>ace-project</artifactId>
-        <version>0.1-SNAPSHOT</version>
+        <version>0.2-SNAPSHOT</version>
     </parent>
 
     <build>
