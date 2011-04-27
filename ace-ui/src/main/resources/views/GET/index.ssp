@@ -1,16 +1,62 @@
-<form id="decryptForm" action="decrypt">
-    <label for="cipherText">Cipher Text</label>
-    <br/>
-    <textarea name="plainText" rows="4" cols="50"></textarea>
-    <br/>
-    <input type="submit" value="Decrypt" />
-</form>
-
-<div id="decryption">
+<div id="processingDiv" class="popup">
+  <p>Processing...</p>
+  <img src="images/ajax-loader.gif" />
+</div>
+<div id="formWrapper">
+    <form id="encryptForm" action="encrypt">
+        <label for="plainText">Plain Text</label>
+        <br />
+        <textarea id="plainText" class="clearable" name="plainText" rows="8" cols="80">Your plaintext here</textarea>
+        <br />
+        <label for="keyword">Keyword</label>
+        <input type="text" class="clearable" name="keyword" value="KEYWORD" />
+        <br />
+        <input id="encryptButton" type="submit" value="Encrypt" />
+    </form>
+    <br />
+    <br />
+    <form id="decryptForm" action="decrypt">
+        <label for="cipherText">Cipher Text</label>
+        <br />
+        <textarea id="cipherText" class="clearable" name="cipherText" rows="8" cols="80">QPWKALVRXCQZIKGRBPFAEOMFLJMSDZVDHXCXJYEBIMTRQWNMEAIZRVKCVKVLXNEICFZPZCZZHKMLVZVZIZRRQWDKECHOSNYXXLSPMYKVQXJTDCIOMEEXDQVSRXLRLKZHOV</textarea>
+        <br />
+        <input id="decryptButton" type="submit" value="Decrypt" />
+    </form>
+    <br />
+    <br />
+    <br />
+    <br />
+    <table id="decryptionResults">
+        <tr>
+            <th>Plaintext</th><td id="decryptionResult"></td>
+        </tr>
+        <tr>
+            <th>Keyword</th><td id="keyword"></td>
+        </tr>
+        <tr>
+            <th>Number of keys searched</th><td id="numKeysSearched"></td>
+        </tr>
+    </table>
 </div>
 
 <script>
+$("#decryptionResults").hide();
+
+$(".clearable").focus(function(event) {
+    $(this).val('');
+});
+
 $("#decryptForm").submit(function(event) {
+    $(this).find("input[type=submit]").attr('disabled', 'disabled');
+    ajaxCall($(this),
+        function(data) {
+            $("#decryptionResults").show();
+            $("#decryptionResult").html(data.plainText);
+            $("#keyword").html(data.keyword);
+            $("#numKeysSearched").html(data.numKeysSearched);
+        }
+    );
+    /*
     event.preventDefault();
     var url = $(this).attr('action') + "?" + $(this).serialize();
     $.ajax({
@@ -20,9 +66,88 @@ $("#decryptForm").submit(function(event) {
         type:"GET",
         url: url,
         success: function(data){
-            $("#decryption").html(data);
+            $("#decryptionResults").show();
+            $("#decryptionResult").html(data.plainText);
+            $("#keyword").html(data.keyword);
+            $("#numKeysSearched").html(data.numKeysSearched);
         },
-        error: function() { alert("error"); }
+        error: function() { alert("error"); },
+        complete: function(req, status) { 
+            $("#decryptButton").removeAttr('disabled'); 
+        }
+    });*/
+});
+
+function ajaxCall(form, success) {
+    event.preventDefault();
+    var url = form.attr('action') + "?" + form.serialize();
+    $.ajax({
+        beforeSend: function(req) {
+            req.setRequestHeader("Accept", "application/json");
+        },
+        type:"GET",
+        url: url,
+        success: function(data) { success(data) },
+        error: function() { alert("error"); },
+        complete: function() {
+            form.find("input[type=submit]").removeAttr('disabled');
+        }
+    });
+}
+
+$("#encryptForm").submit(function(event) {
+    $("#encryptButton").attr('disabled', 'disabled');
+    event.preventDefault();
+    var url = $(this).attr('action') + "?" + $(this).serialize();
+    $.ajax({
+        beforeSend: function(req) {
+            req.setRequestHeader("Accept", "application/json");
+        },
+        type:"GET",
+        url: url,
+        success: function(data){
+            $("#cipherText").val(data);
+        },
+        error: function() { alert("error"); },
+        complete: function(req, status) { 
+            $("#encryptButton").removeAttr('disabled'); 
+        }
     });
 });
+
+$('#processingDiv')
+    .hide()  // hide it initially
+    .ajaxStart(function() {
+        showProgress();
+    })
+    .ajaxStop(function() {
+        hideProgress();
+    })
+;
+
+function showProgress() {
+    var maskHeight = $(document).height();
+    var maskWidth = $(window).width();
+
+    //Set height and width to mask to fill up the whole screen
+    $('#mask').css({'width':maskWidth,'height':maskHeight});
+     
+    //Get the window height and width
+    var winH = $(window).height();
+    var winW = $(window).width();
+
+    $('#mask').show();
+           
+    //Set the popup window to center
+    $('#processingDiv').css('top',  winH/2-$('#processingDiv').height()/2);
+    $('#processingDiv').css('left', winW/2-$('#processingDiv').width()/2);
+
+    //transition effect
+    $('#processingDiv').show();
+}
+
+function hideProgress() {
+    $("#mask").hide();
+    $("#processingDiv").hide();
+}
 </script>
