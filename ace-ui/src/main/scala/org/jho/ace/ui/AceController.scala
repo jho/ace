@@ -25,10 +25,20 @@ class AceController extends Controller with Renderable with LogHelper {
 
 
   get("/decrypt")({ (request, response) =>
-      logger.info("decypt called")
+      logger.info("decypt called...")
       var cipherText = request.getStringParameter("cipherText")
-      var ca = new AStarCryptanalyzer
+      var algorithm = "astar"
+      if (request.getParameterNames.exists(_.equals("algorithm"))) {
+        algorithm = request.getStringParameter("algorithm")
+      }
+      var ca = (algorithm.toLowerCase match {
+        case "sa" => new SACryptanalyzer
+        case _ => new AStarCryptanalyzer
+      })
+      logger.info("using " + ca.getClass.getName)
       var cipher = new Vigenere
-      render(ca.decrypt(cipherText, cipher))
+      var result = ca.decrypt(cipherText, cipher)
+      logger.info("decryption complete!")
+      render(result)
     })
 }

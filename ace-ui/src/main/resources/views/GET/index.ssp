@@ -1,7 +1,3 @@
-<div id="processingDiv" class="popup">
-  <p>Processing...</p>
-  <img src="images/ajax-loader.gif" />
-</div>
 <div id="formWrapper">
     <form id="encryptForm" action="encrypt">
         <label for="plainText">Plain Text</label>
@@ -19,6 +15,12 @@
         <label for="cipherText">Cipher Text</label>
         <br />
         <textarea id="cipherText" class="clearable" name="cipherText" rows="8" cols="80">QPWKALVRXCQZIKGRBPFAEOMFLJMSDZVDHXCXJYEBIMTRQWNMEAIZRVKCVKVLXNEICFZPZCZZHKMLVZVZIZRRQWDKECHOSNYXXLSPMYKVQXJTDCIOMEEXDQVSRXLRLKZHOV</textarea>
+        <br />
+        <label for="algorithm">Cryptanalysis Algorithm</label>
+        <select id="algorithm" name="algorithm">
+            <option value="astar" selected>A*</option> 
+            <option value="sa">Simulated Annealing</option> 
+        </select>
         <br />
         <input id="decryptButton" type="submit" value="Decrypt" />
     </form>
@@ -42,10 +44,6 @@
 <script>
 $("#decryptionResults").hide();
 
-$(".clearable").focus(function(event) {
-    $(this).val('');
-});
-
 $("#decryptForm").submit(function(event) {
     $(this).find("input[type=submit]").attr('disabled', 'disabled');
     ajaxCall($(this),
@@ -56,26 +54,6 @@ $("#decryptForm").submit(function(event) {
             $("#numKeysSearched").html(data.numKeysSearched);
         }
     );
-    /*
-    event.preventDefault();
-    var url = $(this).attr('action') + "?" + $(this).serialize();
-    $.ajax({
-        beforeSend: function(req) {
-            req.setRequestHeader("Accept", "application/json");
-        },
-        type:"GET",
-        url: url,
-        success: function(data){
-            $("#decryptionResults").show();
-            $("#decryptionResult").html(data.plainText);
-            $("#keyword").html(data.keyword);
-            $("#numKeysSearched").html(data.numKeysSearched);
-        },
-        error: function() { alert("error"); },
-        complete: function(req, status) { 
-            $("#decryptButton").removeAttr('disabled'); 
-        }
-    });*/
 });
 
 function ajaxCall(form, success) {
@@ -96,23 +74,9 @@ function ajaxCall(form, success) {
 }
 
 $("#encryptForm").submit(function(event) {
-    $("#encryptButton").attr('disabled', 'disabled');
-    event.preventDefault();
-    var url = $(this).attr('action') + "?" + $(this).serialize();
-    $.ajax({
-        beforeSend: function(req) {
-            req.setRequestHeader("Accept", "application/json");
-        },
-        type:"GET",
-        url: url,
-        success: function(data){
+        ajaxCall($(this), function(data){
             $("#cipherText").val(data);
-        },
-        error: function() { alert("error"); },
-        complete: function(req, status) { 
-            $("#encryptButton").removeAttr('disabled'); 
-        }
-    });
+        });
 });
 
 $('#processingDiv')
@@ -139,7 +103,7 @@ function showProgress() {
     $('#mask').show();
            
     //Set the popup window to center
-    $('#processingDiv').css('top',  winH/2-$('#processingDiv').height()/2);
+    $('#processingDiv').css('top',  winH/3-$('#processingDiv').height()/3);
     $('#processingDiv').css('left', winW/2-$('#processingDiv').width()/2);
 
     //transition effect
