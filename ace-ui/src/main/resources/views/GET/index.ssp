@@ -1,22 +1,28 @@
-<form id="decryptForm" action="/">
-    <textarea name="cipherText" rows="4" cols="50">
+<form id="decryptForm" action="decrypt">
+    <label for="cipherText">Cipher Text</label>
+    <br/>
+    <textarea name="plainText" rows="4" cols="50"></textarea>
+    <br/>
     <input type="submit" value="Decrypt" />
 </form>
 
 <div id="decryption">
 </div>
 
-<script type="text/javascript">
+<script>
 $("#decryptForm").submit(function(event) {
+    event.preventDefault();
+    var url = $(this).attr('action') + "?" + $(this).serialize();
     $.ajax({
         beforeSend: function(req) {
             req.setRequestHeader("Accept", "application/json");
         },
-        type:"POST",
+        type:"GET",
         url: url,
         success: function(data){
             $("#decryption").html(data);
-        }
+        },
+        error: function() { alert("error"); }
     });
 });
 </script>

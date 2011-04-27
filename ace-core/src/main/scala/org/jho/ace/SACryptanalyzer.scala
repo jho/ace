@@ -23,14 +23,14 @@ class SACryptanalyzer extends Cryptanalyzer {
     var visited = new HashSet[String]()
     val rand = new Random();
     val (goal, stdDev) = computeGoal(cipherText.size)
-    //println("goal: " + goal)
+    if ( logger.isTraceEnabled ) {
+      logger.trace("goal: " + goal)
+    }
     def cost(key:String):Double = {
       val decryption = cipher.decrypt(key, cipherText)
       heuristics.foldLeft(0.0) { (acc, h) => acc + h.evaluate(decryption)}
     }
-    //var key = cipher.generateInitialKey(cipherText)
     var key = language.frequencies.head._1.toString
-    //println("starting key: " + key)
     var best = (key, cost(key))
     var current = (key, cost(key))
     visited += key
@@ -46,23 +46,22 @@ class SACryptanalyzer extends Cryptanalyzer {
           var next = (n, cost(n))
           val delta = abs(goal - next._2) - abs(goal - current._2)
           if ( delta <= 0 ) {
-            //println("moving to state:" + next)
             current = next
           } else if ( rand.nextDouble < exp(-(delta)/temp) ) {
-            //println("moving to probable state:" + next)
             current = next
           }
           if ( abs(goal - next._2) < abs(goal - best._2) ) {
             change = true
             best = next
-            //println("new best: " + best)
+            if ( logger.isTraceEnabled ) {
+              logger.trace("new best:" + best)
+            }
           }
         }
       }
       current = best
       temp = temp * SAConfig.coolingFactor
       if (!change) i += 1
-      //println("current temp: " + temp)
     }
     new CryptanalysisResult(best._1, cipher.decrypt(best._1, cipherText), visited.size, best._2)
   }

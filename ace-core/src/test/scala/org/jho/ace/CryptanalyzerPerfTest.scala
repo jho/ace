@@ -45,7 +45,7 @@ class CryptanalyzerPerfTest extends Configuration {
     10.times {
       results = run(language.sample(size)) :: results
     }
-    results.foreach(println(_))
+    //results.foreach(println(_))
     var sum = results.foldLeft((0, 0.0, 0L)) { (sum, res) =>
       (sum._1 + res._1, sum._2 + (1.0 - res._2), sum._3 + res._3)
     }

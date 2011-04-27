@@ -5,11 +5,12 @@ package org.jho.ace
 
 import org.jho.ace.ciphers.Cipher
 import org.jho.ace.util.Configuration
+import org.jho.ace.util.LogHelper
 import org.jho.ace.util.Util._
 
 import scala.math._
 
-trait Cryptanalyzer extends Configuration {
+trait Cryptanalyzer extends Configuration with LogHelper {
   def decrypt(cipherText:String, cipher:Cipher):CryptanalysisResult
 
   /**

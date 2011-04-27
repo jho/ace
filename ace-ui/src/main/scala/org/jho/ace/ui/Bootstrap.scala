@@ -3,13 +3,16 @@
  */
 package org.jho.ace.ui
 
+import org.jho.ace.util.LogHelper
+
 import org.bowlerframework.view.scalate._
 import org.bowlerframework.view.scalate.selectors._
 
 /**
  * This class acts as the starting point and bootstrap point for our application
  */
-class Bootstrap{
+class Bootstrap extends LogHelper {
+  logger.info("Bootstrap")
   // parent layout
   val parentLayout = Layout("default")
 

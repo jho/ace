@@ -32,20 +32,20 @@ abstract class CryptanalyzerTestBase(val algorithm:Cryptanalyzer) extends Config
    testDecrypt("ATTACKATDAWN", "LEMON", new Vigenere)
    }*/
 
-   private def testDecrypt(plainText:String, key:String, cipher:Cipher) = {
-      println("Plain Text: " + plainText)
-      println("Plain Text Cost: " + heuristics.foldLeft(0.0)(_ + _.evaluate(plainText)))
-      var cipherText = cipher.encrypt(key, plainText)
-      println("Cipher Text: " + cipherText)
-      var startTime = System.currentTimeMillis
-      var result = algorithm.decrypt(cipherText, cipher)
-      println("Time: " + (System.currentTimeMillis-startTime))
-      println(result)
-      println("Resulting decryption: " + result)
-      var diff = result.plainText.diff(plainText)
-      println("Diff from original plain text: " + diff)
-      //assertTrue("Difference is greater than 30%", (diff <= .30))
-      println("--------------")
-    }
+  private def testDecrypt(plainText:String, key:String, cipher:Cipher) = {
+    println("Plain Text: " + plainText)
+    println("Plain Text Cost: " + heuristics.foldLeft(0.0)(_ + _.evaluate(plainText)))
+    var cipherText = cipher.encrypt(key, plainText)
+    println("Cipher Text: " + cipherText)
+    var startTime = System.currentTimeMillis
+    var result = algorithm.decrypt(cipherText, cipher)
+    println("Time: " + (System.currentTimeMillis-startTime))
+    println(result)
+    println("Resulting decryption: " + result)
+    var diff = result.plainText.diff(plainText)
+    println("Diff from original plain text: " + diff)
+    //assertTrue("Difference is greater than 30%", (diff <= .30))
+    println("--------------")
+  }
 
-   }
+}
