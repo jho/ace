@@ -30,7 +30,7 @@ class GramHeuristicTest extends Configuration {
   @Test
   def computeBaseline = {
     var g = new TrigramHeuristic(1.0)
-    var counts = 1000.times{ g.evaluate(language.sample(12)) }.toList
+    var counts = 1000.times{ g.evaluate(language.sample(100)) }.toList
     println("Min: " + counts.min)
     println("Max: " + counts.max)
     var avg = counts.sum/counts.size

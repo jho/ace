@@ -2,10 +2,10 @@
     <form id="encryptForm" action="encrypt">
         <label for="plainText">Plain Text</label>
         <br />
-        <textarea id="plainText" class="clearable" name="plainText" rows="8" cols="80">Your plaintext here</textarea>
+        <textarea id="plainText" class="clearable" name="plainText" rows="8" cols="80">MUSTCHANGEMEETINGLOCATIONFROMBRIDGETOUNDERPASSSINCEENEMYAGENTSAREBELIEVEDTOHAVEBEENASSIGNEDTOWATCHBRIDGESTOPMEETINGTIMEUNCHANGED</textarea>
         <br />
         <label for="keyword">Keyword</label>
-        <input type="text" class="clearable" name="keyword" value="KEYWORD" />
+        <input type="text" class="clearable" name="keyword" value="EVERY" />
         <br />
         <input id="encryptButton" type="submit" value="Encrypt" />
     </form>
@@ -14,7 +14,7 @@
     <form id="decryptForm" action="decrypt">
         <label for="cipherText">Cipher Text</label>
         <br />
-        <textarea id="cipherText" class="clearable" name="cipherText" rows="8" cols="80">QPWKALVRXCQZIKGRBPFAEOMFLJMSDZVDHXCXJYEBIMTRQWNMEAIZRVKCVKVLXNEICFZPZCZZHKMLVZVZIZRRQWDKECHOSNYXXLSPMYKVQXJTDCIOMEEXDQVSRXLRLKZHOV</textarea>
+        <textarea id="cipherText" class="clearable" name="cipherText" rows="8" cols="80">QPWKALVRXCQZIKGRBPFAEOMFLJMSDZVDHXCXJYEBIMTRQWNMEAIZRVKCVKVLXNEICFZPZCZZHKMLVZVZIZRRQWDKECHOSNYXXLSPMYKVQXJTDCIOMEEXDQVSRXLRLKZH</textarea>
         <br />
         <label for="algorithm">Cryptanalysis Algorithm</label>
         <select id="algorithm" name="algorithm">

@@ -38,12 +38,13 @@ class CipherTextTest extends Configuration {
     assertEquals(15, results(1))
     assertEquals(20, results(2))
 
+    /*
     println("CIABIRCEPOQYNIRYFCPSSXHMEXUSXFDMKO".periods)
     println("CIABIRCEPOQYNIRYFCPSSXHMEXUSXFDMKO".keyLengths)
 
     var cipherText = "DLCNSRUORMOSTUOXQPVRWDMKARFHCRMPFVYOEJ"
     println(cipherText.periods.toList.sortWith(_._1 < _._1))
     println(cipherText.keyLengths)
-    println(cipherText.columnFrequencies(cipherText.keyLengths.head))
+    println(cipherText.columnFrequencies(cipherText.keyLengths.head))*/
   }
 }

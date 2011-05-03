@@ -12,7 +12,10 @@ import org.jho.ace.util.Configuration
 import org.jho.ace.util.Util._
 
 class CryptanalyzerPerfTest extends Configuration {
-  @Test
+  def main(args: Array[String]): Unit = {
+    performanceTest
+  }
+
   def performanceTest = {
     var astar = new AStarCryptanalyzer
     var sa = new SACryptanalyzer

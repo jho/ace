@@ -19,18 +19,26 @@ abstract class CryptanalyzerTestBase(val algorithm:Cryptanalyzer) extends Config
   }
 
   @Test
-  def decryptRandomSamples = {
-    for ( i <- (50 to 200 by 25)) {
+  def decryptShortText = {
+    testDecrypt("THEREARENOSECRETSTHATTIMEDOESNOTREVEAL",
+                "KEYWORD", new Vigenere)
+  }
+
+  @Test
+  def decryptRandomSamplesShortKeyword = {
+    for ( i <- (100 to 200 by 50)) {
       println(i)
       testDecrypt(language.sample(i), "LEMON", new Vigenere)
     }
   }
 
-  /*
-   @Test
-   def decryptShortText = {
-   testDecrypt("ATTACKATDAWN", "LEMON", new Vigenere)
-   }*/
+  @Test
+  def decryptRandomSamples = {
+    for ( i <- (100 to 200 by 50)) {
+      println(i)
+      testDecrypt(language.sample(i), "THINGAMABOB", new Vigenere)
+    }
+  }
 
   private def testDecrypt(plainText:String, key:String, cipher:Cipher) = {
     println("Plain Text: " + plainText)
@@ -40,11 +48,10 @@ abstract class CryptanalyzerTestBase(val algorithm:Cryptanalyzer) extends Config
     var startTime = System.currentTimeMillis
     var result = algorithm.decrypt(cipherText, cipher)
     println("Time: " + (System.currentTimeMillis-startTime))
-    println(result)
     println("Resulting decryption: " + result)
     var diff = result.plainText.diff(plainText)
     println("Diff from original plain text: " + diff)
-    //assertTrue("Difference is greater than 30%", (diff <= .30))
+    //assertTrue("Difference is greater than 50%", (diff <= .50))
     println("--------------")
   }
 

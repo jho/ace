@@ -16,7 +16,7 @@ trait Configuration {
     /**
      * Maximum iterations a search algorithm should perform before producing it's best value
      */
-    var maxIterations = 10000
+    var maxIterations = 50000
 
     object SAConfig {
         var startTemp = 100.0
