@@ -19,36 +19,48 @@ class AStarCryptanalyzer extends Cryptanalyzer {
 
   def decrypt(cipherText:String, cipher:Cipher):CryptanalysisResult = {
     var queue = new PriorityQueue[(String, Double)]()
-    var visited = new HashMap[String, Double]()
+    var visited = new HashMap[String, Boolean]()
+    var cost = new HashMap[String, Double]().withDefaultValue(0);
     var (goal, stdDev) = computeGoal(cipherText.size)
     if ( logger.isTraceEnabled ) {
-      logger.trace("goal: " + (goal, stdDev))
+      logger.trace("goal: " + goal + " +/- " + stdDev)
     }
     def dist(decryption:String):Double = {
       heuristics.foldLeft(0.0) { (acc, h) => acc + h.evaluate(decryption)}
     }
-    var best = language.frequencies.head._1.toString
-    var decryption = cipher.decrypt(best, cipherText)
-    queue += ((best, abs(goal - dist(decryption))))
-    visited += best -> dist(decryption)
-    while(abs(goal - visited(best)) > stdDev && !queue.isEmpty && visited.size <= maxIterations) {
+    var start = language.frequencies.head._1.toString
+    var best = (start, dist(cipher.decrypt(start, cipherText)))
+    queue += ((best._1, abs(goal - best._2)))
+    logger.debug("start: " + queue);
+    while(!queue.isEmpty && visited.size <= maxIterations) {
       var next = queue.dequeue
+      visited += next._1 -> true
       next._1.neighbors(true, true).withFilter(!visited.contains(_)).foreach { n =>
         val decryption = cipher.decrypt(n, cipherText)
-        //no need check if one path is shorter than another like in standard A*
-        //we don't care about the cost of the path as much as the cost of each node
         var d = dist(decryption)
-        var c = abs(goal-d)
-        queue += n -> c
-        visited += n -> d
-        if ( abs(goal-d) < abs(goal-visited(best)) ) {
+        var c = cost(next._1) + d
+        var h = abs(goal-d)
+        /*
+         if ( logger.isTraceEnabled ) {
+         logger.trace("checking:" + (n, h) + "->" + c)
+         }*/
+        if (!cost.contains(n) || c < cost(n)) {
+          cost += n -> c
+          queue += n -> h  
+        }
+        //record the best if we have seen it
+        if(d < best._2) {
+          best = (n, d)
           if ( logger.isTraceEnabled ) {
-            logger.trace("new best:" + (n, c) + "->" + d)
+            logger.trace("new best:" + best)
           }
-          best = n
+          //have we reached the goal?
+          if(abs(goal - best._2) <= stdDev) {
+            return new CryptanalysisResult(best._1, cipher.decrypt(best._1, cipherText), visited.size, best._2)
+          }
         }
       }
     }
-    new CryptanalysisResult(best, cipher.decrypt(best, cipherText), visited.size, visited(best))
+    return new CryptanalysisResult(best._1, cipher.decrypt(best._1, cipherText), visited.size, best._2)
   }
 }
