@@ -4,8 +4,8 @@
 package org.jho.ace.heuristic
 
 abstract class Heuristic(val weight:Double) {
-  def evaluate(in:String):Double = {
+  def evaluate(in:Seq[Char]):Double = {
     weight * compute(in)
   }
-  protected def compute(in:String):Double
+  protected def compute(in:Seq[Char]):Double
 }

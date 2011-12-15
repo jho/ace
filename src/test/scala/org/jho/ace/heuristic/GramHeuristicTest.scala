@@ -16,18 +16,14 @@ class GramHeuristicTest extends Configuration {
   @Test
   def computeCost = {
     var g = new TrigramHeuristic(1.0)
-    var result = g.evaluate("This is a test of a valid English phrase which")
-    println(result)
-    result = g.evaluate("garbageasdfasdfasdfasdfasfadsfasdfasdfasdfasdf")
-    println(result)
-    result = g.evaluate("garbageffffffffffffdddddddddddddddddddffffffffdddd")
-    println(result)
-
-    println(g.evaluate("ATTACKATDAWN"))
-    println(g.evaluate(language.sample(12)))
+    println("res: " + g.evaluate("This is a test of a valid English phrase which"))
+    println("res: " + g.evaluate("garbageasdfasdfasdfasdfasfadsfasdfasdfasdfasdf"))
+    println("res: " + g.evaluate("asdfasdfasd"))
+    println("res: " + g.evaluate("theandworld"))
+    //println(g.evaluate(language.sample(12)))
   }
 
-  @Test
+  //@Test
   def computeBaseline = {
     var g = new TrigramHeuristic(1.0)
     var counts = 1000.times{ g.evaluate(language.sample(100)) }.toList

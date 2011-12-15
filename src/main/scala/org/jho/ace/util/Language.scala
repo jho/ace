@@ -16,17 +16,23 @@ trait Language {
   val dictionary = new Dictionary(locale)
 
   private lazy val sampleText = {
-    scala.io.Source.fromInputStream(getClass.getResourceAsStream(List("/sample", locale.getLanguage, locale.getCountry).mkString("_"))).toIndexedSeq
+    var sample:Seq[Char] = List[Char]()
+    for(i <- 1 to 3) {
+      sample = sample ++ scala.io.Source.fromInputStream(
+        getClass.getResourceAsStream(List("/sample"+i, locale.getLanguage, locale.getCountry).mkString("_")))
+      .toIndexedSeq.withFilter(_.isLetter).map(_.toUpper)
+    }
+    sample
   }
 
-  def sample(size:Int):String = {
+  def sample(size:Int = -1):Seq[Char] = {
     val text = new StringBuilder
-    //take 100 characters (A to Z, no spaces or punctuation) from a random point in the file
-    sampleText.drop(rand.nextInt(sampleText.size/2)).takeWhile{ c =>
-      if ( c.isLetter ) text + c.toUpper
-      text.size < size
+    if(size == -1) 
+      return sampleText
+    else {
+      val start = rand.nextInt(sampleText.size-size)
+      return sampleText.drop(start).take(size)
     }
-    text.toString
   }
 
   //statistics

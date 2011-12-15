@@ -9,8 +9,8 @@ import org.jho.ace.CipherText._
 import scala.math._
 
 abstract class GramHeuristic(weight:Double) extends Heuristic(weight) with Configuration {
-  def compute(in:String):Double = {
-    doCompute(in.filter(_.isLetter).toUpperCase)
+  def compute(in:Seq[Char]):Double = {
+    doCompute(in.filter(_.isLetter).toString.toUpperCase)
   }
 
   protected def doCompute(in:String):Double
@@ -21,6 +21,15 @@ abstract class GramHeuristic(weight:Double) extends Heuristic(weight) with Confi
    }*/
 
   protected def gramSum(expected:Map[String, Double], observed:Map[String, Double]):Double = {
+    println(observed)
+    observed.foldLeft(0.0) { (sum, e) => 
+      if(expected.contains(e._1)) {
+        sum + (abs(expected(e._1) - e._2)/expected(e._1))
+      } else {
+        sum + e._2/.000000000000001
+      }
+    }
+    /*
     var sum = abs(expected.filter(e => observed.contains(e._1)).foldLeft(0.0) { (sum, e) =>
         sum + (observed(e._1) - e._2)
       })
@@ -29,7 +38,7 @@ abstract class GramHeuristic(weight:Double) extends Heuristic(weight) with Confi
     sum += abs(expected.filterNot(e => observed.contains(e._1)).foldLeft(0.0) { (sum, e) =>
         sum + e._2
       })
-    sum
+    sum*/
   }
 }
 

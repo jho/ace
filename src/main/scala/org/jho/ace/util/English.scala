@@ -4,6 +4,10 @@
 package org.jho.ace.util
 
 import java.util.Locale
+import java.io.File
+import java.io.FileOutputStream
+import java.io.ObjectOutputStream
+import scala.collection.mutable.HashMap
 
 class English extends {
   val locale = Locale.US
@@ -85,3 +89,21 @@ class English extends {
     "TIO" ->  .00378058
   )
 } with Language
+
+object English {
+  def main(args:Array[String]) = {
+    var e = new English()
+
+    //var trigrams = new HashMap[String, Double] 
+    var sample = e.sample()
+    for(i <- 2 to 3) {
+      var grams = sample.sliding(i).toList
+      println(grams.size)
+      var frequencies = grams.groupBy(identity).map(e => (e._1.mkString, (e._2.size*1.0)/grams.size)).toList
+      val os = new FileOutputStream(new File(List(i,"grams",e.locale.getLanguage, e.locale.getCountry).mkString("_")))
+      val o = new ObjectOutputStream(os)
+      o.writeObject(frequencies)
+      println(frequencies.sortWith(_._2 > _._2))
+    }
+  }
+}
