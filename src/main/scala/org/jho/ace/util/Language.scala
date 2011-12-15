@@ -4,6 +4,7 @@
 package org.jho.ace.util
 
 import java.util.Locale
+import java.io.ObjectInputStream
 
 import scala.util.Random
 
@@ -35,10 +36,25 @@ trait Language {
     }
   }
 
+  private def loadGramFreq(file:String):Map[String, Double] = {
+      var is = getClass.getResourceAsStream(List("/" +file, locale.getLanguage, locale.getCountry).mkString("_"))
+      val in = new ObjectInputStream(is)
+      val obj = in.readObject()
+      obj match {
+        case f: List[Tuple2[String, Double]] => f.toMap
+        case _ => throw new IllegalStateException("Gram file: " + file + " is not in the right format!")
+      }
+  }
+
   //statistics
   val frequencies:Map[Char,Double]
-  val bigramFrequencies:Map[String,Double]
-  val trigramFrequencies:Map[String,Double]
+  lazy val bigramFrequencies:Map[String,Double] = {
+    loadGramFreq("2_grams")
+  }
+
+  lazy val trigramFrequencies:Map[String,Double] = {
+    loadGramFreq("3_grams")
+  } 
   val ioc:Double
   val avgWordSize:Int
 

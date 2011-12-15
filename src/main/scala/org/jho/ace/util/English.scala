@@ -42,6 +42,7 @@ class English extends {
     'J' -> .0010,
     'Z' -> .0007
   )
+  /*
   // http://www.cryptograms.org/letter-frequencies.php#Bigrams
   val bigramFrequencies = Map(
     "TH" -> .03882543,
@@ -64,8 +65,9 @@ class English extends {
     "HI" -> .01092302,
     "ES" -> .01092301,
     "NG" -> .01053385
-  )
+  )*/
   // http://www.cryptograms.org/letter-frequencies.php#Trigrams
+  /*
   val trigramFrequencies = Map(
     "THE" ->  .03508232,
     "AND" ->  .01593878,
@@ -87,13 +89,17 @@ class English extends {
     "WIT" ->  .00397290,
     "THI" ->  .00394796,
     "TIO" ->  .00378058
-  )
+  )*/
 } with Language
 
 object English {
   def main(args:Array[String]) = {
     var e = new English()
 
+    println(e.bigramFrequencies)
+    println(e.trigramFrequencies)
+
+    /*
     //var trigrams = new HashMap[String, Double] 
     var sample = e.sample()
     for(i <- 2 to 3) {
@@ -104,6 +110,6 @@ object English {
       val o = new ObjectOutputStream(os)
       o.writeObject(frequencies)
       println(frequencies.sortWith(_._2 > _._2))
-    }
+    }*/
   }
 }
