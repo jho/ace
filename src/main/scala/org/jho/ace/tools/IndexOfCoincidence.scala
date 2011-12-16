@@ -1,7 +1,7 @@
 /*
  * Copyright 2011 Joshua Hollander.
  */
-package org.jho.ace
+package org.jho.ace.tools
 
 import org.jho.ace.util.Configuration
 import org.jho.ace.util.Language

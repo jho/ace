@@ -99,17 +99,14 @@ object English {
     println(e.bigramFrequencies)
     println(e.trigramFrequencies)
 
-    /*
-    //var trigrams = new HashMap[String, Double] 
-    var sample = e.sample()
     for(i <- 2 to 3) {
-      var grams = sample.sliding(i).toList
+      var grams = e.sampleText.sliding(i).toList
       println(grams.size)
       var frequencies = grams.groupBy(identity).map(e => (e._1.mkString, (e._2.size*1.0)/grams.size)).toList
       val os = new FileOutputStream(new File(List(i,"grams",e.locale.getLanguage, e.locale.getCountry).mkString("_")))
       val o = new ObjectOutputStream(os)
       o.writeObject(frequencies)
       println(frequencies.sortWith(_._2 > _._2))
-    }*/
+    }
   }
 }

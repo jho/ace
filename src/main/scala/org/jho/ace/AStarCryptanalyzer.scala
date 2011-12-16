@@ -32,6 +32,7 @@ class AStarCryptanalyzer extends Cryptanalyzer {
     var best = (start, dist(cipher.decrypt(start, cipherText)))
     queue += ((best._1, abs(goal - best._2)))
     logger.debug("start: " + queue);
+    var count = 0;
     while(!queue.isEmpty && visited.size <= maxIterations) {
       var next = queue.dequeue
       visited += next._1 -> true
@@ -53,13 +54,16 @@ class AStarCryptanalyzer extends Cryptanalyzer {
           best = (n, d)
           if ( logger.isTraceEnabled ) {
             logger.trace("new best:" + best)
+            logger.trace("iterations since last best: " + count)
           }
+          count = 0
           //have we reached the goal?
           if(abs(goal - best._2) <= stdDev) {
             return new CryptanalysisResult(best._1, cipher.decrypt(best._1, cipherText), visited.size, best._2)
           }
         }
       }
+      count += 1
     }
     return new CryptanalysisResult(best._1, cipher.decrypt(best._1, cipherText), visited.size, best._2)
   }

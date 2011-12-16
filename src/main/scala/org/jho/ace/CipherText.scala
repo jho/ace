@@ -6,6 +6,8 @@ package org.jho.ace
 import org.jho.ace.util.Language
 import org.jho.ace.util.Configuration
 import org.jho.ace.util.Util._
+import org.jho.ace.tools.FrequencyAnalyzer
+import org.jho.ace.tools.IndexOfCoincidence
 
 import scala.math._
 

@@ -1,7 +1,7 @@
 /*
  * Copyright 2011 Joshua Hollander.
  */
-package org.jho.ace
+package org.jho.ace.tools
 
 trait FrequencyAnalyzer {
   var text:String
@@ -19,6 +19,10 @@ trait FrequencyAnalyzer {
   }
 
   def ngramFrequencies(n:Int):Map[String, Double] = {
-    text.sliding(n).toList.groupBy(identity).mapValues(_.size/(text.size/(n*1.0)))
+    var grams = text.sliding(n).toList.groupBy(identity)
+    //var freq = 
+    grams.map{case (k, v) => (k, (v.size*1.0)/grams.size)}//.toList.sortWith(_._2 > _._2)
+    //println(freq)
+    //freq.toMap
   }
 }

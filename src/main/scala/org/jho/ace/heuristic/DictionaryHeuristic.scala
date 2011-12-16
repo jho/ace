@@ -7,11 +7,10 @@ import org.jho.ace.util.Configuration
 import org.jho.ace.util.Language
 
 class DictionaryHeuristic(weight:Double) extends Heuristic(weight) with Configuration {
-  def compute(in:Seq[Char]):Double = {
-    val text = in.withFilter(_.isLetter).toString.toUpperCase
-    (1.0/in.size)*((4 to 10).foldLeft(0.0) { (sum, k) =>
+  def compute(in:String):Double = {
+    val text = in.filter(_.isLetter).toUpperCase
+    -(((4 to 10).foldLeft(0.0) { (sum, k) =>
         sum + (k^2 * (text.sliding(k).withFilter(language.dictionary.wordsUpperCase.contains(_)).toSet.size))
-      })
-    //(in.size/language.avgWordSize)/sum
+      })/in.size)
   }
 }

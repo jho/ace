@@ -16,7 +16,7 @@ trait Language {
   lazy val numChars = alphabet.size
   val dictionary = new Dictionary(locale)
 
-  private lazy val sampleText = {
+  lazy val sampleText = {
     var sample:Seq[Char] = List[Char]()
     for(i <- 1 to 3) {
       sample = sample ++ scala.io.Source.fromInputStream(
@@ -26,24 +26,18 @@ trait Language {
     sample
   }
 
-  def sample(size:Int = -1):Seq[Char] = {
-    val text = new StringBuilder
-    if(size == -1) 
-      return sampleText
-    else {
-      val start = rand.nextInt(sampleText.size-size)
-      return sampleText.drop(start).take(size)
-    }
+  def sample(size:Int):String = {
+    sampleText.drop(rand.nextInt(sampleText.size-size)).take(size).mkString
   }
 
   private def loadGramFreq(file:String):Map[String, Double] = {
-      var is = getClass.getResourceAsStream(List("/" +file, locale.getLanguage, locale.getCountry).mkString("_"))
-      val in = new ObjectInputStream(is)
-      val obj = in.readObject()
-      obj match {
-        case f: List[Tuple2[String, Double]] => f.toMap
-        case _ => throw new IllegalStateException("Gram file: " + file + " is not in the right format!")
-      }
+    var is = getClass.getResourceAsStream(List("/" +file, locale.getLanguage, locale.getCountry).mkString("_"))
+    val in = new ObjectInputStream(is)
+    val obj = in.readObject()
+    obj match {
+      case f: List[Tuple2[String, Double]] => f.toMap
+      case _ => throw new IllegalStateException("Gram file: " + file + " is not in the right format!")
+    }
   }
 
   //statistics

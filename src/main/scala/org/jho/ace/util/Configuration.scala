@@ -11,12 +11,12 @@ import scala.util.DynamicVariable
 
 trait Configuration {
     val language = Configuration.language
-    lazy val heuristics = List(new DictionaryHeuristic(1.0), /*new BigramHeuristic(1.0), */new TrigramHeuristic(1.0))
+    lazy val heuristics = List(new DictionaryHeuristic(1.0), new BigramHeuristic(1.0), new TrigramHeuristic(1.0))
 
     /**
      * Maximum iterations a search algorithm should perform before producing it's best value
      */
-    var maxIterations = 100000
+    var maxIterations = 10000
 
     object SAConfig {
         var startTemp = 100.0

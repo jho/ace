@@ -16,22 +16,8 @@ class DictionaryHeuristicTest extends Configuration {
   @Test
   def computeCost = {
     var d = new DictionaryHeuristic(1.0)
-    /*
-    println(d.evaluate(("" /: (1 to 100)) { (s, i) => s + language.randomChar }))
-    println(d.evaluate(("" /: (1 to 100)) { (s, i) => s + language.randomChar }))
     println(d.evaluate(language.sample(100)))
-    println(d.evaluate(language.sample(100)))
-    */
-    def cost(text:String):Double = {
-      ((4 to 10).foldLeft(0.0) { (sum, k) =>
-          sum + (k^2 * (text.sliding(k).filter(language.dictionary.wordsUpperCase.contains(_)).toSet.size))
-        })/text.size
-    }
-    var text = "HELLOWORLD"
-    println(cost(text))
-    println(cost("BLERGEDYI"))
-    println(d.evaluate("HELLOYOU"))
-    println(d.evaluate("BLERGEST"))
+    println(d.evaluate(language.randomString(100)))
   }
 
   @Test
