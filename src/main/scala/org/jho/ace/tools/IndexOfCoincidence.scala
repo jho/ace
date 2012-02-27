@@ -4,9 +4,8 @@
 package org.jho.ace.tools
 
 import org.jho.ace.util.Configuration
-import org.jho.ace.util.Language
 
-object IndexOfCoincidence extends Configuration {
+object indexOfCoincidence extends Configuration {
   def apply(text:Seq[Char]):Double = {
     val counts = text.groupBy(identity).mapValues(_.size)
     //will get NaN if all characters have count == 1

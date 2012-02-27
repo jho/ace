@@ -3,7 +3,7 @@
  */
 package org.jho.ace.ciphers
 
-import org.jho.ace.util.Util._
+import org.jho.ace.util._
 import org.jho.ace.CipherText._
 
 class Vigenere extends Cipher {

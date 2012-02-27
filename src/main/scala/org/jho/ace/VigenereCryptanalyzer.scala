@@ -6,7 +6,7 @@ package org.jho.ace
 import scala.math._
 import org.jho.ace.CipherText._
 import org.jho.ace.ciphers.Cipher
-import org.jho.ace.util.Util._
+import org.jho.ace.util._
 import org.jho.ace.util.Language
 
 class VigenereCryptanalyzer extends Cryptanalyzer {

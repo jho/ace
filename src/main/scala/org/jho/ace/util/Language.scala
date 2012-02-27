@@ -18,7 +18,7 @@ trait Language {
 
   lazy val sampleText = {
     var sample:Seq[Char] = List[Char]()
-    for(i <- 1 to 3) {
+    for(i <- 1 to 1) {
       sample = sample ++ scala.io.Source.fromInputStream(
         getClass.getResourceAsStream(List("/sample"+i, locale.getLanguage, locale.getCountry).mkString("_")))
       .toIndexedSeq.withFilter(_.isLetter).map(_.toUpper)

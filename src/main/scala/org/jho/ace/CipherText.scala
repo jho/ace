@@ -3,11 +3,10 @@
  */
 package org.jho.ace
 
-import org.jho.ace.util.Language
 import org.jho.ace.util.Configuration
-import org.jho.ace.util.Util._
 import org.jho.ace.tools.FrequencyAnalyzer
-import org.jho.ace.tools.IndexOfCoincidence
+import org.jho.ace.tools.indexOfCoincidence
+import org.jho.ace.util._
 
 import scala.math._
 
@@ -18,7 +17,7 @@ class CipherText(var text:String) extends FrequencyAnalyzer with Configuration {
     val columns = text.zipWithIndex
     (1 to text.size-1).map { i =>
       var sum = columns.groupBy(_._2 % i).foldLeft(0.0) { (sum,e) =>
-        sum + IndexOfCoincidence(e._2.map(_._1))
+        sum + indexOfCoincidence(e._2.map(_._1))
       }
       (i, sum/i)
     }.toMap

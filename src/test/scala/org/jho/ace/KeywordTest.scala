@@ -7,7 +7,7 @@ import org.junit._
 import Assert._
 
 import org.jho.ace.Keyword._
-import org.jho.ace.util.Util._
+import org.jho.ace.util._
 import org.jho.ace.util.Configuration
 
 class KeywordTest extends Configuration {

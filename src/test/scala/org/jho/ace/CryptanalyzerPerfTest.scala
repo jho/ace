@@ -9,7 +9,7 @@ import Assert._
 import org.jho.ace.ciphers.Cipher
 import org.jho.ace.ciphers.Vigenere
 import org.jho.ace.util.Configuration
-import org.jho.ace.util.Util._
+import org.jho.ace.util._
 
 class CryptanalyzerPerfTest extends Configuration {
   def main(args: Array[String]): Unit = {
@@ -42,7 +42,7 @@ class CryptanalyzerPerfTest extends Configuration {
       var cipherText = cipher.encrypt(key, plainText)
       var startTime = System.currentTimeMillis
       var result = ca.decrypt(cipherText, cipher)
-      (result.numKeysSearched, plainText.diff(result.plainText), (System.currentTimeMillis - startTime))
+      (result.numKeysSearched, plainText.distance(result.plainText), (System.currentTimeMillis - startTime))
     }
     var results = List[(Int, Double, Long)]()
     10.times {

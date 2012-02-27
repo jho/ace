@@ -4,7 +4,7 @@
 package org.jho.ace
 
 import org.jho.ace.util.Configuration
-import org.jho.ace.util.Util._
+import org.jho.ace.util._
 
 import scala.util.Random
 import scala.math._

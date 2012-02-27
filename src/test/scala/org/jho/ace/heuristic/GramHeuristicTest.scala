@@ -9,7 +9,7 @@ import org.junit._
 import Assert._
 import scala.math._
 
-import org.jho.ace.util.Util._
+import org.jho.ace.util._
 import org.jho.ace.CipherText._
 
 class GramHeuristicTest extends Configuration {

@@ -20,7 +20,9 @@ class AStarCryptanalyzer extends Cryptanalyzer {
   def decrypt(cipherText:String, cipher:Cipher):CryptanalysisResult = {
     var queue = new PriorityQueue[(String, Double)]()
     var visited = new HashMap[String, Boolean]()
-    var cost = new HashMap[String, Double]().withDefaultValue(0);
+    var cost = new HashMap[String, Double]() {
+        override def default(k: String) = 0.0
+    }
     var (goal, stdDev) = computeGoal(cipherText.size)
     if ( logger.isTraceEnabled ) {
       logger.trace("goal: " + goal + " +/- " + stdDev)
@@ -41,10 +43,6 @@ class AStarCryptanalyzer extends Cryptanalyzer {
         var d = dist(decryption)
         var c = cost(next._1) + d
         var h = abs(goal-d)
-        /*
-         if ( logger.isTraceEnabled ) {
-         logger.trace("checking:" + (n, h) + "->" + c)
-         }*/
         if (!cost.contains(n) || c < cost(n)) {
           cost += n -> c
           queue += n -> h  
@@ -56,14 +54,13 @@ class AStarCryptanalyzer extends Cryptanalyzer {
             logger.trace("new best:" + best)
             logger.trace("iterations since last best: " + count)
           }
-          count = 0
           //have we reached the goal?
-          if(abs(goal - best._2) <= stdDev) {
+          if(abs(goal - best._2) <= (stdDev * 3.0)) {
             return new CryptanalysisResult(best._1, cipher.decrypt(best._1, cipherText), visited.size, best._2)
           }
         }
+        count += 1
       }
-      count += 1
     }
     return new CryptanalysisResult(best._1, cipher.decrypt(best._1, cipherText), visited.size, best._2)
   }

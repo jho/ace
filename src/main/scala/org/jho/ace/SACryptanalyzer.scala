@@ -8,7 +8,7 @@ import org.jho.ace.Keyword._
 import org.jho.ace.ciphers.Cipher
 import org.jho.ace.ciphers.Vigenere
 import org.jho.ace.util.Language
-import org.jho.ace.util.Util._
+import org.jho.ace.util._
 
 import scala.collection.mutable.HashSet
 import scala.math._

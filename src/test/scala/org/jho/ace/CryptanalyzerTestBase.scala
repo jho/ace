@@ -9,7 +9,7 @@ import Assert._
 import org.jho.ace.ciphers.Cipher
 import org.jho.ace.ciphers.Vigenere
 import org.jho.ace.util.Configuration
-import org.jho.ace.util.Util._
+import org.jho.ace.util._
 
 abstract class CryptanalyzerTestBase(val algorithm:Cryptanalyzer) extends Configuration {
   //@Test
@@ -18,7 +18,7 @@ abstract class CryptanalyzerTestBase(val algorithm:Cryptanalyzer) extends Config
                 "EVERY", new Vigenere)
   }
 
-  //@Test
+  @Test
   def decryptShortText = {
     testDecrypt("THEREARENOSECRETSTHATTIMEDOESNOTREVEAL",
                 "KEYWORD", new Vigenere)
@@ -32,7 +32,7 @@ abstract class CryptanalyzerTestBase(val algorithm:Cryptanalyzer) extends Config
     }
   }
 
-  @Test
+  //@Test
   def decryptRandomSamples = {
     for ( i <- (100 to 200 by 50)) {
       println(i)
@@ -49,7 +49,7 @@ abstract class CryptanalyzerTestBase(val algorithm:Cryptanalyzer) extends Config
     var result = algorithm.decrypt(cipherText, cipher)
     println("Time: " + (System.currentTimeMillis-startTime))
     println("Resulting decryption: " + result)
-    var diff = result.plainText.diff(plainText)
+    var diff = result.plainText.distance(plainText)
     println("Diff from original plain text: " + diff)
     //assertTrue("Difference is greater than 50%", (diff <= .50))
     println("--------------")

@@ -6,7 +6,7 @@ package org.jho.ace
 import org.jho.ace.ciphers.Cipher
 import org.jho.ace.util.Configuration
 import org.jho.ace.util.LogHelper
-import org.jho.ace.util.Util._
+import org.jho.ace.util._
 
 import scala.math._
 
@@ -18,7 +18,7 @@ trait Cryptanalyzer extends Configuration with LogHelper {
    *  given language that are the same length as the cipherText
    */
   protected def computeGoal(length:Int):(Double, Double) = {
-    var counts = 1000.times{  
+    var counts = 2000.times{  
       var sample = language.sample(length)
       heuristics.foldLeft(0.0)(_ + _.evaluate(sample))
     }.toList
