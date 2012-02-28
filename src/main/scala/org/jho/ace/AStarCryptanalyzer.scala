@@ -42,10 +42,9 @@ class AStarCryptanalyzer extends Cryptanalyzer {
         val decryption = cipher.decrypt(n, cipherText)
         var d = dist(decryption)
         var c = cost(next._1) + d
-        var h = abs(goal-d)
         if (!cost.contains(n) || c < cost(n)) {
           cost += n -> c
-          queue += n -> h  
+          queue += n -> abs(goal-d)  
         }
         //record the best if we have seen it
         if(d < best._2) {
@@ -56,12 +55,12 @@ class AStarCryptanalyzer extends Cryptanalyzer {
           }
           //have we reached the goal?
           if(abs(goal - best._2) <= (stdDev * 3.0)) {
-            return new CryptanalysisResult(best._1, cipher.decrypt(best._1, cipherText), visited.size, best._2)
+            return new CryptanalysisResult(best._1, cipher.decrypt(best._1, cipherText), count, best._2)
           }
         }
         count += 1
       }
     }
-    return new CryptanalysisResult(best._1, cipher.decrypt(best._1, cipherText), visited.size, best._2)
+    return new CryptanalysisResult(best._1, cipher.decrypt(best._1, cipherText), count, best._2)
   }
 }

@@ -12,19 +12,19 @@ import org.jho.ace.util.Configuration
 import org.jho.ace.util._
 
 abstract class CryptanalyzerTestBase(val algorithm:Cryptanalyzer) extends Configuration {
-  //@Test
+  @Test
   def decryptLongText = {
     testDecrypt("MUSTCHANGEMEETINGLOCATIONFROMBRIDGETOUNDERPASSSINCEENEMYAGENTSAREBELIEVEDTOHAVEBEENASSIGNEDTOWATCHBRIDGESTOPMEETINGTIMEUNCHANGEDXX",
                 "EVERY", new Vigenere)
   }
 
-  @Test
+  //@Test
   def decryptShortText = {
     testDecrypt("THEREARENOSECRETSTHATTIMEDOESNOTREVEAL",
                 "KEYWORD", new Vigenere)
   }
 
-  //@Test
+  @Test
   def decryptRandomSamplesShortKeyword = {
     for ( i <- (100 to 200 by 50)) {
       println(i)
@@ -32,11 +32,11 @@ abstract class CryptanalyzerTestBase(val algorithm:Cryptanalyzer) extends Config
     }
   }
 
-  //@Test
+  @Test
   def decryptRandomSamples = {
     for ( i <- (100 to 200 by 50)) {
       println(i)
-      testDecrypt(language.sample(i), "THING", new Vigenere)
+      testDecrypt(language.sample(i), "THINGY", new Vigenere)
     }
   }
 
