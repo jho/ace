@@ -4,7 +4,6 @@
 package org.jho.ace
 
 import org.jho.ace.ciphers.Cipher
-import org.jho.ace.util.Language
 import org.jho.ace.CipherText._
 import org.jho.ace.Keyword._
 
@@ -49,10 +48,8 @@ class AStarCryptanalyzer extends Cryptanalyzer {
         //record the best if we have seen it
         if(d < best._2) {
           best = (n, d)
-          if ( logger.isTraceEnabled ) {
-            logger.trace("new best:" + best)
-            logger.trace("iterations since last best: " + count)
-          }
+          logger.debug("new best:" + best)
+          logger.trace("iterations since last best: " + count)
           //have we reached the goal?
           if(abs(goal - best._2) <= (stdDev * 3.0)) {
             return new CryptanalysisResult(best._1, cipher.decrypt(best._1, cipherText), count, best._2)
