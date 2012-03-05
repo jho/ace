@@ -50,22 +50,16 @@ object English extends Configuration {
   def main(args:Array[String]) = {
     var e = new English()
 
-    var counts = 2000.times{  
-      var sample = e.sample(150)
-      heuristics.foldLeft(0.0)(_ + _.evaluate(sample))
-    }.toList
-    var avg = counts.sum/counts.size
-    var stdDev = sqrt(counts.map(e => pow(avg - e, 2)).sum/counts.size)
-    println(List(avg, stdDev, counts.min, counts.max))
     /*
-     for(i <- 2 to 3) {
-     var grams = e.sampleText.sliding(i).toList
-     println(grams.size)
-     var frequencies = grams.groupBy(identity).map(e => (e._1.mkString, (e._2.size*1.0)/grams.size)).toList
-     val os = new FileOutputStream(new File(List(i,"grams",e.locale.getLanguage, e.locale.getCountry).mkString("_")))
-     val o = new ObjectOutputStream(os)
-     o.writeObject(frequencies)
-     println(frequencies.sortWith(_._2 > _._2))
-     }*/
+    for(i <- 2 to 4) {
+      var grams = e.sampleText.sliding(i).toList
+      println(grams.size)
+      println(grams.groupBy(identity).size)
+      var frequencies = grams.groupBy(identity).map(e => (e._1.mkString, (e._2.size*1.0)/grams.size)).toList
+      val os = new FileOutputStream(new File(List(i,"grams",e.locale.getLanguage, e.locale.getCountry).mkString("_")))
+      val o = new ObjectOutputStream(os)
+      o.writeObject(frequencies)
+      println(frequencies.sortWith(_._2 > _._2))
+    }*/
   }
 }

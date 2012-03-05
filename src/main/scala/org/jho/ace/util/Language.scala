@@ -49,6 +49,9 @@ trait Language {
   lazy val trigramFrequencies:Map[String,Double] = {
     loadGramFreq("3_grams")
   } 
+  lazy val quadgramFrequencies:Map[String,Double] = {
+    loadGramFreq("4_grams")
+  } 
   val ioc:Double
   val avgWordSize:Int
 

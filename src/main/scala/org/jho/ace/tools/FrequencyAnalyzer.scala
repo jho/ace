@@ -6,15 +6,15 @@ package org.jho.ace.tools
 trait FrequencyAnalyzer {
   var text:String
 
-  def frequencies:Map[Char, Double] = {
+  lazy val frequencies:Map[Char, Double] = {
     text.groupBy(identity).mapValues(_.size/(text.size*1.0))
   }
 
-  def bigramFrequencies:Map[String, Double] = {
+  lazy val bigramFrequencies:Map[String, Double] = {
     ngramFrequencies(2)
   }
 
-  def trigramFrequencies:Map[String, Double] = {
+  lazy val trigramFrequencies:Map[String, Double] = {
     ngramFrequencies(3)
   }
 
