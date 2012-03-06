@@ -11,13 +11,7 @@ import edu.berkeley.compbio.jlibsvm.SolutionModel
 import edu.berkeley.compbio.jlibsvm.binary.BinaryModel
 import edu.berkeley.compbio.jlibsvm.binary.MutableBinaryClassificationProblemImpl
 import edu.berkeley.compbio.jlibsvm.binary.Nu_SVC
-import edu.berkeley.compbio.jlibsvm.kernel.KernelFunction
 import edu.berkeley.compbio.jlibsvm.kernel.LinearKernel
-import edu.berkeley.compbio.jlibsvm.scaler.ScalingModelLearner
-import java.io.File
-import java.io.FileOutputStream
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
 import org.jho.ace.util.Configuration
 import org.jho.ace.util.LogHelper
 import org.jho.ace.CipherText._
@@ -109,7 +103,7 @@ class GramSvm extends Configuration with LogHelper {
   }
 
   protected def getFilename:String = {
-    return List("svm_model", language.locale.getLanguage, language.locale.getCountry).mkString("_")
+    return List("svm_model_", language.locale.getLanguage, language.locale.getCountry).mkString("_")
   }
 }
 
