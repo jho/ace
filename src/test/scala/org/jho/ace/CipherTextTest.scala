@@ -32,6 +32,13 @@ class CipherTextTest extends Configuration {
   }
 
   @Test
+  def testNgrams {
+    val start = System.currentTimeMillis
+    val results = language.sample(500).ngramFrequencies(4)
+    println(System.currentTimeMillis - start)
+  }
+
+  @Test
   def findKeyLength = {
     var results = "QPWKALVRXCQZIKGRBPFAEOMFLJMSDZVDHXCXJYEBIMTRQWNMEAIZRVKCVKVLXNEICFZPZCZZHKMLVZVZIZRRQWDKECHOSNYXXLSPMYKVQXJTDCIOMEEXDQVSRXLRLKZHOV".keyLengths
     assertEquals(5, results(0))
@@ -39,12 +46,12 @@ class CipherTextTest extends Configuration {
     assertEquals(20, results(2))
 
     /*
-    println("CIABIRCEPOQYNIRYFCPSSXHMEXUSXFDMKO".periods)
-    println("CIABIRCEPOQYNIRYFCPSSXHMEXUSXFDMKO".keyLengths)
+     println("CIABIRCEPOQYNIRYFCPSSXHMEXUSXFDMKO".periods)
+     println("CIABIRCEPOQYNIRYFCPSSXHMEXUSXFDMKO".keyLengths)
 
-    var cipherText = "DLCNSRUORMOSTUOXQPVRWDMKARFHCRMPFVYOEJ"
-    println(cipherText.periods.toList.sortWith(_._1 < _._1))
-    println(cipherText.keyLengths)
-    println(cipherText.columnFrequencies(cipherText.keyLengths.head))*/
+     var cipherText = "DLCNSRUORMOSTUOXQPVRWDMKARFHCRMPFVYOEJ"
+     println(cipherText.periods.toList.sortWith(_._1 < _._1))
+     println(cipherText.keyLengths)
+     println(cipherText.columnFrequencies(cipherText.keyLengths.head))*/
   }
 }

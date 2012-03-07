@@ -20,9 +20,6 @@ trait FrequencyAnalyzer {
 
   def ngramFrequencies(n:Int):Map[String, Double] = {
     var grams = text.sliding(n).toList.groupBy(identity)
-    //var freq = 
-    grams.map{case (k, v) => (k, (v.size*1.0)/grams.size)}//.toList.sortWith(_._2 > _._2)
-    //println(freq)
-    //freq.toMap
+    grams.map{case (k, v) => (k, (v.size*1.0)/grams.size)}.seq
   }
 }

@@ -55,7 +55,7 @@ object English extends Configuration {
       var grams = e.sampleText.sliding(i).toList
       println(grams.size)
       println(grams.groupBy(identity).size)
-      var frequencies = grams.groupBy(identity).map(e => (e._1.mkString, (e._2.size*1.0)/grams.size)).toList
+      var frequencies = grams.par.groupBy(identity).map(e => (e._1.mkString, (e._2.size*1.0)/grams.size)).toList.seq
       val os = new FileOutputStream(new File(List(i,"grams",e.locale.getLanguage, e.locale.getCountry).mkString("_")))
       val o = new ObjectOutputStream(os)
       o.writeObject(frequencies)

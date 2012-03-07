@@ -17,11 +17,9 @@ abstract class GramHeuristic(weight:Double) extends Heuristic(weight) with Confi
 
   protected def gramSum(expected:Map[String, Double], observed:Map[String, Double]):Double = {
     observed.foldLeft(0.0) { (sum, e) => 
-      if(expected.contains(e._1)) {
-        var k = expected(e._1)
-        sum + abs(k - e._2)
-      } else {
-        sum + 1 
+      expected.get(e._1) match {
+        case Some(x) => sum + abs(x - e._2)
+        case None => sum + 1 
       }
     }
   }

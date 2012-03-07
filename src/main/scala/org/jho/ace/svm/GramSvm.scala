@@ -18,30 +18,34 @@ import org.jho.ace.CipherText._
 
 class GramSvm extends Configuration with LogHelper {
   val grams = language.trigramFrequencies.keys.toList.sorted
+  logger.debug("Gram size: " + grams.size)
   var model:BinaryModel[String, SparseVector] = null
 
   def predict(text:String):String = {
     val data = new SparseVector(grams.size())
-    grams.zipWithIndex.map { case(gram, i) => 
+    val freqs = text.trigramFrequencies
+    grams.zipWithIndex.par.foreach { case(gram, i) => 
         data.indexes(i) = i; 
-        if(text.trigramFrequencies.contains(gram)) {
-          data.values(i) = text.trigramFrequencies(gram).asInstanceOf[Float]; 
+        freqs.get(gram) match {
+          case Some(x) => data.values(i) = x.floatValue
+          case None => 
         }
     }
-    return model.predictLabel(data)
+    model.predictLabel(data)
   }
 
   def score(text:String):Float = {
     val data = new SparseVector(grams.size())
-    grams.zipWithIndex.map { case(gram, i) => 
+    val freqs = text.trigramFrequencies
+    grams.zipWithIndex.par.foreach { case(gram, i) => 
         data.indexes(i) = i; 
-        if(text.trigramFrequencies.contains(gram)) {
-          data.values(i) = text.trigramFrequencies(gram).asInstanceOf[Float]; 
+        freqs.get(gram) match {
+          case Some(x) => data.values(i) = x.floatValue
+          case None => 
         }
     }
-    return model.predictValue(data).asInstanceOf[Float]
+    model.predictValue(data).asInstanceOf[Float]
   }
-
 
   def load:Boolean = {
     model = SolutionModel.identifyTypeAndLoad(getFilename).asInstanceOf[BinaryModel[String, SparseVector]]
@@ -49,28 +53,32 @@ class GramSvm extends Configuration with LogHelper {
     true
   }
 
-  def train = {
-    var samples = (10 to 500).map(language.sample(_))
-
+  def train:Unit = {
     var problem = new MutableBinaryClassificationProblemImpl[String, SparseVector](classOf[String], grams.size)
-    samples.foreach { sample => 
+    logger.debug("Generating positive samples...")
+    (10 to 200).par.map(language.sample(_)).foreach { sample => 
       var data = new SparseVector(grams.size())
+      var freqs = sample.trigramFrequencies
       grams.zipWithIndex.map { case(gram, i) => 
           data.indexes(i) = i; 
-          if(sample.trigramFrequencies.contains(gram)) {
-            data.values(i) = sample.trigramFrequencies(gram).asInstanceOf[Float]; 
+          freqs.get(gram) match {
+            case Some(x) => data.values(i) = x.floatValue
+            case None => 
           }
       }
       problem.addExample(data, "English")
     }
 
+    logger.debug("Generating negative samples...")
     //now generate samples from random gibberish
-    (10 to 500).map(language.randomString(_)).foreach { sample => 
+    (10 to 200).par.map(language.randomString(_)).foreach { sample => 
       var data = new SparseVector(grams.size())
+      var freqs = sample.trigramFrequencies
       grams.zipWithIndex.map { case(gram, i) => 
           data.indexes(i) = i; 
-          if(sample.trigramFrequencies.contains(gram)) {
-            data.values(i) = sample.trigramFrequencies(gram).asInstanceOf[Float]; 
+          freqs.get(gram) match {
+            case Some(x) => data.values(i) = x.floatValue
+            case None => 
           }
       }
       problem.addExample(data, "Garbage")
@@ -91,15 +99,19 @@ class GramSvm extends Configuration with LogHelper {
     builder.kernelSet = kernels
     val param = builder.build()
     var svm = new Nu_SVC[String, SparseVector]()
+
+    logger.debug("Training svm model...")
     model = svm.train(problem, param)
 
     model.save(getFilename)
 
+    logger.debug("Performing cross validation of model...")
     var cv = model.getCrossValidationResults();
     if (cv == null) {
       cv = svm.performCrossValidation(problem, param); 
     }
     println(cv.toString())
+    logger.debug("Traning complete!")
   }
 
   protected def getFilename:String = {
@@ -115,17 +127,19 @@ object GramSvm extends Configuration {
       println("Training new svm")
       svm.train
     } else {
-      val start = System.currentTimeMillis 
-      println(svm.predict("This is a test"));
-      println(System.currentTimeMillis - start)
-      println(svm.score("asdfqwer"));
-      println(svm.score("This"));
-      println(svm.score("This is a test"))
-      println(svm.score(language.sample(50)))
-      println(svm.score(language.sample(100)))
-      println(svm.score(language.sample(150)))
-      println(svm.score(language.sample(300)))
-      println(svm.score(language.randomString(300)))
+      var avg = ((100 to 300).map(language.sample(_)).foldLeft(0.0) { (sum, e) => 
+          val start = System.currentTimeMillis 
+          println(svm.predict(e))
+          (System.currentTimeMillis - start)
+        })/200
+      println("Average prediction time: " + avg)
+
+      avg = ((100 to 300).map(language.randomString(_)).foldLeft(0.0) { (sum, e) => 
+          val start = System.currentTimeMillis 
+          println(svm.predict(e))
+          (System.currentTimeMillis - start)
+        })/200
+      println("Average prediction time: " + avg)
     }
   }
 }
