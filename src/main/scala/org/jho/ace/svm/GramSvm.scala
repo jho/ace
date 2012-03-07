@@ -21,7 +21,7 @@ class GramSvm extends Configuration with LogHelper {
   logger.debug("Gram size: " + grams.size)
   var model:BinaryModel[String, SparseVector] = null
 
-  def predict(text:String):String = {
+  def predict(text:String):Boolean = {
     val data = new SparseVector(grams.size())
     val freqs = text.trigramFrequencies
     grams.zipWithIndex.par.foreach { case(gram, i) => 
@@ -31,7 +31,7 @@ class GramSvm extends Configuration with LogHelper {
           case None => 
         }
     }
-    model.predictLabel(data)
+    model.predictLabel(data).toBoolean
   }
 
   def score(text:String):Float = {
@@ -48,9 +48,14 @@ class GramSvm extends Configuration with LogHelper {
   }
 
   def load:Boolean = {
-    model = SolutionModel.identifyTypeAndLoad(getFilename).asInstanceOf[BinaryModel[String, SparseVector]]
-    if(model == null) return false
-    true
+    try {
+      model = SolutionModel.identifyTypeAndLoad(getFilename).asInstanceOf[BinaryModel[String, SparseVector]]
+      if(model == null) return false
+      true
+    } catch {
+      case e => 
+        false
+    }
   }
 
   def train:Unit = {
@@ -115,7 +120,7 @@ class GramSvm extends Configuration with LogHelper {
   }
 
   protected def getFilename:String = {
-    return List("svm_model_", language.locale.getLanguage, language.locale.getCountry).mkString("_")
+    return List("svm_model", language.locale.getLanguage, language.locale.getCountry).mkString("_")
   }
 }
 
@@ -129,14 +134,14 @@ object GramSvm extends Configuration {
     } else {
       var avg = ((100 to 300).map(language.sample(_)).foldLeft(0.0) { (sum, e) => 
           val start = System.currentTimeMillis 
-          println(svm.predict(e))
+          println(svm.predict(e) == true)
           (System.currentTimeMillis - start)
         })/200
       println("Average prediction time: " + avg)
 
       avg = ((100 to 300).map(language.randomString(_)).foldLeft(0.0) { (sum, e) => 
           val start = System.currentTimeMillis 
-          println(svm.predict(e))
+          assert (svm.predict(e) == false)
           (System.currentTimeMillis - start)
         })/200
       println("Average prediction time: " + avg)
