@@ -24,4 +24,16 @@ class KeywordTest extends Configuration {
       println(result)
     }
   }
+
+  /*
+  @Test
+  def tabula = {
+    val size = language.alphabet.size
+    println("  & " + language.alphabet.mkString("&") + " \\\\ \\hline")
+    println(language.alphabet(0) + "&" + language.alphabet.mkString("&") + " \\\\")
+    (1 to (language.alphabet.size - 1)).foreach { s => 
+      var parts = language.alphabet.splitAt(s)
+      println(language.alphabet(s) + "&" + parts._2.mkString("&") + "&" + parts._1.mkString("&") + " \\\\")
+    }
+  }*/
 }

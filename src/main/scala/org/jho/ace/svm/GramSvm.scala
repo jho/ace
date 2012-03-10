@@ -9,42 +9,26 @@ import collection.JavaConversions._
 import edu.berkeley.compbio.jlibsvm.ImmutableSvmParameterGrid
 import edu.berkeley.compbio.jlibsvm.SolutionModel
 import edu.berkeley.compbio.jlibsvm.binary.BinaryModel
+import edu.berkeley.compbio.jlibsvm.binary.C_SVC
 import edu.berkeley.compbio.jlibsvm.binary.MutableBinaryClassificationProblemImpl
 import edu.berkeley.compbio.jlibsvm.binary.Nu_SVC
+import edu.berkeley.compbio.jlibsvm.kernel.GaussianRBFKernel
 import edu.berkeley.compbio.jlibsvm.kernel.LinearKernel
+import scala.math._
 import org.jho.ace.util.Configuration
 import org.jho.ace.util.LogHelper
 import org.jho.ace.CipherText._
 
 class GramSvm extends Configuration with LogHelper {
-  val grams = language.trigramFrequencies.keys.toList.sorted
-  logger.debug("Gram size: " + grams.size)
+  val grams = language.trigramFrequencies.keys.toList.sorted.zipWithIndex
   var model:BinaryModel[String, SparseVector] = null
 
   def predict(text:String):Boolean = {
-    val data = new SparseVector(grams.size())
-    val freqs = text.trigramFrequencies
-    grams.zipWithIndex.par.foreach { case(gram, i) => 
-        data.indexes(i) = i; 
-        freqs.get(gram) match {
-          case Some(x) => data.values(i) = x.floatValue
-          case None => 
-        }
-    }
-    model.predictLabel(data).toBoolean
+    model.predictLabel(vectorizeGrams(text)).toBoolean
   }
 
   def score(text:String):Float = {
-    val data = new SparseVector(grams.size())
-    val freqs = text.trigramFrequencies
-    grams.zipWithIndex.par.foreach { case(gram, i) => 
-        data.indexes(i) = i; 
-        freqs.get(gram) match {
-          case Some(x) => data.values(i) = x.floatValue
-          case None => 
-        }
-    }
-    model.predictValue(data).asInstanceOf[Float]
+    model.predictValue(vectorizeGrams(text)).asInstanceOf[Float]
   }
 
   def load:Boolean = {
@@ -61,32 +45,17 @@ class GramSvm extends Configuration with LogHelper {
   def train:Unit = {
     var problem = new MutableBinaryClassificationProblemImpl[String, SparseVector](classOf[String], grams.size)
     logger.debug("Generating positive samples...")
-    (10 to 200).par.map(language.sample(_)).foreach { sample => 
-      var data = new SparseVector(grams.size())
-      var freqs = sample.trigramFrequencies
-      grams.zipWithIndex.map { case(gram, i) => 
-          data.indexes(i) = i; 
-          freqs.get(gram) match {
-            case Some(x) => data.values(i) = x.floatValue
-            case None => 
-          }
-      }
-      problem.addExample(data, "English")
+    val range = (10 to 1000)
+    range.map(language.sample(_)).foreach { sample => 
+      //println("adding: "+sample)
+      problem.addExample(vectorizeGrams(sample), "English")
     }
 
     logger.debug("Generating negative samples...")
     //now generate samples from random gibberish
-    (10 to 200).par.map(language.randomString(_)).foreach { sample => 
-      var data = new SparseVector(grams.size())
-      var freqs = sample.trigramFrequencies
-      grams.zipWithIndex.map { case(gram, i) => 
-          data.indexes(i) = i; 
-          freqs.get(gram) match {
-            case Some(x) => data.values(i) = x.floatValue
-            case None => 
-          }
-      }
-      problem.addExample(data, "Garbage")
+    range.map(language.randomString(_)).foreach { sample => 
+      //println("adding: "+sample)
+      problem.addExample(vectorizeGrams(sample), "Garbage")
     }
 
     var builder = ImmutableSvmParameterGrid.builder[String, SparseVector]();
@@ -98,12 +67,17 @@ class GramSvm extends Configuration with LogHelper {
     builder.probability = false;
     builder.redistributeUnbalancedC = true;
     builder.crossValidationFolds = 10;
+    //do grid search for C from 2^-5 to 2^15 
+    //builder.Cset = (-5 to 15).map(pow(2, _).floatValue).toSet.asInstanceOf[Set[java.lang.Float]]
     builder.Cset = Set(1.0f).asInstanceOf[Set[java.lang.Float]]
-     
+
+    //do grid search for Gramm from 2^-15 to 2^3 
+    //var kernels = (-15 to 3).map(pow(2,_)).map(gamma => new GaussianRBFKernel(gamma.floatValue))
     var kernels = Set(new LinearKernel)
     builder.kernelSet = kernels
     val param = builder.build()
     var svm = new Nu_SVC[String, SparseVector]()
+    //var svm = new C_SVC[String, SparseVector]()
 
     logger.debug("Training svm model...")
     model = svm.train(problem, param)
@@ -119,6 +93,22 @@ class GramSvm extends Configuration with LogHelper {
     logger.debug("Traning complete!")
   }
 
+  protected def vectorizeGrams(text:String):SparseVector = {
+    var data = new SparseVector(grams.size())
+    var freqs = text.trigramFrequencies
+    grams.map { case(gram, i) => 
+        data.indexes(i) = i; 
+        freqs.get(gram) match {
+          case Some(x) => 
+            //println(gram + "->" + i + "=" + x)
+            data.values(i) = x.floatValue
+          case None => 
+        }
+    }
+    //println(data.values.mkString(","))
+    return data
+  }
+
   protected def getFilename:String = {
     return List("svm_model", language.locale.getLanguage, language.locale.getCountry).mkString("_")
   }
@@ -127,24 +117,8 @@ class GramSvm extends Configuration with LogHelper {
 object GramSvm extends Configuration {
   def main(args:Array[String]) = {
     val svm = new GramSvm
-    println("Loading svm...")
-    if(!svm.load) {
-      println("Training new svm")
-      svm.train
-    } else {
-      var avg = ((100 to 300).map(language.sample(_)).foldLeft(0.0) { (sum, e) => 
-          val start = System.currentTimeMillis 
-          println(svm.predict(e) == true)
-          (System.currentTimeMillis - start)
-        })/200
-      println("Average prediction time: " + avg)
-
-      avg = ((100 to 300).map(language.randomString(_)).foldLeft(0.0) { (sum, e) => 
-          val start = System.currentTimeMillis 
-          assert (svm.predict(e) == false)
-          (System.currentTimeMillis - start)
-        })/200
-      println("Average prediction time: " + avg)
-    }
+    println("Training svm...")
+    svm.train
+    println("Traning complete!")
   }
 }
