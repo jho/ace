@@ -12,11 +12,12 @@
             <name>Scala-Tools Maven2 Repository</name>
             <url>http://scala-tools.org/repo-snapshots</url>
         </repository>
+        <!--
         <repository>
             <id>scalanlp.org</id>
             <name>ScalaNLP Maven2 Repository</name>
             <url>http://repo.scalanlp.org/repo</url>
-        </repository>
+        </repository>-->
         <repository>
             <id>dev.davidsoergel.com releases</id>
             <url>http://dev.davidsoergel.com/artifactory/repo</url>
@@ -52,7 +53,12 @@
         <dependency>
             <groupId>org.scalala</groupId>
             <artifactId>scalala_2.9.1</artifactId>
-            <version>1.0.0.RC2</version>
+            <version>1.0.0.RC3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scalanlp</groupId>
+            <artifactId>scalanlp-learn_2.9.1</artifactId>
+            <version>0.5</version>
         </dependency>
         <dependency>
             <groupId>edu.berkeley.compbio</groupId>
@@ -78,6 +84,7 @@
                 </executions>
                 <configuration>
                     <scalaVersion>${scala.version}</scalaVersion>
+                    <checkMultipleScalaVersions>false</checkMultipleScalaVersions>
                     <args>
                         <arg>-target:jvm-1.5</arg>
                     </args>

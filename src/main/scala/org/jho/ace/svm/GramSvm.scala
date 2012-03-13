@@ -18,6 +18,7 @@ import scala.math._
 import org.jho.ace.util.Configuration
 import org.jho.ace.util.LogHelper
 import org.jho.ace.CipherText._
+import scalala.library.Plotting
 
 class GramSvm extends Configuration with LogHelper {
   val grams = language.trigramFrequencies.keys.toList.sorted.zipWithIndex
@@ -58,8 +59,8 @@ class GramSvm extends Configuration with LogHelper {
       problem.addExample(vectorizeGrams(sample), "Garbage")
     }
 
-    var builder = ImmutableSvmParameterGrid.builder[String, SparseVector]();
-    builder.nu = 0.5f;
+    var builder = ImmutableSvmParameterGrid.builder[String, SparseVector]()
+    builder.nu = 0.3f;
     builder.cache_size = 100;
     builder.eps = 1e-3f;
     builder.p = 0.1f;
@@ -68,7 +69,7 @@ class GramSvm extends Configuration with LogHelper {
     builder.redistributeUnbalancedC = true;
     builder.crossValidationFolds = 10;
     //do grid search for C from 2^-5 to 2^15 
-    //builder.Cset = (-5 to 15).map(pow(2, _).floatValue).toSet.asInstanceOf[Set[java.lang.Float]]
+    //builder.Cset = (-5 to 5).map(pow(2, _).floatValue).toSet.asInstanceOf[Set[java.lang.Float]]
     builder.Cset = Set(1.0f).asInstanceOf[Set[java.lang.Float]]
 
     //do grid search for Gramm from 2^-15 to 2^3 
@@ -76,8 +77,8 @@ class GramSvm extends Configuration with LogHelper {
     var kernels = Set(new LinearKernel)
     builder.kernelSet = kernels
     val param = builder.build()
-    var svm = new Nu_SVC[String, SparseVector]()
-    //var svm = new C_SVC[String, SparseVector]()
+    //var svm = new Nu_SVC[String, SparseVector]()
+    var svm = new C_SVC[String, SparseVector]()
 
     logger.debug("Training svm model...")
     model = svm.train(problem, param)
@@ -116,9 +117,9 @@ class GramSvm extends Configuration with LogHelper {
 
 object GramSvm extends Configuration {
   def main(args:Array[String]) = {
-    val svm = new GramSvm
-    println("Training svm...")
-    svm.train
-    println("Traning complete!")
+     val svm = new GramSvm
+     println("Training svm...")
+     svm.train
+     println("Traning complete!")
   }
 }

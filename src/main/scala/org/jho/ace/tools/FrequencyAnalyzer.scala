@@ -10,8 +10,16 @@ trait FrequencyAnalyzer {
     text.groupBy(identity).mapValues(_.size/(text.size*1.0))
   }
 
+  lazy val bigrams:List[String] = {
+    text.sliding(2).toList
+  }
+
   lazy val bigramFrequencies:Map[String, Double] = {
     ngramFrequencies(2)
+  }
+
+  lazy val trigrams:List[String] = {
+    text.sliding(3).toList
   }
 
   lazy val trigramFrequencies:Map[String, Double] = {
