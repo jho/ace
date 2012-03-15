@@ -25,7 +25,7 @@ import java.io._
 
 class GramSvm2 extends LanguageClassifier with Configuration with LogHelper {
   val grams = language.trigramFrequencies.keys.toList.sorted.zipWithIndex
-  val trainer = new SVM.Pegasos[Boolean,SparseVector[Double]](300)
+  val trainer = new SVM.Pegasos[Boolean,SparseVector[Double]](400)
   var classifier:trainer.MyClassifier = null
 
   def predict(text:String):Boolean = {
@@ -45,7 +45,7 @@ class GramSvm2 extends LanguageClassifier with Configuration with LogHelper {
 
   def train:Unit = {
     logger.debug("Generating positive samples...")
-    val range = (50 to 300)
+    val range = (50 to 1000)
     var examples = range.map(language.sample(_)).map { sample => 
       Example(true, vectorizeGrams(sample))
     }

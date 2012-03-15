@@ -46,7 +46,7 @@ class GramSvm extends LanguageClassifier with Configuration with LogHelper {
   def train:Unit = {
     var problem = new MutableBinaryClassificationProblemImpl[String, SparseVector](classOf[String], grams.size)
     logger.debug("Generating positive samples...")
-    val range = (10 to 1000)
+    val range = (50 to 1000)
     range.map(language.sample(_)).foreach { sample => 
       //println("adding: "+sample)
       problem.addExample(vectorizeGrams(sample), "English")
@@ -77,8 +77,8 @@ class GramSvm extends LanguageClassifier with Configuration with LogHelper {
     var kernels = Set(new LinearKernel)
     builder.kernelSet = kernels
     val param = builder.build()
-    //var svm = new Nu_SVC[String, SparseVector]()
-    var svm = new C_SVC[String, SparseVector]()
+    var svm = new Nu_SVC[String, SparseVector]()
+    //var svm = new C_SVC[String, SparseVector]()
 
     logger.debug("Training svm model...")
     model = svm.train(problem, param)
