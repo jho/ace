@@ -19,13 +19,14 @@ import org.jho.ace.util.Configuration
 import org.jho.ace.util.LogHelper
 import org.jho.ace.CipherText._
 import scalala.library.Plotting
+import scalala.tensor.mutable.Counter
 
 class GramSvm extends LanguageClassifier with Configuration with LogHelper {
   val grams = language.trigramFrequencies.keys.toList.sorted.zipWithIndex
-  var model:BinaryModel[String, SparseVector] = null
+  var model:BinaryModel[java.lang.Boolean, SparseVector] = null
 
-  def predict(text:String):Boolean = {
-    model.predictLabel(vectorizeGrams(text)).toBoolean
+  def classify(text:String):Boolean = {
+      model.predictLabel(vectorizeGrams(text)).booleanValue
   }
 
   def score(text:String):Float = {
@@ -34,8 +35,10 @@ class GramSvm extends LanguageClassifier with Configuration with LogHelper {
 
   def load:Boolean = {
     try {
-      model = SolutionModel.identifyTypeAndLoad(getFilename).asInstanceOf[BinaryModel[String, SparseVector]]
+      logger.debug("Loading svm...")
+      model = SolutionModel.identifyTypeAndLoad(getFilename).asInstanceOf[BinaryModel[java.lang.Boolean, SparseVector]]
       if(model == null) return false
+      logger.debug("Loading complete.")
       true
     } catch {
       case e => 
@@ -44,23 +47,23 @@ class GramSvm extends LanguageClassifier with Configuration with LogHelper {
   }
 
   def train:Unit = {
-    var problem = new MutableBinaryClassificationProblemImpl[String, SparseVector](classOf[String], grams.size)
+    var problem = new MutableBinaryClassificationProblemImpl[java.lang.Boolean, SparseVector](classOf[Boolean], grams.size)
     logger.debug("Generating positive samples...")
     val range = (50 to 1000)
     range.map(language.sample(_)).foreach { sample => 
       //println("adding: "+sample)
-      problem.addExample(vectorizeGrams(sample), "English")
+      problem.addExample(vectorizeGrams(sample), true)
     }
 
     logger.debug("Generating negative samples...")
     //now generate samples from random gibberish
     range.map(language.randomString(_)).foreach { sample => 
       //println("adding: "+sample)
-      problem.addExample(vectorizeGrams(sample), "Garbage")
+      problem.addExample(vectorizeGrams(sample), false)
     }
 
-    var builder = ImmutableSvmParameterGrid.builder[String, SparseVector]()
-    builder.nu = 0.3f;
+    var builder = ImmutableSvmParameterGrid.builder[java.lang.Boolean, SparseVector]()
+    builder.nu = 0.5f;
     builder.cache_size = 100;
     builder.eps = 1e-3f;
     builder.p = 0.1f;
@@ -77,7 +80,7 @@ class GramSvm extends LanguageClassifier with Configuration with LogHelper {
     var kernels = Set(new LinearKernel)
     builder.kernelSet = kernels
     val param = builder.build()
-    var svm = new Nu_SVC[String, SparseVector]()
+    var svm = new Nu_SVC[java.lang.Boolean, SparseVector]()
     //var svm = new C_SVC[String, SparseVector]()
 
     logger.debug("Training svm model...")
@@ -96,30 +99,28 @@ class GramSvm extends LanguageClassifier with Configuration with LogHelper {
 
   protected def vectorizeGrams(text:String):SparseVector = {
     var data = new SparseVector(grams.size())
-    var freqs = text.trigramFrequencies
-    grams.map { case(gram, i) => 
-        data.indexes(i) = i; 
-        freqs.get(gram) match {
-          case Some(x) => 
-            //println(gram + "->" + i + "=" + x)
-            data.values(i) = x.floatValue
-          case None => 
-        }
-    }
-    //println(data.values.mkString(","))
-    return data
+    var counter = Counter.count[String](text.trigrams).mapValues(_.toDouble)
+    grams.foreach { case(gram, i) => 
+      data.indexes(i) = i; 
+      val value = counter(gram)
+      if(value > 0.0) {
+        data.values(i) = value.floatValue
+      }
   }
+  //println(data.values.mkString(","))
+  return data
+}
 
-  protected def getFilename:String = {
-    return List("svm_model", language.locale.getLanguage, language.locale.getCountry).mkString("_")
-  }
+protected def getFilename:String = {
+  return List("svm_model", language.locale.getLanguage, language.locale.getCountry).mkString("_")
+}
 }
 
 object GramSvm extends Configuration {
   def main(args:Array[String]) = {
-     val svm = new GramSvm
-     println("Training svm...")
-     svm.train
-     println("Traning complete!")
+    val svm = new GramSvm
+    println("Training svm...")
+    svm.train
+    println("Traning complete!")
   }
 }

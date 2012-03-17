@@ -11,7 +11,7 @@ import Assert._
 
 abstract class LanguageClassifierTest(val classifier:LanguageClassifier) extends Configuration with LogHelper {
   classifier.load
-  val range = (50 to 300)
+  val range = (50 to 100)
 
   @Test
   def testPositive = {
@@ -19,11 +19,13 @@ abstract class LanguageClassifierTest(val classifier:LanguageClassifier) extends
     var avg = range.map(language.sample(_)).foldLeft(0.0) { (sum, e) => 
       val start = System.currentTimeMillis 
       //logger.debug("Predicting for: " + e)
-      val prediction = classifier.predict(e)
-      if(!prediction) {
+      val prediction = classifier.classify(e)
+      //if(!prediction) {
         println("Text: " + e)
+        println("Text Length: " + e.length)
         println("Prediction: " + prediction)
         println("Score: " + classifier.score(e))
+      if(!prediction) {
         errors += 1
       }
       sum + (System.currentTimeMillis - start)
@@ -32,8 +34,8 @@ abstract class LanguageClassifierTest(val classifier:LanguageClassifier) extends
 
     assertEquals(0, errors)
 
-    assertTrue(classifier.predict(language.sample(1000)))
-    assertTrue(classifier.predict(language.sample(10000)))
+    assertTrue(classifier.classify(language.sample(1000)))
+    assertTrue(classifier.classify(language.sample(10000)))
   }
 
   @Test
@@ -41,12 +43,14 @@ abstract class LanguageClassifierTest(val classifier:LanguageClassifier) extends
     var errors = 0
     val avg = range.map(language.randomString(_)).foldLeft(0.0) { (sum, e) => 
       val start = System.currentTimeMillis 
-      val prediction = classifier.predict(e)
+      val prediction = classifier.classify(e)
       val score = classifier.score(e)
-      if(prediction) {
+      //if(prediction) {
         println("Text: " + e)
+        println("Text Length: " + e.length)
         println("Prediction: " + prediction)
         println("Score: " + classifier.score(e))
+      if(prediction) {
         errors += 1
       }
       sum + (System.currentTimeMillis - start)
@@ -55,8 +59,8 @@ abstract class LanguageClassifierTest(val classifier:LanguageClassifier) extends
 
     assertEquals(0, errors)
     
-    assertFalse(classifier.predict(language.randomString(1000)))
-    assertFalse(classifier.predict(language.randomString(10000)))
+    assertFalse(classifier.classify(language.randomString(1000)))
+    assertFalse(classifier.classify(language.randomString(10000)))
   }
 
 }

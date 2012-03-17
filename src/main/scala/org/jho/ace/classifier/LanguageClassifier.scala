@@ -4,12 +4,15 @@
 
 package org.jho.ace.classifier
 
-trait LanguageClassifier {
-    def predict(text:String):Boolean
+import org.jho.ace.util.Configuration
+import org.jho.ace.util.LogHelper
 
-    def score(text:String):Float
+trait LanguageClassifier extends Configuration with LogHelper {
+  def classify(text:String):Boolean
 
-    def load:Boolean
+  def score(text:String):Float
 
-    def train:Unit
+  def load:Boolean
+
+  def train:Unit
 }
