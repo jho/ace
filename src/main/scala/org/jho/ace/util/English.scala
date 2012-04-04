@@ -43,6 +43,11 @@ class English extends {
     'J' -> .0010,
     'Z' -> .0007
   )
+  val stopwords = List("a", "an", "and", "are", "as", "at", "be", "but", "by",
+                       "for", "if", "in", "into", "is", "it",
+                       "no", "not", "of", "on", "or", "such",
+                       "that", "the", "their", "then", "there", "these",
+                       "they", "this", "to", "was", "will", "with")
 } with Language 
 
 
@@ -50,16 +55,17 @@ object English extends Configuration {
   def main(args:Array[String]) = {
     var e = new English()
 
+    println(e.fourgramFrequencies.toList.sortWith(_._2 > _._2).take(10000))
     /*
-    for(i <- 2 to 4) {
-      var grams = e.sampleText.sliding(i).toList
-      println(grams.size)
-      println(grams.groupBy(identity).size)
-      var frequencies = grams.par.groupBy(identity).map(e => (e._1.mkString, (e._2.size*1.0)/grams.size)).toList.seq
-      val os = new FileOutputStream(new File(List(i,"grams",e.locale.getLanguage, e.locale.getCountry).mkString("_")))
-      val o = new ObjectOutputStream(os)
-      o.writeObject(frequencies)
-      println(frequencies.sortWith(_._2 > _._2))
-    }*/
+     for(i <- 2 to 4) {
+     var grams = e.sampleText.sliding(i).toList
+     println(grams.size)
+     println(grams.groupBy(identity).size)
+     var frequencies = grams.par.groupBy(identity).map(e => (e._1.mkString, (e._2.size*1.0)/grams.size)).toList.seq
+     val os = new FileOutputStream(new File(List(i,"grams",e.locale.getLanguage, e.locale.getCountry).mkString("_")))
+     val o = new ObjectOutputStream(os)
+     o.writeObject(frequencies)
+     println(frequencies.sortWith(_._2 > _._2))
+     }*/
   }
 }

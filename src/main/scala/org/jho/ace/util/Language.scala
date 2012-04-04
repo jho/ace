@@ -15,6 +15,7 @@ trait Language {
   val alphabet:List[Char]
   lazy val numChars = alphabet.size
   val dictionary = new Dictionary(locale)
+  val stopwords:List[String]
 
   lazy val sampleText = {
     var sample:Seq[Char] = List[Char]()
@@ -49,7 +50,7 @@ trait Language {
   lazy val trigramFrequencies:Map[String,Double] = {
     loadGramFreq("3_grams")
   } 
-  lazy val quadgramFrequencies:Map[String,Double] = {
+  lazy val fourgramFrequencies:Map[String,Double] = {
     loadGramFreq("4_grams")
   } 
   val ioc:Double

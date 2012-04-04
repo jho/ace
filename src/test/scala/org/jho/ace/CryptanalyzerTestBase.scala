@@ -18,13 +18,13 @@ abstract class CryptanalyzerTestBase(val algorithm:Cryptanalyzer) extends Config
                 "EVERY", new Vigenere)
   }
 
-  //@Test
+  @Test
   def decryptShortText = {
     testDecrypt("THEREARENOSECRETSTHATTIMEDOESNOTREVEAL",
                 "KEYWORD", new Vigenere)
   }
 
-  @Test
+  //@Test
   def decryptRandomSamplesShortKeyword = {
     for ( i <- (100 to 200 by 50)) {
       println(i)

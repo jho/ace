@@ -9,6 +9,8 @@ package object util {
   implicit def int2MyInt(i:Int):MyInt = new MyInt(i)
   implicit def int2MyBigInt(i:BigInt):MyBigInt = new MyBigInt(i)
   implicit def string2MyString(s:String):MyString = new MyString(s)
+  //why isn't this just part of the language?
+  implicit def tupleToList[T](t:Product):List[T] = t.productIterator.toList map { case e:T => e}
 
   class MyInt(i:Int) {
     //define a true modulus function (% just does a remainder)
@@ -26,7 +28,7 @@ package object util {
 
     def times(f: => Unit):Unit = for ( j <- 1 to i) { f }
 
-    def times[A](f: => A):Seq[A] = for ( j <- 1 to i) yield { f }
+    def times[A](f: => A):Traversable[A] = for ( j <- 1 to i) yield { f }
   }
 
   class MyBigInt(i:BigInt) {
