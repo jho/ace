@@ -17,7 +17,7 @@ import scala.math._
  */
 class AStarCryptanalyzer extends Cryptanalyzer {
   val classifier = new GramSvm2
-  classifier.load
+  //classifier.load
 
   def decrypt(cipherText:String, cipher:Cipher):CryptanalysisResult = {
     var queue = new PriorityQueue[(String, Double)]()
@@ -53,10 +53,11 @@ class AStarCryptanalyzer extends Cryptanalyzer {
           best = (n, d)
           logger.debug("new best:" + best)
           logger.trace("iterations since last best: " + count)
-          logger.debug("Score: " + classifier.score(decryption))
-          logger.debug("Classification: " + classifier.classify(decryption))
+          //logger.debug("Score: " + classifier.score(decryption))
+          //logger.debug("Classification: " + classifier.classify(decryption))
           //have we reached the goal?
-          if(classifier.classify(decryption) /*|| abs(goal - best._2) <= (stdDev * 3.0)*/) {
+          //if(classifier.classify(decryption)) { 
+          if(abs(goal - best._2) <= (stdDev * 3.0)) {
             return new CryptanalysisResult(best._1, cipher.decrypt(best._1, cipherText), count, best._2)
           }
         }

@@ -10,7 +10,7 @@ import scala.util.DynamicVariable
 
 trait Configuration {
     val language = Configuration.language
-    lazy val heuristics = List(new DictionaryHeuristic(3.0), new IoCHeuristic(1.5), new TrigramHeuristic(1.0))
+    lazy val heuristics = List(new DictionaryHeuristic(3.0), new IoCHeuristic(1.5), new BigramHeuristic(1.0), new TrigramHeuristic(1.0))
 
     /**
      * Maximum iterations a search algorithm should perform before producing it's best value

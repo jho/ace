@@ -15,27 +15,27 @@ trait Selector extends Function2[Seq[(String, Double)], Int, Seq[String]] {
 
 class randomSelector extends Selector with LogHelper {
   def apply(parents:Seq[(String, Double)], size:Int):Seq[String] = { 
-      var indicies = size.times { rand.nextInt(parents.size) }.toSeq
-      indicies.map(i => parents(i)._1)
+    var indicies = size.times { rand.nextInt(parents.size) }.toSeq
+    indicies.map(i => parents(i)._1)
   }
 }
 
 class tournamentSelector(var n:Int) extends Selector with LogHelper {
   def apply(parents:Seq[(String, Double)], size:Int):Seq[String] = { 
-      return size.times { selectOne(parents) }.toSeq
+    return size.times { selectOne(parents) }.toSeq
   }
 
-    def selectOne(parents:Seq[(String, Double)]):String = {
-        var best = ("", Double.MaxValue) 
+  def selectOne(parents:Seq[(String, Double)]):String = {
+    var best = ("", Double.MaxValue) 
 
-        var size = parents.size
-        for(i <- 0 to n) {
-            var next = parents(rand.nextInt(size))
-            if(next._2 < best._2) {
-                best = next
-            }
-        }
-        return best._1
+    var size = parents.size
+    for(i <- 0 to n) {
+      var next = parents(rand.nextInt(size))
+      if(next._2 < best._2) {
+        best = next
+      }
     }
+    return best._1
+  }
 }
 
