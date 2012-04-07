@@ -3,6 +3,7 @@
  */
 package org.jho.ace.util
 
+import org.jho.ace.genetic.{twoPointCrossover, tournamentSelector}
 import org.jho.ace.heuristic._
 
 import scala.util.DynamicVariable
@@ -21,6 +22,16 @@ trait Configuration {
         var innerLoops = 200
         var outerLoops = 500
         var coolingFactor = .97
+    }
+
+    object GAConfig {
+        var population = 200
+        var generations = 200
+        var pm = 0.4 
+        var pc = 0.9
+        var selectionSize = 20 
+        var crossover = new twoPointCrossover 
+        var selector = new tournamentSelector(12)
     }
 }
 

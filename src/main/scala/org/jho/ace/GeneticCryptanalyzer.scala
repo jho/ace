@@ -6,7 +6,7 @@ package org.jho.ace
 import org.jho.ace.CipherText._
 import org.jho.ace.Keyword._
 import org.jho.ace.ciphers.Cipher
-import org.jho.ace.genetic.twoPointCrossover
+import org.jho.ace.genetic._
 import org.jho.ace.util._
 
 import scala.collection.mutable.HashSet
@@ -31,32 +31,36 @@ class GeneticCryptanalyzer extends Cryptanalyzer {
       val decryption = cipher.decrypt(key, cipherText)
       heuristics.foldLeft(0.0) { (acc, h) => acc + h.evaluate(decryption)}
     }
-    val crossover = new twoPointCrossover
     //generate an initial population of 200 individuals ranked by cost
     val rankFunction = (x:String, y:String) => cost(x) < cost(y)
-    var population:PriorityQueue[(String, Double)] = (1 to 20).map{ _ => 
+    var population:PriorityQueue[(String, Double)] = (1 to GAConfig.population).map{ _ => 
         var i = language.randomString(rand.nextInt(cipherText.length/4) + 1)
         (i, cost(i))
     }(breakOut)
-    for(generation <- 1 to 2) {
+    for(generation <- 1 to GAConfig.generations) {
         logger.debug("generation: " + generation)
         logger.debug("population: " + population)
-        //select the strongest individuals 
-        //TODO: needs to use a selection method (tournament?)
-        val parents = population.take(5) 
-        logger.debug("parents: " + parents)
+        //probabilistically select the strongest individuals 
+        val parents = GAConfig.selector(population.toSeq, GAConfig.selectionSize)
+        logger.trace("parents: " + parents)
         var children = parents.grouped(2).foldLeft(List[(String, Double)]()) { (children, p) => 
-            //crossover pairs of children
-            //TODO: This should be probabilistic
-            var pair:List[String] = crossover(p.head._1, p.last._1)
+            var pair = p
+            //probabilistically crossover pairs of children
+            if(rand.nextDouble < GAConfig.pc) {
+                logger.trace("crossover of: " + (pair))
+                pair = GAConfig.crossover(pair.head, pair.last)
+            } 
             children ++ pair.map{ c => 
-                //mutate children
-                //TODO: This should be probabilistic
-                val m = c.mutate(true)
+                //probabilistically mutate children
+                var m = c
+                if(rand.nextDouble < GAConfig.pm) {
+                    logger.trace("mutating: " + m)
+                    m = m.mutate(true)
+                }
                 (m, cost(m))
             }
         }
-        logger.debug("children: " + children)
+        logger.trace("children: " + children)
         population = population ++ children
         //drop the lowest ranked individuals (survival of the fittest)
         population = population.dropRight(children.size) 
