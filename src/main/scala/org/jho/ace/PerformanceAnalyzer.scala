@@ -20,8 +20,10 @@ object PerformanceAnalyzer extends Configuration with LogHelper {
     var sa = new SACryptanalyzer
     var cipher = new Vigenere
 
-    var keys = (4 to 5).map(language.dictionary.randomWord(_))
-    var sizes = (50 to 50 by 50)
+    //var keys = (4 to 10 by 2).map(language.dictionary.randomWord(_))
+    var keys = (4 to 4 by 2).map(language.dictionary.randomWord(_))
+    var sizes = (50 to 100 by 50)
+    //var sizes = (50 to 500 by 50)
     var runs = keys.foldLeft(List[(String, Int)]())((runs, key) => runs ++ sizes.map(size => (key, size)))
     logger.debug(runs)
     var algorithms = List(("A*", astar))//, ("SA", sa))
@@ -37,12 +39,27 @@ object PerformanceAnalyzer extends Configuration with LogHelper {
     logger.debug(results)
     results.foreach { result => 
       var grouped = result._2.groupBy(res => res.keySize) //group by key length
-      var plotter = new Plotter("Accuracy", "Ciphertext size")
-      logger.debug("grouped: " + grouped)
-      grouped.foreach{ case(size, results) => 
-        var data = results.map(res => (res.accuracy, res.textSize))
-        logger.debug("Data: " + data)
-        plotter.plot(data, Map("title" -> size.toString, "with" -> "linespoints"))
+      var plotter = new Plotter(result._1 + " Accuracy")
+      plotter.xlabel = "Ciphertext size"
+      plotter.ylabel = "Accuracy"
+      plotter.xrange = (0.0, sizes.last)
+      plotter.yrange = (0.0, 1.1)
+      grouped.zipWithIndex.foreach{ case((size, results), i) => 
+          var data = results.map(res => (res.textSize.toDouble, res.accuracy)).toSeq
+          logger.debug("data: " + size + " -> " + data)
+          plotter.plot(data, size.toString+"-characters", "w lp ls "+(i+1))
+      }
+      plotter.run
+
+      plotter = new Plotter(result._1 + " Runtime") 
+      plotter.xlabel = "Ciphertext size"
+      plotter.ylabel = "Runtime"
+      //plotter.xrange = (0.0, sizes.last)
+      //plotter.yrange = (0.0, 1.1)
+      grouped.zipWithIndex.foreach{ case((size, results), i) => 
+          var data = results.map(res => (res.textSize.toDouble, res.runTime)).toSeq
+          logger.debug("data: " + size + " -> " + data)
+          plotter.plot(data, size.toString+"-characters", "w lp ls "+(i+1))
       }
       plotter.run
     }
