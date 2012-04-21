@@ -6,10 +6,10 @@ package org.jho.ace
 import scala.math._
 import org.jho.ace.CipherText._
 import org.jho.ace.ciphers.Cipher
+import org.jho.ace.heuristic._
 import org.jho.ace.util._
-import org.jho.ace.util.Language
 
-class VigenereCryptanalyzer extends Cryptanalyzer {
+class VigenereCryptanalyzer(heuristic:Heuristic = Heuristic.default) extends Cryptanalyzer(heuristic) {
   def decrypt(cipherText:String, cipher:Cipher):CryptanalysisResult = {
     val keyLengths = cipherText.keyLengths
     val keys = keyLengths.slice(0,5).foldLeft(List[(String,Double)]()) { (keys, keyLength) =>
@@ -26,7 +26,7 @@ class VigenereCryptanalyzer extends Cryptanalyzer {
           }
           println(key)
           var decryption = cipher.decrypt(key, cipherText)
-          (key, heuristics.foldLeft(0.0) { (acc, h) => acc + h.evaluate(decryption)})
+          (key, heuristic.evaluate(decryption))
         }
       }
     }

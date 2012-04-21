@@ -4,12 +4,12 @@
 
 package org.jho.ace.ciphers
 
-import org.jho.ace.util.Configuration
+import org.jho.ace.util.Configureable
 
 import org.junit._
 import Assert._
 
-class VigenereTest extends Configuration {
+class VigenereTest extends Configureable {
   @Test
   def encryptDecrypt = {
     val v = new Vigenere
@@ -24,5 +24,12 @@ class VigenereTest extends Configuration {
 
     //println(v.encrypt("EVERY", "MUSTCHANGEMEETINGLOCATIONFROMBRIDGETOUNDERPASSSINCEENEMYAGENTSAREBELIEVEDTOHAVEBEENASSIGNEDTOWATCHBRIDGESTOPMEETINGTIMEUNCHANGEDXX"))
     //println(v.encrypt("KEYWORD", "THEREARENOSECRETSTHATTIMEDOESNOTREVEAL"))
+  }
+
+  @Test 
+  def testGenerateInitialKeys = {
+    val v = new Vigenere
+    assertEquals(7, v.generateInitialKey(v.encrypt("KEYWORD", language.sample(100))).length)
+    assertEquals(7, v.generateInitialKey(v.encrypt("KEYWORD", language.sample(200))).length)
   }
 }

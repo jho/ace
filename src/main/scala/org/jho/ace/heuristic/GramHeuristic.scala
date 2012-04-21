@@ -3,13 +3,13 @@
  */
 package org.jho.ace.heuristic
 
-import org.jho.ace.util.Configuration
+import org.jho.ace.util.Configureable
 import org.jho.ace.CipherText._
 
 import scala.math._
 
-abstract class GramHeuristic(weight:Double) extends Heuristic(weight) with Configuration {
-  def compute(in:String):Double = {
+abstract class GramHeuristic(weight:Double) extends Heuristic(weight) with Configureable {
+  override def compute(in:String):Double = {
     doCompute(in.filter(_.isLetter).toUpperCase)
   }
 
@@ -22,6 +22,14 @@ abstract class GramHeuristic(weight:Double) extends Heuristic(weight) with Confi
         case None => sum + 1 
       }
     }
+  }
+}
+
+class UnigramHeuristic(weight:Double) extends GramHeuristic(weight) {
+  var mapper = (kv:(Char, Double)) => (kv._1.toString, kv._2) 
+  var frequencies = language.frequencies.map(mapper)
+  def doCompute(in:String) = {
+    gramSum(frequencies, in.frequencies.map(mapper))
   }
 }
 

@@ -7,9 +7,10 @@ import org.junit._
 import Assert._
 
 import org.jho.ace.CipherText._
-import org.jho.ace.util.Configuration
+import org.jho.ace.ciphers.Vigenere
+import org.jho.ace.util._
 
-class CipherTextTest extends Configuration {
+class CipherTextTest extends Configureable {
   @Test
   def testFrequencies = {
     val results = "This is a test".frequencies
@@ -20,14 +21,14 @@ class CipherTextTest extends Configuration {
   @Test
   def testBigramFrequencies = {
     val results = "This is a test".bigramFrequencies
-    assertEquals(9, results.size)
+    assertEquals(5, results.size)
     results.foreach { p => assertTrue(p._2 > 0.0) }
   }
 
   @Test
   def testNgramFrequencies = {
     val results = "This is a test".ngramFrequencies(3)
-    assertEquals(9, results.size)
+    assertEquals(5, results.size)
     results.foreach { p => assertTrue(p._2 > 0.0) }
   }
 
@@ -40,10 +41,13 @@ class CipherTextTest extends Configuration {
 
   @Test
   def findKeyLength = {
-    var results = "QPWKALVRXCQZIKGRBPFAEOMFLJMSDZVDHXCXJYEBIMTRQWNMEAIZRVKCVKVLXNEICFZPZCZZHKMLVZVZIZRRQWDKECHOSNYXXLSPMYKVQXJTDCIOMEEXDQVSRXLRLKZHOV".keyLengths
-    assertEquals(5, results(0))
-    assertEquals(15, results(1))
-    assertEquals(20, results(2))
+    val cipher = new Vigenere()
+    var results = 100.times {
+        cipher.encrypt("KEYWORD", language.sample(200)).keyLengths
+    }
+    val accuracy = (results.filter(_.take(3).contains(7)).size*1.0/results.size)
+    println(accuracy)
+    assertTrue(accuracy > .90)
 
     /*
      println("CIABIRCEPOQYNIRYFCPSSXHMEXUSXFDMKO".periods)

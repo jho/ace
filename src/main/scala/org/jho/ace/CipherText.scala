@@ -3,14 +3,14 @@
  */
 package org.jho.ace
 
-import org.jho.ace.util.Configuration
+import org.jho.ace.util.Configureable
 import org.jho.ace.tools.FrequencyAnalyzer
 import org.jho.ace.tools.indexOfCoincidence
 import org.jho.ace.util._
 
 import scala.math._
 
-class CipherText(var text:String) extends FrequencyAnalyzer with Configuration {
+class CipherText(var text:String) extends FrequencyAnalyzer with Configureable with LogHelper {
   text = text.filter(_.isLetter).toUpperCase
 
   lazy val periods:Map[Int, Double] = {
@@ -23,12 +23,14 @@ class CipherText(var text:String) extends FrequencyAnalyzer with Configuration {
     }.toMap
   }
 
-  def keyLengths():List[Int] = {
-    val sorted = periods.toList.sortWith { (a,b) =>
-      //sort by diff from langauge IoC, order key lengths that are close to the IoC by key length (so we try smallest first)
-      ((a._1 < b._1) && (abs(language.ioc-a._2) + abs(language.ioc-b._2)) <= .5) || abs(language.ioc-a._2) < abs(language.ioc-b._2)
-    }
-    sorted.map(_._1).toList //TODO: check to see that the next elements in the list are congruent to the first (5,10,15, etc)
+  lazy val keyLengths:List[Int] = {
+    var sorted = periods.filter(i => abs(language.ioc-i._2) <= .3).toList.sortWith { (a,b) =>
+      abs(language.ioc-a._2) - abs(language.ioc-b._2) < 0
+    }.sortWith { (a,b) => 
+      (b._1 mod a._1) == 0 
+    } 
+    logger.trace(sorted.take(sorted.size min 10))
+    sorted.map(_._1).toList 
   }
 
   /**

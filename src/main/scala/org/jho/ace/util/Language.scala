@@ -6,6 +6,7 @@ package org.jho.ace.util
 import java.util.Locale
 import java.io.ObjectInputStream
 
+import scala.util.DynamicVariable
 import scala.util.Random
 
 trait Language {
@@ -27,6 +28,16 @@ trait Language {
     sample
   }
 
+  lazy val text = {
+    var text:Seq[Char] = List[Char]()
+    for(i <- 1 to 1) {
+      text = text ++ scala.io.Source.fromInputStream(
+        getClass.getResourceAsStream(List("/sample"+i, locale.getLanguage, locale.getCountry).mkString("_")))
+      .toIndexedSeq.withFilter(c => c.isLetter || c.isWhitespace).map(_.toUpper)
+    }
+    text
+  }
+
   def sample(size:Int):String = {
     sampleText.drop(rand.nextInt(sampleText.size-size)).take(size).mkString
   }
@@ -36,9 +47,10 @@ trait Language {
     val in = new ObjectInputStream(is)
     val obj = in.readObject()
     obj match {
-      case f: List[Tuple2[String, Double]] => f.toMap
+      case f: Seq[Tuple2[String, Double]] => f.toMap
       case _ => throw new IllegalStateException("Gram file: " + file + " is not in the right format!")
     }
+    
   }
 
   //statistics
@@ -53,12 +65,27 @@ trait Language {
   lazy val fourgramFrequencies:Map[String,Double] = {
     loadGramFreq("4_grams")
   } 
+  lazy val wordFrequencies:Map[String, Double] = {
+    loadGramFreq("word_frequencies")
+  }
+
   val ioc:Double
   val avgWordSize:Int
 
-  //utilities
+//utilities
   def char2Int(c:Char):Int = alphabet.indexOf(c)
   def int2Char(i:Int):Char = alphabet(i)
   def randomChar:Char = alphabet(rand.nextInt(alphabet.size-1))
   def randomString(size:Int):String = (0 until size).foldLeft(""){(acc, i) => acc + randomChar}
+}
+
+object Language {
+  //make the default language a thread local variable
+  private var _default = new DynamicVariable[Language](new English)
+  def default = { _default.value }
+  def default_= (language:Language) = _default.value = language
+  /*
+   def withDefault(language:Language)(thunk: => Language):Language = {
+   _default.withValue(language)(thunk)
+   }*/
 }

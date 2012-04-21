@@ -3,7 +3,7 @@
  */
 package org.jho.ace.heuristic
 
-import org.jho.ace.util.Configuration
+import org.jho.ace.util.Configureable
 
 import org.junit._
 import Assert._
@@ -12,7 +12,7 @@ import scala.math._
 import org.jho.ace.util._
 import org.jho.ace.CipherText._
 
-class GramHeuristicTest extends Configuration {
+class GramHeuristicTest extends Configureable {
 
   @Test
   def computeCost = {

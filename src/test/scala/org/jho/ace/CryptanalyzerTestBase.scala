@@ -8,11 +8,11 @@ import Assert._
 
 import org.jho.ace.ciphers.Cipher
 import org.jho.ace.ciphers.Vigenere
-import org.jho.ace.util.Configuration
+import org.jho.ace.util.Configureable
 import org.jho.ace.util._
 
-abstract class CryptanalyzerTestBase(val algorithm:Cryptanalyzer) extends Configuration {
-  @Test
+abstract class CryptanalyzerTestBase(val algorithm:Cryptanalyzer) extends Configureable with LogHelper {
+  //@Test
   def decryptLongText = {
     testDecrypt("MUSTCHANGEMEETINGLOCATIONFROMBRIDGETOUNDERPASSSINCEENEMYAGENTSAREBELIEVEDTOHAVEBEENASSIGNEDTOWATCHBRIDGESTOPMEETINGTIMEUNCHANGEDXX",
                 "EVERY", new Vigenere)
@@ -27,32 +27,40 @@ abstract class CryptanalyzerTestBase(val algorithm:Cryptanalyzer) extends Config
   //@Test
   def decryptRandomSamplesShortKeyword = {
     for ( i <- (100 to 200 by 50)) {
-      println(i)
-      testDecrypt(language.sample(i), "LEMON", new Vigenere)
+      var keyword = language.dictionary.randomWord(3)
+      logger.debug("Keyword: " + keyword + ", Size: " + i)
+      testDecrypt(language.sample(i), keyword, new Vigenere)
+    }
+  }
+
+  @Test
+  def decryptRandomSamplesMediumKeyword = {
+    for ( i <- (100 to 200 by 50)) {
+      var keyword = language.dictionary.randomWord(7)
+      logger.debug("Keyword: " + keyword + ", Size: " + i)
+      testDecrypt(language.sample(i), keyword, new Vigenere)
     }
   }
 
   //@Test
-  def decryptRandomSamples = {
+  def decryptRandomSamplesLongKeyword = {
     for ( i <- (100 to 200 by 50)) {
-      println(i)
-      testDecrypt(language.sample(i), "THINGY", new Vigenere)
+      var keyword = language.dictionary.randomWord(10)
+      logger.debug("Keyword: " + keyword + ", Size: " + i)
+      testDecrypt(language.sample(i), keyword, new Vigenere)
     }
   }
 
   private def testDecrypt(plainText:String, key:String, cipher:Cipher) = {
-    println("Plain Text: " + plainText)
-    println("Plain Text Cost: " + heuristics.foldLeft(0.0)(_ + _.evaluate(plainText)))
     var cipherText = cipher.encrypt(key, plainText)
-    println("Cipher Text: " + cipherText)
     var startTime = System.currentTimeMillis
     var result = algorithm.decrypt(cipherText, cipher)
-    println("Time: " + (System.currentTimeMillis-startTime))
-    println("Resulting decryption: " + result)
+    logger.debug("Time: " + (System.currentTimeMillis-startTime))
+    logger.debug("Resulting decryption: " + result)
     var diff = result.plainText.distance(plainText)
-    println("Diff from original plain text: " + diff)
+    logger.debug("Diff from original plain text: " + diff)
     //assertTrue("Difference is greater than 50%", (diff <= .50))
-    println("--------------")
+    logger.debug("--------------")
   }
 
 }

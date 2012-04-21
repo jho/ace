@@ -7,9 +7,9 @@ import org.junit._
 import Assert._
 
 import org.jho.ace.ciphers.Vigenere
-import org.jho.ace.util.Configuration
+import org.jho.ace.util.Configureable
 
-class VigenereCryptanalyzerTest extends Configuration {
+class VigenereCryptanalyzerTest extends Configureable {
 
   @Test
   def decrypt = {

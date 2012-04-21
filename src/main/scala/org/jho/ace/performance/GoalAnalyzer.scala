@@ -1,94 +1,69 @@
 /*
  * Copyright 2011 Joshua Hollander.
  */
-package org.jho.ace
+package org.jho.ace.performance
 
 import org.junit._
 import Assert._
 
-import org.apache.commons.lang.builder.ToStringStyle
-import org.jho.ace.ciphers.Cipher
+import org.jho.ace.AStarCryptanalyzer
 import org.jho.ace.ciphers.Vigenere
-import org.jho.ace.util.Configuration
+import org.jho.ace.heuristic._
 import org.jho.ace.util.Plotter
 import org.jho.ace.util._
-import org.apache.commons.lang.builder.ToStringBuilder
 
-object PerformanceAnalyzer extends Configuration with LogHelper {
-  def main(args:Array[String]) = {
-    var astar = new AStarCryptanalyzer
-    var sa = new SACryptanalyzer
-    var cipher = new Vigenere
+import scala.collection.mutable.ListBuffer
+import scala.math._
 
-    //var keys = (4 to 10 by 2).map(language.dictionary.randomWord(_))
-    var keys = (4 to 4 by 2).map(language.dictionary.randomWord(_))
-    var sizes = (50 to 100 by 50)
-    //var sizes = (50 to 500 by 50)
-    var runs = keys.foldLeft(List[(String, Int)]())((runs, key) => runs ++ sizes.map(size => (key, size)))
-    logger.debug(runs)
-    var algorithms = List(("A*", astar))//, ("SA", sa))
-    var results = algorithms.map { case (name, algorithm) => 
-        println("algorithm: "+name)
-        (name, (runs.map { case (key, size) => 
-                println("-----------------------")
-                println(size+"-char, "+key.length+"-char keyword: "+key)
-                println("-----------------------")
-                run(size, key, algorithm, cipher)
-            }))
-    }
-    logger.debug(results)
-    results.foreach { result => 
-      var grouped = result._2.groupBy(res => res.keySize) //group by key length
-      var plotter = new Plotter(result._1 + " Accuracy")
-      plotter.xlabel = "Ciphertext size"
-      plotter.ylabel = "Accuracy"
-      plotter.xrange = (0.0, sizes.last)
-      plotter.yrange = (0.0, 1.1)
-      grouped.zipWithIndex.foreach{ case((size, results), i) => 
-          var data = results.map(res => (res.textSize.toDouble, res.accuracy)).toSeq
-          logger.debug("data: " + size + " -> " + data)
-          plotter.plot(data, size.toString+"-characters", "w lp ls "+(i+1))
-      }
-      plotter.run
+class GoalAnalyzer extends PerformanceAnalyzer {
+  collection.parallel.ForkJoinTasks.defaultForkJoinPool.setParallelism(2)
+  override def run() = {
+    val cipher = new Vigenere
 
-      plotter = new Plotter(result._1 + " Runtime") 
-      plotter.xlabel = "Ciphertext size"
-      plotter.ylabel = "Runtime"
-      //plotter.xrange = (0.0, sizes.last)
-      //plotter.yrange = (0.0, 1.1)
-      grouped.zipWithIndex.foreach{ case((size, results), i) => 
-          var data = results.map(res => (res.textSize.toDouble, res.runTime)).toSeq
-          logger.debug("data: " + size + " -> " + data)
-          plotter.plot(data, size.toString+"-characters", "w lp ls "+(i+1))
-      }
-      plotter.run
+    var heuristics = List[Heuristic]()
+    def cost(text:String):Double = {
+      heuristics.foldLeft(0.0) { (acc, h) => acc + h.evaluate(text)}
     }
-    println("Done")
-  }
-
-  class Result(var keySize:Int, var textSize:Int, var keysSearched:Double, var accuracy:Double, var runTime:Double) {
-    override def toString:String = {
-      return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE)
+    val gridRange = 1 to 1
+    val grid = for(i <- gridRange; j <- gridRange; k <- gridRange) yield {
+      ((pow(2, i), pow(2, j), pow(2, k)))
     }
-  }
-
-  private def run(size:Int, key:String, ca:Cryptanalyzer, cipher:Cipher):Result = {
-    def run(plainText:String):(Int, Double, Long) = {
-      var cipherText = cipher.encrypt(key, plainText)
-      var startTime = System.currentTimeMillis
-      var result = ca.decrypt(cipherText, cipher)
-      println(plainText)
-      println(result)
-      (result.numKeysSearched, plainText.distance(result.plainText), (System.currentTimeMillis - startTime))
-    }
-    var results = List[(Int, Double, Long)]()
-    1.times {
-      results = run(language.sample(size)) :: results
-    }
-    results.foreach(println(_))
-    var sum = results.foldLeft((0, 0.0, 0L)) { (sum, res) =>
-      (sum._1 + res._1, sum._2 + (1.0 - res._2), sum._3 + res._3)
-    }
-    new Result(key.length(), size, (sum._1/results.size), (sum._2/results.size), (sum._3/results.size))
+    var results = grid.par.flatMap{ weights => 
+      println(weights)
+      heuristics = List(new DictionaryHeuristic(weights._1), 
+        new IoCHeuristic(weights._2), new TrigramHeuristic(weights._3))
+      var length = 100
+      var counts = 10000.times { 
+        var sample = language.sample(length)
+        cost(sample)
+      }.toList
+      plot("Distribution of the Cost function", "Cost", "Frequency", 
+        Map("100 characters" -> counts.groupBy(identity).map(x => (x._1,
+        x._2.size*1.0)).toSeq))
+      System.exit(-1)
+      val avg = counts.sum/counts.size
+      val stdDev = sqrt(counts.map(e => pow(avg - e, 2)).sum/counts.size)
+      (weights, (2.0 to 4.0 by 0.5) map { multiplier => 
+        var outliers = 2000.times { 
+          var correct = language.sample(length)
+          abs(cost(correct) - avg) <= (stdDev*multiplier)
+        }.filter(_ == false).size
+        var inliers = 2000.times { 
+          var correct = language.sample(length).randomMutation
+          abs(cost(correct) - avg) >= (stdDev*multiplier)
+        }.filter(_ == false).size
+        (multiplier, outliers, inliers)
+      })
+    }.seq
+    println(results)
+    //println(results.sortBy(x => (x._5, x._6)).take(10))
   }
 }
+
+object GoalAnalyzer {
+  def main(args:Array[String]) = {
+    new GoalAnalyzer().run()
+  }
+}
+
+

@@ -8,10 +8,10 @@ import Assert._
 
 import scala.math._
 
-import org.jho.ace.util.Configuration
+import org.jho.ace.util.Configureable
 import org.jho.ace.util._
 
-class DictionaryHeuristicTest extends Configuration {
+class DictionaryHeuristicTest extends Configureable {
 
   @Test
   def computeCost = {

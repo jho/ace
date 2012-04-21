@@ -51,11 +51,11 @@ class English extends {
 } with Language 
 
 
-object English extends Configuration {
+object English {
   def main(args:Array[String]) = {
     var e = new English()
 
-    println(e.fourgramFrequencies.toList.sortWith(_._2 > _._2).take(10000))
+    //println(e.fourgramFrequencies.toList.sortWith(_._2 > _._2).take(10000))
     /*
      for(i <- 2 to 4) {
      var grams = e.sampleText.sliding(i).toList
@@ -67,5 +67,14 @@ object English extends Configuration {
      o.writeObject(frequencies)
      println(frequencies.sortWith(_._2 > _._2))
      }*/
+
+    var words = e.text.mkString.split("""\s+""").toList
+    println(words.take(100))
+    var frequencies = words.groupBy(identity).map(e => (e._1, (e._2.size*1.0)/words.size)).toSeq.sortWith(_._2 > _._2)
+    println(frequencies.size)
+    val os = new FileOutputStream(new File(List("words",e.locale.getLanguage, e.locale.getCountry).mkString("_")))
+    val o = new ObjectOutputStream(os)
+    o.writeObject(frequencies)
+    o.close
   }
 }

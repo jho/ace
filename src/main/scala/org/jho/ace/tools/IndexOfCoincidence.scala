@@ -3,14 +3,12 @@
  */
 package org.jho.ace.tools
 
-import org.jho.ace.util.Configuration
+import org.jho.ace.util.Configureable
 
-object indexOfCoincidence extends Configuration {
+object indexOfCoincidence extends Configureable {
   def apply(text:Seq[Char]):Double = {
     val counts = text.groupBy(identity).mapValues(_.size)
     //will get NaN if all characters have count == 1
-    if (counts.filterNot(_._2 > 1).size <= 1)
-      return 0.0
     var sum = counts.foldLeft(0.0) {
       case (sum, (k, v)) => {
           sum + (v * (v - 1));

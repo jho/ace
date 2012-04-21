@@ -9,7 +9,7 @@ import scala.sys.process._
 
 import java.io.{File, FileWriter}
 
-class Plotter(var title:String) extends Configuration with LogHelper {
+class Plotter(var title:String) extends Configureable with LogHelper {
   var xlabel:String = "x" 
   var ylabel:String = "y"
   var xrange:(Double, Double) = null
@@ -38,20 +38,21 @@ class Plotter(var title:String) extends Configuration with LogHelper {
 
   def run():Boolean = {
     //commands += "set term aqua"
-    commands += "set terminal pdfcairo font \"Gill Sans,7\" linewidth 4 rounded"
+    commands += "set terminal pdfcairo font \"Gill Sans,7\" linewidth 2 rounded"
     commands += "set title '"+title+"'"
-    commands += "set output '"+title.toLowerCase.filter(_.isLetterOrDigit)+".pdf'"
+    commands += "set output '"+title.toLowerCase.filter(!_.isWhitespace)+".pdf'"
     commands += "set xlabel '"+xlabel+"'"
     commands += "set ylabel '"+ylabel+"'"
 
     //Styling (because vanila gnuplot is ugly)
-    //taken from http://youinfinitesnake.blogspot.com/2011/02/attractive-scientific-plots-with.html
-    //Line style for axes
+    //taken from http://youinfinitesnake.blogspot.com/2011/02/attractive-scientific-plots-with.html 
+   //Line style for axes
     commands += "set style line 80 lt rgb \"#808080\""
     //Line style for grid
     commands += "set style line 81 lt 0" 
     commands += "set style line 81 lt rgb \"#808080\"" 
     commands += "set grid back linestyle 81"
+    commands += "set border 3 back linestyle 80"
     commands += "set xtics nomirror"
     commands += "set ytics nomirror"
 
@@ -64,23 +65,27 @@ class Plotter(var title:String) extends Configuration with LogHelper {
     commands += "set style line 7 lt rgb \"#7908AA\" lw 2 pt 12"
     commands += "set style line 8 lt rgb \"#0BCF00\" lw 2 pt 10"
 
+    commands += "set key bottom right"
+
     if(xrange != null) commands += "set xrange ["+xrange.mkString(":")+"]"
     if(yrange != null) commands += "set yrange ["+yrange.mkString(":")+"]"
 
     commands += "plot " + plots.mkString(", ")
-    logger.debug("commands: " + commands)
-    val res = Seq("gnuplot", "-e", commands.mkString("; ")).!
+    val out = new FileWriter(new File(title.toLowerCase.filter(!_.isWhitespace)+".plot"))
+    commands.foreach(c => out.write(c+System.getProperty("line.separator")))
+    out.close
+    //val res = Seq("gnuplot", "-e", commands.mkString("; ")).!
     //clean up tmp files
-    files.foreach(_.delete)
-    if(res != 0) {
+    //files.foreach(_.delete)
+    /*if(res != 0) {
       logger.error("gnuplot failed with error code: " + res) 
       return false
-    }  
+    }*/
     true
   }
 }
 
-object Plotter extends Configuration {
+object Plotter extends Configureable {
   def main(args:Array[String]) = {
 
     var plotter = new Plotter("set")
