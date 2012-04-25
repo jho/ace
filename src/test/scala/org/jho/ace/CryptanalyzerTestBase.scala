@@ -12,13 +12,19 @@ import org.jho.ace.util.Configureable
 import org.jho.ace.util._
 
 abstract class CryptanalyzerTestBase(val algorithm:Cryptanalyzer) extends Configureable with LogHelper {
+  @Test
+  def decryptShortKeywordText = {
+    testDecrypt(language.sample(100),
+                "EARTH", new Vigenere)
+  }
+
   //@Test
   def decryptLongText = {
     testDecrypt("MUSTCHANGEMEETINGLOCATIONFROMBRIDGETOUNDERPASSSINCEENEMYAGENTSAREBELIEVEDTOHAVEBEENASSIGNEDTOWATCHBRIDGESTOPMEETINGTIMEUNCHANGEDXX",
                 "EVERY", new Vigenere)
   }
 
-  //@Test
+  @Test
   def decryptShortText = {
     testDecrypt("THEREARENOSECRETSTHATTIMEDOESNOTREVEAL",
                 "KEYWORD", new Vigenere)
@@ -27,13 +33,13 @@ abstract class CryptanalyzerTestBase(val algorithm:Cryptanalyzer) extends Config
   //@Test
   def decryptRandomSamplesShortKeyword = {
     for ( i <- (100 to 200 by 50)) {
-      var keyword = language.dictionary.randomWord(3)
+      var keyword = language.dictionary.randomWord(5)
       logger.debug("Keyword: " + keyword + ", Size: " + i)
       testDecrypt(language.sample(i), keyword, new Vigenere)
     }
   }
 
-  @Test
+  //@Test
   def decryptRandomSamplesMediumKeyword = {
     for ( i <- (100 to 200 by 50)) {
       var keyword = language.dictionary.randomWord(7)

@@ -17,6 +17,11 @@ class KeywordTest extends Configureable {
     //assertEquals(78, "aa".neighbors(true, true).size)
     //println("aa".neighbors(true, true).size)
     //"aa".neighbors(true, true).foreach(println(_))
+    println("digraph Neighborhood {")
+    "A".neighbors(true, true).foreach { n => 
+        println("\tA -> "+n+";")
+    }
+    println("}")
     println("----")
   }
 

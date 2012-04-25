@@ -16,24 +16,23 @@ import org.jho.ace.util._
 import org.apache.commons.lang.builder.ToStringBuilder
 
 class PerformanceAnalyzer extends Configureable with LogHelper {
+  collection.parallel.ForkJoinTasks.defaultForkJoinPool.setParallelism(4)
   def run() = {
-    var astar = new AStarCryptanalyzer
-    var sa = new SACryptanalyzer
-    var cipher = new Vigenere
+    val cipher = new Vigenere
 
-    //var keys = (4 to 10 by 2).map(language.dictionary.randomWord(_))
-    var keyLengths = (4 to 4 by 2)
-    var sizes = (50 to 100 by 50)
-    //var sizes = (50 to 500 by 50)
+    var keyLengths = (5 to 15 by 5)
+    var sizes = (100 to 1000 by 100)
+    //var sizes = (100 to 300 by 100)
     var runs = keyLengths.foldLeft(List[(Int, Int)]())((runs, keyLength) => runs ++ sizes.map(size => (keyLength, size)))
     logger.debug(runs)
-    var algorithms = List(("A*", astar))//, ("SA", sa))
+    //val algorithms = List(("AC*", new BFSCryptanalyzer), ("SA", new SACryptanalyzer), ("GA", new GeneticCryptanalyzer))
+    val algorithms = List(("AC*", new BFSCryptanalyzer))
     var results = algorithms.map { case (name, algorithm) => 
         logger.debug("algorithm: "+name)
-        (name, (runs.map { case (keyLength, size) => 
+        (name, (runs.par.map { case (keyLength, size) => 
                 runCryptanalyzer(size, keyLength, algorithm, cipher)
-            }))
-    }
+            }.seq))
+    }.seq
     logger.debug(results)
     results.foreach { result => 
       var grouped = result._2.groupBy(res => res.keySize) //group by key length
@@ -89,11 +88,11 @@ class PerformanceAnalyzer extends Configureable with LogHelper {
       var result = ca.decrypt(cipherText, cipher)
       (result.numKeysSearched, plainText.distance(result.plainText), (System.currentTimeMillis - startTime))
     }
-    var results = 4.times {
+    var results = 3.times {
       run(language.sample(size))
     }.toList
     //drop the worst result (to increase consistency between runs)
-    results = results.sortBy(_._2).take(results.size-1)
+    //results = results.sortBy(_._2).take(results.size-1)
     logger.debug("Results for "+size+"-char, "+keyLength+"-char keyword: " + results)
     var sum = results.foldLeft((0, 0.0, 0L)) { (sum, res) =>
       (sum._1 + res._1, sum._2 + (1.0 - res._2), sum._3 + res._3)

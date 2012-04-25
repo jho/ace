@@ -18,7 +18,6 @@ trait DecryptionClassifier extends Configureable with LogHelper {
     def load:Boolean
 
     def train:Unit
-
   
 }
 

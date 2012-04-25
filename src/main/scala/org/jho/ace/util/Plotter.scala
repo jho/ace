@@ -9,7 +9,7 @@ import scala.sys.process._
 
 import java.io.{File, FileWriter}
 
-class Plotter(var title:String) extends Configureable with LogHelper {
+class Plotter(private var title:String, private var filename:String = null) extends Configureable with LogHelper {
   var xlabel:String = "x" 
   var ylabel:String = "y"
   var xrange:(Double, Double) = null
@@ -19,10 +19,16 @@ class Plotter(var title:String) extends Configureable with LogHelper {
   private var commands = new ListBuffer[String]
   private var plots = new ListBuffer[String]
   
+  if (filename == null)
+    filename = this.title.toLowerCase.filter(!_.isWhitespace) 
+  Seq("mkdir", filename).!
+
   def plot(data:Seq[(Double, Double)], title:String = null, opts:String = "") = {
-    val f = File.createTempFile("graph-data", ".dat")
-    files += f
-    logger.debug(f.getAbsolutePath)
+    var f:File = null
+    if(title != null) 
+      f = new File(filename+ "/"+ title.toLowerCase.filter(!_.isWhitespace)+".dat")
+    else 
+      f = File.createTempFile("plot", filename+"/")
     val out = new FileWriter(f)
     data.foreach(pair => out.write(pair.mkString("\t")+System.getProperty("line.separator")))
     out.close
@@ -40,13 +46,13 @@ class Plotter(var title:String) extends Configureable with LogHelper {
     //commands += "set term aqua"
     commands += "set terminal pdfcairo font \"Gill Sans,7\" linewidth 2 rounded"
     commands += "set title '"+title+"'"
-    commands += "set output '"+title.toLowerCase.filter(!_.isWhitespace)+".pdf'"
+    commands += "set output '"+filename+".pdf'"
     commands += "set xlabel '"+xlabel+"'"
     commands += "set ylabel '"+ylabel+"'"
 
     //Styling (because vanila gnuplot is ugly)
     //taken from http://youinfinitesnake.blogspot.com/2011/02/attractive-scientific-plots-with.html 
-   //Line style for axes
+    //Line style for axes
     commands += "set style line 80 lt rgb \"#808080\""
     //Line style for grid
     commands += "set style line 81 lt 0" 
@@ -71,16 +77,16 @@ class Plotter(var title:String) extends Configureable with LogHelper {
     if(yrange != null) commands += "set yrange ["+yrange.mkString(":")+"]"
 
     commands += "plot " + plots.mkString(", ")
-    val out = new FileWriter(new File(title.toLowerCase.filter(!_.isWhitespace)+".plot"))
+    val out = new FileWriter(new File(filename+".plot"))
     commands.foreach(c => out.write(c+System.getProperty("line.separator")))
     out.close
     //val res = Seq("gnuplot", "-e", commands.mkString("; ")).!
     //clean up tmp files
     //files.foreach(_.delete)
     /*if(res != 0) {
-      logger.error("gnuplot failed with error code: " + res) 
-      return false
-    }*/
+     logger.error("gnuplot failed with error code: " + res) 
+     return false
+     }*/
     true
   }
 }

@@ -55,6 +55,7 @@ class SACryptanalyzer(heuristic:Heuristic = Heuristic.default, val config:SAConf
       }
       current = best
       temp = temp * config.coolingFactor
+      i += 1
       //if (!change) i += 1
     }
     new CryptanalysisResult(best._1, cipher.decrypt(best._1, cipherText), visited.size, best._2)

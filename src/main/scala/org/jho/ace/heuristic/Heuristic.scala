@@ -21,8 +21,7 @@ class HeuristicList(val heuristics:List[Heuristic]) extends Heuristic {
 object Heuristic {
     implicit def listToHeuristicList(heuristics:List[Heuristic]) = new HeuristicList(heuristics)
     //make the default heuristics a thread local variable
-    private var _default = new DynamicVariable[Heuristic](
-        List(new DictionaryHeuristic(1.0), new BigramHeuristic(1.0), new TrigramHeuristic(1.0)))
+    private var _default = new DynamicVariable[Heuristic](List(new DictionaryHeuristic(2.0), new BigramHeuristic(4.0), new TrigramHeuristic(2.0), new IoCHeuristic(4.0)))
     def default = { _default.value }
     def default_= (heuristic:Heuristic) = _default.value = heuristic
 }

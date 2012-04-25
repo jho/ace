@@ -13,7 +13,7 @@ trait FrequencyAnalyzer {
   }
 
   lazy val bigrams:List[String] = {
-    text.grouped(2).toList
+    ngrams(3)
   }
 
   lazy val bigramFrequencies:Map[String, Double] = {
@@ -21,7 +21,7 @@ trait FrequencyAnalyzer {
   }
 
   lazy val trigrams:List[String] = {
-    text.grouped(3).toList
+    ngrams(3)
   }
 
   lazy val trigramFrequencies:Map[String, Double] = {
