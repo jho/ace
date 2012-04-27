@@ -60,8 +60,9 @@ class GeneticCryptanalyzer(heuristic:Heuristic = Heuristic.default, val config:G
       //drop the lowest ranked individuals (survival of the fittest)
       population = population.dropRight(children.size) 
       best = population.head
+      /*
       if(abs(goal - best._2) <= 3.0 * stdDev) 
-        return new CryptanalysisResult(best._1, cipher.decrypt(best._1, cipherText), visited.size, best._2)
+        return new CryptanalysisResult(best._1, cipher.decrypt(best._1, cipherText), visited.size, best._2)*/
     }
     new CryptanalysisResult(best._1, cipher.decrypt(best._1, cipherText), visited.size, best._2)
   }

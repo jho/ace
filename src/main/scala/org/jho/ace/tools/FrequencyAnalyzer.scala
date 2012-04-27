@@ -29,7 +29,7 @@ trait FrequencyAnalyzer {
   }
 
   def ngrams(n:Int):List[String] = {
-    text.grouped(n).toList
+    text.sliding(n).toList
   }
 
   def ngramFrequencies(n:Int):Map[String, Double] = {

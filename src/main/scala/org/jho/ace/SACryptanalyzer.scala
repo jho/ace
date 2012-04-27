@@ -33,7 +33,7 @@ class SACryptanalyzer(heuristic:Heuristic = Heuristic.default, val config:SAConf
     var max = pow(language.alphabet.size, cipherText.size)/2
     var temp = config.startTemp
     var i = 0
-    while(i < config.outerLoops && abs(goal - best._2) > 3.0*stdDev) {
+    while(i < config.outerLoops) {
       var change = false
       config.innerLoops.times {
         var n = current._1.mutate(true)
@@ -56,7 +56,6 @@ class SACryptanalyzer(heuristic:Heuristic = Heuristic.default, val config:SAConf
       current = best
       temp = temp * config.coolingFactor
       i += 1
-      //if (!change) i += 1
     }
     new CryptanalysisResult(best._1, cipher.decrypt(best._1, cipherText), visited.size, best._2)
   }

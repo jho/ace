@@ -1,7 +1,7 @@
 /*
  * Copyright 2011 Joshua Hollander.
  */
-package org.jho.ace.performance
+package org.jho.ace.analyzer
 
 import org.junit._
 import Assert._
@@ -17,9 +17,9 @@ import scala.collection.parallel._
 
 import scala.math._
 
-class HeuristicAnalyzer extends PerformanceAnalyzer {
+class HeuristicAnalyzer extends AnalyzerBase {
   collection.parallel.ForkJoinTasks.defaultForkJoinPool.setParallelism(4)
-  override def run() = {
+  def run() = {
     //val cryptanalyzer = new AStarCryptanalyzer 
     //val cryptanalyzer = new GeneticCryptanalyzer 
     var cipher = new Vigenere

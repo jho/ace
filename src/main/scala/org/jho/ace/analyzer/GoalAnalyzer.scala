@@ -1,7 +1,7 @@
 /*
  * Copyright 2011 Joshua Hollander.
  */
-package org.jho.ace.performance
+package org.jho.ace.analyzer
 
 import org.junit._
 import Assert._
@@ -15,9 +15,9 @@ import org.jho.ace.util._
 import scala.collection.mutable.ListBuffer
 import scala.math._
 
-class GoalAnalyzer extends PerformanceAnalyzer {
+class GoalAnalyzer extends AnalyzerBase {
   collection.parallel.ForkJoinTasks.defaultForkJoinPool.setParallelism(2)
-  override def run() = {
+  def run() = {
     val cipher = new Vigenere
 
     var heuristics = List[Heuristic]()
