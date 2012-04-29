@@ -1,7 +1,7 @@
 /*
  * Copyright 2011 Joshua Hollander.
  */
-package org.jho.ace
+package org.jho.ace.cryptanalyzer
 
 import org.jho.ace.CipherText._
 import org.jho.ace.Keyword._

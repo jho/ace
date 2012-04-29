@@ -6,14 +6,10 @@ package org.jho.ace.analyzer
 import org.junit._
 import Assert._
 
-import org.apache.commons.lang.builder.ToStringStyle
-import org.jho.ace.ciphers.Cipher
 import org.jho.ace.ciphers.Vigenere
-import org.jho.ace._
-import org.jho.ace.util.Configureable
+import org.jho.ace.cryptanalyzer._
 import org.jho.ace.util.Plotter
 import org.jho.ace.util._
-import org.apache.commons.lang.builder.ToStringBuilder
 
 class PerformanceAnalyzer extends AnalyzerBase { 
   collection.parallel.ForkJoinTasks.defaultForkJoinPool.setParallelism(4)

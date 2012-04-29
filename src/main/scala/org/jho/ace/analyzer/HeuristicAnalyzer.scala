@@ -6,12 +6,9 @@ package org.jho.ace.analyzer
 import org.junit._
 import Assert._
 
-import org.jho.ace.AStarCryptanalyzer
-import org.jho.ace.GeneticCryptanalyzer
-import org.jho.ace.SACryptanalyzer
+import org.jho.ace.cryptanalyzer.GeneticCryptanalyzer
 import org.jho.ace.ciphers.Vigenere
 import org.jho.ace.heuristic._
-import org.jho.ace.util.Plotter
 import org.jho.ace.util._
 import scala.collection.parallel._
 
