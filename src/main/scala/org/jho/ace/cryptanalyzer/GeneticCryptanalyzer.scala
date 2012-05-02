@@ -3,8 +3,10 @@
  */
 package org.jho.ace.cryptanalyzer
 
+import org.jho.ace.CipherText
 import org.jho.ace.CipherText._
-import org.jho.ace.Keyword._
+import org.jho.ace.Key
+import org.jho.ace.Key._
 import org.jho.ace.ciphers.Cipher
 import org.jho.ace.genetic._
 import org.jho.ace.heuristic.Heuristic
@@ -21,17 +23,17 @@ import scala.collection.breakOut
  */
 class GeneticCryptanalyzer(heuristic:Heuristic = Heuristic.default, val config:GeneticConfig = new GeneticConfig) extends Cryptanalyzer(heuristic) {
 
-  def decrypt(cipherText:String, cipher:Cipher):CryptanalysisResult = {
+  def decrypt[C <: CipherText](cipherText:C, cipher:Cipher[Key, C]):CryptanalysisResult = {
     val rand = new Random()
-    val visited = new HashSet[String]()
+    val visited = new HashSet[Key]()
     val (goal, stdDev) = computeGoal(cipherText.size)
     if ( logger.isTraceEnabled ) {
       logger.trace("goal: " + goal + "+/-" + 3.0*stdDev)
     }
     //generate an initial population of 200 individuals ranked by cost
-    val rankFunction = (x:String, y:String) => cost(x) < cost(y)
+    val rankFunction = (x:C, y:C) => cost(x) < cost(y)
     val length = cipher.generateInitialKey(cipherText, goal).size
-    var population:PriorityQueue[(String, Double)] = (1 to config.populationSize).map{ _ => 
+    var population:PriorityQueue[(Key, Double)] = (1 to config.populationSize).map{ _ => 
       var i = language.randomString(rand.nextInt(length) + 1).mutate(true)
       (i, cost(cipher.decrypt(i, cipherText)))
     }(breakOut)
@@ -47,10 +49,10 @@ class GeneticCryptanalyzer(heuristic:Heuristic = Heuristic.default, val config:G
       var (toCrossover, noCrossover) = parents.partition(c => rand.nextDouble < config.pc)
       toCrossover = Random.shuffle(toCrossover)
       toCrossover = toCrossover.grouped(2).toList.flatMap(pair => config.crossover(pair.head, pair.last))
-      var children:List[String] = noCrossover ++ toCrossover
+      var children:List[Key] = noCrossover ++ toCrossover
 
       //probabilisitcally mutate the children
-      var (toMutate:List[String], notMutated:List[String]) = children.partition(_ => rand.nextDouble < config.pm)
+      var (toMutate:List[Key], notMutated:List[Key]) = children.partition(_ => rand.nextDouble < config.pm)
       children = notMutated ++ Random.shuffle(toMutate).map(_.mutate(true))
       logger.trace("after mutation: " + children)
 

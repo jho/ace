@@ -5,12 +5,14 @@ package org.jho.ace.cryptanalyzer
 
 import scala.math._
 import org.jho.ace.CipherText._
+import org.jho.ace.StringCipherText
 import org.jho.ace.ciphers.Cipher
+import org.jho.ace.ciphers.Vigenere
 import org.jho.ace.heuristic._
 import org.jho.ace.util._
 
 class VigenereCryptanalyzer(heuristic:Heuristic = Heuristic.default) extends Cryptanalyzer(heuristic) {
-  def decrypt(cipherText:String, cipher:Cipher):CryptanalysisResult = {
+  def decrypt(cipherText:StringCipherText, cipher:Vigenere):CryptanalysisResult = {
     val keyLengths = cipherText.keyLengths
     val keys = keyLengths.slice(0,5).foldLeft(List[(String,Double)]()) { (keys, keyLength) =>
       //find the frequency correlations for each column (based on keyLength columns) of the cipherText

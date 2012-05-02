@@ -7,6 +7,9 @@ import org.junit._
 import Assert._
 
 import org.apache.commons.lang.builder.ToStringStyle
+import org.jho.ace.CipherText
+import org.jho.ace.Key
+import org.jho.ace.Key._
 import org.jho.ace.ciphers.Cipher
 import org.jho.ace.cryptanalyzer._
 import org.jho.ace.util.Configureable
@@ -21,7 +24,7 @@ abstract class AnalyzerBase extends Configureable with LogHelper {
     }
   }
 
-  protected def runCryptanalyzer(size:Int, keyLength:Int, ca:Cryptanalyzer, cipher:Cipher):Result = {
+  protected def runCryptanalyzer(size:Int, keyLength:Int, ca:Cryptanalyzer, cipher:Cipher[Key, CipherText]):Result = {
     logger.debug(size+"-char, "+keyLength+"-char keyword")
     def run(plainText:String):(Int, Double, Long) = {
       var key = language.dictionary.randomWord(keyLength)

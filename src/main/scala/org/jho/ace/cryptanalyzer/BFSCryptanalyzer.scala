@@ -4,8 +4,10 @@
 package org.jho.ace.cryptanalyzer
 
 import org.jho.ace.ciphers.Cipher
+import org.jho.ace.CipherText
 import org.jho.ace.CipherText._
-import org.jho.ace.Keyword._
+import org.jho.ace.Key
+import org.jho.ace.Key._
 import org.jho.ace.classifier.DictionarySvm
 import org.jho.ace.heuristic.Heuristic
 import org.jho.ace.util._
@@ -21,11 +23,11 @@ class BFSCryptanalyzer(heuristic:Heuristic = Heuristic.default) extends Cryptana
   val classifier = new DictionarySvm
   //classifier.load
 
-  def decrypt(cipherText:String, cipher:Cipher):CryptanalysisResult = {
-    val queue = new PriorityQueue[(String, Double)]()
-    val visited = new HashMap[String, Boolean]()
-    val dist = new HashMap[String, Double]() {
-      override def default(k: String) = Double.MaxValue
+  def decrypt[C <: CipherText](cipherText:C, cipher:Cipher):CryptanalysisResult = {
+    val queue = new PriorityQueue[(Key, Double)]()
+    val visited = new HashMap[Key, Boolean]()
+    val dist = new HashMap[Key, Double]() {
+      override def default(k: Key) = Double.MaxValue
     }
     val (goal, stdDev) = computeGoal(cipherText.size)
     logger.debug("goal: " + goal + " +/- " + 3.0*stdDev)

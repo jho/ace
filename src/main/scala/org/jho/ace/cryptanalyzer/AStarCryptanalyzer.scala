@@ -4,8 +4,10 @@
 package org.jho.ace.cryptanalyzer
 
 import org.jho.ace.ciphers.Cipher
+import org.jho.ace.CipherText
 import org.jho.ace.CipherText._
-import org.jho.ace.Keyword._
+import org.jho.ace.Key
+import org.jho.ace.Key._
 import org.jho.ace.classifier.DictionarySvm
 import org.jho.ace.heuristic.Heuristic
 import org.jho.ace.util._
@@ -21,16 +23,16 @@ class AStarCryptanalyzer(heuristic:Heuristic = Heuristic.default) extends Crypta
   val classifier = new DictionarySvm
   //classifier.load
 
-  def decrypt(cipherText:String, cipher:Cipher):CryptanalysisResult = {
-    val queue = new PriorityQueue[((String, Double), Double)]()
-    val visited = new HashMap[String, Boolean]()
-    val dist = new HashMap[String, Double]() {
-      override def default(k: String) = Double.MaxValue
+  def decrypt[C <: CipherText](cipherText:C, cipher:Cipher[Key, C]):CryptanalysisResult = {
+    val queue = new PriorityQueue[((Key, Double), Double)]()
+    val visited = new HashMap[Key, Boolean]()
+    val dist = new HashMap[Key, Double]() {
+      override def default(k: Key) = Double.MaxValue
     }
     val costs = new HashMap[String, Double]() {
-      override def default(k: String) = Double.MaxValue
+      override def default(k: Key) = Double.MaxValue
     }
-    val (goal, stdDev) = computeGoal(cipherText.size)
+    val (goal, stdDev) = computeGoal(cipherText)
     logger.debug("goal: " + goal + " +/- " + 3.0*stdDev)
     def isGoal(cost:Double):Boolean = {
       return abs(goal - cost) <= (stdDev * 3.0)
@@ -85,7 +87,7 @@ class AStarCryptanalyzer(heuristic:Heuristic = Heuristic.default) extends Crypta
     return new CryptanalysisResult(best._1, cipher.decrypt(best._1, cipherText), count, best._2)
   }
 
-  implicit object CostTupleOrdering extends Ordering[((String, Double), Double)] {
-    def compare(x: ((String, Double), Double), y: ((String, Double), Double)):Int = y._2.compare(x._2)
+  implicit object CostTupleOrdering extends Ordering[((Key, Double), Double)] {
+    def compare(x: ((Key, Double), Double), y: ((Key, Double), Double)):Int = y._2.compare(x._2)
   }
 }

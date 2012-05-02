@@ -3,17 +3,18 @@
  */
 package org.jho.ace.heuristic
 
+import org.jho.ace.CipherText
 import scala.util.DynamicVariable
 
 abstract class Heuristic(val weight:Double = 1.0) {
-    def evaluate(in:String):Double = {
+    def evaluate(in:CipherText):Double = {
         weight * compute(in)
     }
-    protected def compute(in:String):Double = { 0.0 }
+    protected def compute(in:CipherText):Double = { 0.0 }
 }
 
 class HeuristicList(val heuristics:List[Heuristic]) extends Heuristic {
-    override def evaluate(in:String):Double = {
+    override def evaluate(in:CipherText):Double = {
         return heuristics.foldLeft(0.0) { (acc, h) => acc + h.evaluate(in)}
     }
 }

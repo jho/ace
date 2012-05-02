@@ -4,7 +4,7 @@
 package org.jho.ace.cryptanalyzer
 
 import org.jho.ace.CipherText._
-import org.jho.ace.Keyword._
+import org.jho.ace.Key._
 import org.jho.ace.ciphers.Cipher
 import org.jho.ace.heuristic.Heuristic
 import org.jho.ace.util._
@@ -18,7 +18,7 @@ import scala.util.Random
  */
 class SACryptanalyzer(heuristic:Heuristic = Heuristic.default, val config:SAConfig = new SAConfig) extends Cryptanalyzer(heuristic) {
 
-  def decrypt(cipherText:String, cipher:Cipher):CryptanalysisResult = {
+  def decrypt[C <: CipherText](cipherText:C, cipher:Cipher):CryptanalysisResult = {
     var visited = new HashSet[String]()
     val rand = new Random();
     val (goal, stdDev) = computeGoal(cipherText.size)

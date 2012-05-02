@@ -10,11 +10,11 @@ import scala.util.Random
 import scala.collection.mutable.ListBuffer
 import scala.math._
 
-class Keyword(var text:String) extends Configureable {
+class Keyword(var text:String) extends Key with Configureable {
   text = text.filter(_.isLetter).toUpperCase
   val rand = new Random();
 
-  def neighbors(grow:Boolean, shrink:Boolean):List[String] = {
+  override def neighbors(grow:Boolean=true, shrink:Boolean=true):List[Key] = {
     var result = (for(i <- 0 until text.size; j <- language.alphabet) yield {
         var res = ListBuffer[String]()
         if(text(i) != j) {
@@ -35,11 +35,7 @@ class Keyword(var text:String) extends Configureable {
     result.toSet.toList
   }
 
-  def neighbors:List[String] = {
-    neighbors(false, false)
-  }
- 
-  def mutate(growOrShrink:Boolean):String = {
+  override def mutate(growOrShrink:Boolean=true):Key = {
     var char = language.alphabet(rand.nextInt(language.alphabet.size))
     var idx = rand.nextInt(text.size)
     if ( growOrShrink && .5 <= rand.nextDouble()) {
@@ -58,14 +54,4 @@ class Keyword(var text:String) extends Configureable {
     else
       text.updated(idx, char)
   }
-
-  //can't use default parameter when there is an implicit param specified
-  def mutate():String = {
-    mutate(false)
-  }
-}
-
-object Keyword {
-  implicit def charSeq2Keyword(seq:Seq[Char]):Keyword = new Keyword(seq.mkString)
-  implicit def string2Keyword(text:String):Keyword = new Keyword(text)
 }
