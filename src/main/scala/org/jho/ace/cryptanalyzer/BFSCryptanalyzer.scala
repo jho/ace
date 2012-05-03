@@ -18,7 +18,7 @@ import scala.math._
  * A Cryptanalyzer algorithm based on the A* path finding algorithm (or Best First Search with a heuristic)
  */
 class BFSCryptanalyzer(heuristic:Heuristic = Heuristic.default) extends Cryptanalyzer(heuristic) {
-  val classifier = new DictionarySvm
+  //val classifier = new DictionarySvm
   //classifier.load
 
   def decrypt(cipherText:String, cipher:Cipher):CryptanalysisResult = {
@@ -60,7 +60,7 @@ class BFSCryptanalyzer(heuristic:Heuristic = Heuristic.default) extends Cryptana
         if(c < best._2) {
           sinceBest = 0
           best = (n, c)
-          logger.trace("new best:" + best)
+          logger.debug("new best:" + best)
           logger.trace(count+" keys searched")
           //logger.debug("Score: " + classifier.score(decryption))
           //logger.debug("Classification: " + classifier.classify(decryption))

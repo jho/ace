@@ -18,7 +18,7 @@ import scala.math._
  * A Cryptanalyzer algorithm based on the A* path finding algorithm (or Best First Search with a heuristic)
  */
 class AStarCryptanalyzer(heuristic:Heuristic = Heuristic.default) extends Cryptanalyzer(heuristic) {
-  val classifier = new DictionarySvm
+  //val classifier = new DictionarySvm
   //classifier.load
 
   def decrypt(cipherText:String, cipher:Cipher):CryptanalysisResult = {
