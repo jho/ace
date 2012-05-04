@@ -49,7 +49,7 @@ class SACryptanalyzer(heuristic:Heuristic = Heuristic.default, val config:SAConf
           if ( abs(goal - next._2) < abs(goal - best._2) ) {
             change = true
             best = next
-            logger.trace("new best:" + best)
+            logger.debug("new best:" + best)
           }
         }
       }

@@ -14,7 +14,8 @@ import org.jho.ace.util._
 
 class Demo extends Configureable {
   def run(args:Map[String, String]) {
-    val plaintext = language.sample(200)
+    val size = args.getOrElse("size", "200").toInt
+    val plaintext = language.sample(size)
     val keyword = args.getOrElse("keyword", "KEYWORD")
 
     val cipher:Cipher = Class.forName("org.jho.ace.ciphers."+args.getOrElse("cipher", "Vigenere"))
